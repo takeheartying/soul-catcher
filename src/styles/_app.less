@@ -1,0 +1,199 @@
+/**app.wxss**/
+page{
+  line-height: 1.6;
+  font-family: -apple-system-font, Helvetica Neue, sans-serif;
+  font-size: 14px;
+  background: rgb(240, 240, 240);
+  color: #333;
+  height: 100%;
+}
+icon {
+  vertical-align: middle;
+}
+.clearfix{
+    overflow:auto;
+    _height:1%
+}
+.g-score {
+    display: inline;
+}
+.g-score.g-color-orange {
+    font-weight: bolder;
+}
+.g-score-left {
+    font-size: 17px;
+}
+.g-feature {
+    height: 18px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.g-title-size {
+    font-size: 16px;
+}
+.g-middle-size {
+    font-size: 14px;
+}
+.g-small-size {
+    font-size: 13px;
+}
+.g-con-line {
+    margin-top: 8px;
+    line-height:1.2;
+}
+.g-margin-right {
+    margin-right: 10px;
+}
+.g-color-orange {
+    color: #f49938;
+}
+.g-color-light {
+    color: #999;
+}
+.g-tag {
+    font-size: 10px;
+    float: left;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 1px 5px;
+}
+
+/**列表模板样式**/
+.g-scroll-view-item{
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+.g-list-img{
+  width: 150px;
+  height: 100px;
+  border-radius: 3px;
+}
+.g-list-title, .g-list-line1, .g-list-line2, .g-list-line3{
+  font-size: 14px;
+  position: absolute;
+  border: none;
+  left: 180px;
+  right: 15px;
+  color: #999;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.g-list-title{
+  font-size: 17px;
+  top: 15px;
+  color: #333;
+}
+.g-list-line1{
+  top: 50px;
+}
+.g-list-line2{
+  top: 70px;
+}
+.g-list-line3{
+  top: 90px;
+}
+.g-button{
+    line-height: 30px;
+    padding: 0 17px;
+    text-align: center;
+    background: rgb(63, 134, 255);
+    display: inline-block;
+    color: #fff;
+    border-radius: 15px;
+}
+.g-hide{
+  display: none;
+}
+
+/* 星星 */
+.g-star{
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAflBMVEUAAAD/qgD/tAD/qgD/qgD/qgD/qgD/sgD/rQD/rAD/rQD/ugD/qgD/qgD/qgD/qgD/qgD/qwD/qwD/qgD/rgD/qQD/qQD/qgD/qwD/qgD/qgD/qQD/qgD/qwD/rAD/qwD/qwD/sQD/qQD/qgD/qgD/qwD/rAD/qgD/rAD/qQA7XDHfAAAAKXRSTlMAhgrv6eRqDisXFAb01c+9fXJuXxLcxK6mmZN3ZFlAOzMa+sjGglNOTbqj67MAAADSSURBVDjL7dLXEoJADAXQBQQRsQAWerHf//9BCzgDYaN5dryvnLlDNlH/tPEcITQmpshtfAQieAZElVMLQCiAazxim7JCwJEVAvZcUPi90nQvMbrYeTUbi7l7DZKVDRJ/GRtR5fV3gQ/ZNjK5aMiwnKN/mund0lM0gdZt1DjO2B2nSpecuh1x3Oz8saVDeGD3vcIwLgcnBBaM80BiMLCkcM/AsDulxyN1358DA5PUm4XPWup2LeZ8dYGXvb+UJQK2Hlm/0V3tbINK6WUovqnDUj+YOKQM6V6FgYOIAAAAASUVORK5CYII=") no-repeat center center;
+    background-size: cover;
+    height: 15px;
+    width: 20px;
+    display: inline-block;
+    margin-right: 5px;
+}
+.g-star.gray{
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAflBMVEUAAADL2u7L2u7S5//L2u7S4fDZ6P/L2u7M2u7M2+7N2u/M3PDV3/TQ4PPK2u3L2u7L2u7L2+/M2u/M2u/a4P/L2u3L2u7L2e7L2u7L2e7L2u7L2u7M2u7M3O/O2u7O3fDO4vXL2e7L2e3L2u3K2u7K2u3L2vDL2+/K2+7K2e2ozURnAAAAKXRSTlMAhu8K6REGz3JpYisXFOTevX5tWw301cSuppmTeEA7Mxr65sjGglNOTQAJ/AcAAADUSURBVDjL7dLXDoMwDEBRApQNpYyyR3f9/z9YUKgEJoY8V71PSBxZmET5x/NtSch0TcodVLCk4ANA1+QGgtTIEwxdjV2XqDAlxyQwcC4z9gTx7S2nus4CpwGm9tTDcl1WGAaBSs2Bx688gg42OvZw892hZyuEvrcXO9BWcJXQHZZ29djfucA52lxyIEsTt92aolvBgUDGGZS0EdwZhwPqAYARsMcwJG0yVw3Hx6ImAJQ3o07trxvYj/kwGo9fddcx9gJ4ZqyuZH9jbBETqvwjcqtpUf7QNh5TpJBtcolQAAAABJRU5ErkJggg==");
+}
+
+/* 方形右箭头→ */
+.g-arrow-right{
+  position: relative;
+}
+.g-arrow-right::after{
+    content:"";
+    display: block;
+    position: absolute;
+    right: 12.5px;
+    top: 50%;
+    margin-top: -6px;
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid rgb(216, 216, 216);
+    border-bottom: 2px solid rgb(216, 216, 216);
+    transform: rotate(-45deg);
+}
+/* 加载更多 */
+.g-loading-more{
+    background: #fff;
+    text-align: center;
+    line-height: 50px;
+    color: rgb(67, 86, 132);
+}
+/* 空页面 */
+.g-empty {
+  width: 375px;
+  text-align: center;
+  background: #fff;
+  padding-top: 50px;
+}
+.g-empty-img {
+  width: 115px;
+  height: 115px;
+}
+.g-hide{
+  display: none;
+}
+/* 自定义按钮样式 */
+.lxy-btn {
+    background-color: #3f86ff;
+    color: #fff;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+    border-radius: 25px;
+    font-weight: normal;
+    font-size: 13px;
+    padding: 0 35px;
+}
+.g-close{
+  position: absolute;
+  right: 12.5px;
+  top: 12.5px;
+  height: 25px;
+  width: 25px;
+}
+.g-close:after, .g-close:before{
+  width: 2px;
+  height: 15px;
+  background: rgb(220, 220, 220);
+  content: "";
+  display: block;
+  position: absolute;
+  right: 5px;
+  top: 0;
+  z-index: 1;
+}
+.g-close:after{
+  transform: rotate(45deg);
+}
+.g-close:before{
+  transform: rotate(-45deg);
+}

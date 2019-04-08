@@ -1,0 +1,131 @@
+/**
+ * 01 标准色
+ * 规则：@color-{分类}-{颜色}-{深浅}
+ * 分类：不为空
+ *   main：主色
+ *   font：字体色
+ *   line：线色
+ *   second：辅色
+ * 颜色：不为空，常用颜色英文
+ * 深浅：可为空
+ *   darker：较深
+ *   dark：深
+ *   light：浅
+ *   lighter：较浅
+ */
+/* 已使用变量，不做更改 */
+/* 主色（白）：用于背景、文字、input border等 */
+/* 主色（蓝）：用于导航栏、按钮、部分icon */
+/* 主色（灰）：用于导航栏、按钮、部分icon */
+/* 字色（灰）：用于主要文字、医生名字、标题、正文 */
+/* 字色（灰）：用于辅助次要文字， 简介等说明文字 */
+/* 字色（灰）：用于list可选提示文案 */
+/* 字色（灰）：用于标签、时间 */
+/* 线色（灰）：所有分割线颜色 */
+/* 辅色（红）：用于新消息提示、删除按钮 */
+/* 辅色（黄）：用户特殊标签 */
+.btn-reset {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+.btn-reset::before {
+  content: '';
+  border-width: 0;
+  display: none;
+}
+.btn-reset::after {
+  content: '';
+  border-width: 0;
+  display: none;
+}
+.lxy-btn-next {
+  margin: 60px 14px 0;
+}
+.page-consult {
+  background: #f5f6f6;
+  font-size: 14px;
+  color: #28354c;
+  height: 100%;
+}
+.lxy-input {
+  position: relative;
+  flex: 1;
+  width: 1%;
+  display: flex;
+}
+.lxy-input::before {
+  position: absolute;
+  z-index: 1;
+  content: '';
+  width: 15px;
+  height: 15px;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: url("~img/icons/magnifier.png") no-repeat center;
+  background-size: cover;
+}
+.lxy-input--text {
+  padding: 5px 28px 5px 36px;
+  background: #f5f6f6;
+  box-sizing: border-box;
+  height: 30px;
+  width: 100%;
+  line-height: 20px;
+  font-size: 14px;
+  color: #28354c;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+.lxy-input--clear {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  background-color: #aaa;
+  height: 12px;
+  width: 12px;
+  box-sizing: border-box;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  transform: rotate(45deg);
+  transform-origin: 50% 50%;
+}
+.lxy-suggest-item {
+  position: relative;
+  height: 46px;
+  color: #28354c;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  line-height: 46px;
+}
+.lxy-suggest-item:active {
+  background-color: #e6e6e6;
+}
+.lxy-suggest-item.has-icon::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: url("~img/icons/search-light.png") no-repeat center;
+  background-size: cover;
+}
+.lxy-suggest-item:not(:nth-last-of-type(1)) {
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  background-position: bottom left;
+  background-image: linear-gradient(360deg, #ebecf1, #ebecf1 50%, transparent 50%);
+}

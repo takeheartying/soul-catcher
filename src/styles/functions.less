@@ -1,0 +1,87 @@
+// 多行省略 ellipsis
+.fn_line_clamp(@line: 2) {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: @line;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+  }
+
+  // 单行省略
+  .fn_ellipsis() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  //0.5px 精美边框 函数
+  //T代表top， B代表bottom, R代表right, L代表left
+  //borders-h 水平（上下）边框
+  //borders-v 垂直（左右）边框
+  //borders-h-v 上下左右边框
+  //例:
+  //.borders1 {
+  //  .borders-h()
+  //}
+  .borders-h(@borderColor: @color-line-gray, @bg-color: @color-main-white) {
+    background: linear-gradient(180deg, @borderColor, @borderColor 50%, transparent 50%) top left no-repeat, linear-gradient(360deg, @borderColor, @borderColor 50%, transparent 50%) bottom left no-repeat;
+    background-size: 100% 1px, 100% 1px;
+    background-color: @bg-color;
+  }
+  .borders-v(@borderColor: @color-line-gray, @bg-color: @color-main-white) {
+    background: linear-gradient(90deg, @borderColor, @borderColor 50%, transparent 50%) bottom left no-repeat, linear-gradient(270deg, @borderColor, @borderColor 50%, transparent 50%) bottom right no-repeat;
+    background-size: 1px 100%, 1px 100%;
+    background-color: @bg-color;
+  }
+  .borders-h-v(@borderColor: @color-line-gray, @bg-color: @color-main-white) {
+    background: linear-gradient(180deg, @borderColor, @borderColor 50%, transparent 50%) top left no-repeat, linear-gradient(360deg, @borderColor, @borderColor 50%, transparent 50%) bottom left no-repeat, linear-gradient(90deg, @borderColor, @borderColor 50%, transparent 50%) bottom left no-repeat, linear-gradient(270deg, @borderColor, @borderColor 50%, transparent 50%) bottom right no-repeat;
+    background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+    background-color: @bg-color;
+  }
+
+  //0.5px边框 单条边框的情况
+  //例：
+  //.border-top {
+  //  .border(T) // T,B,L,R分别代表top,bottom,left,right
+  //}
+  .border-direction(@d, @borderColor) when (@d=B) {
+    background-size: 100% 1px;
+    background-position: bottom left;
+    background-image: linear-gradient(360deg, @borderColor, @borderColor 50%, transparent 50%);
+  }
+  .border-direction(@d, @borderColor) when (@d=T) {
+    background-size: 100% 1px;
+    background-position: top left;
+    background-image: linear-gradient(180deg, @borderColor, @borderColor 50%, transparent 50%);
+  }
+  .border-direction(@d, @borderColor) when (@d=L) {
+    background-size: 1px 100%;
+    background-position: bottom left;
+    background-image: linear-gradient(90deg, @borderColor, @borderColor 50%, transparent 50%);
+  }
+  .border-direction(@d, @borderColor) when (@d=R) {
+    background-size: 1px 100%;
+    background-position: top right;
+    background-image: linear-gradient(270deg, @borderColor, @borderColor 50%, transparent 50%);
+  }
+  .border(@d:B, @borderColor: @color-line-gray) {
+    background-repeat: no-repeat;
+    .border-direction(@d, @borderColor);
+  }
+
+  .btn-reset {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    &::before {
+      content: '';
+      border-width: 0;
+      display: none;
+    }
+    &::after {
+      content: '';
+      border-width: 0;
+      display: none;
+    }
+  }

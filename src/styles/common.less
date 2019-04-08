@@ -1,0 +1,90 @@
+// 公共样式写在这里
+@import "./variables.less";
+@import "./functions.less";
+
+.lxy-btn-next {
+  margin: 60px 14px 0;
+}
+
+.page-consult {
+  background: #f5f6f6;
+  font-size: 14px;
+  color: #28354c;
+  height: 100%;
+}
+
+// mpvue input textarea v-model 有问题 这里只将样式提取出来
+.lxy-input {
+  position: relative;
+  flex: 1;
+  width: 1%;
+  display: flex;
+  &::before {
+    position: absolute;
+    z-index: 1;
+    content: '';
+    width: 15px;
+    height: 15px;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: url("~img/icons/magnifier.png") no-repeat center;
+    background-size: cover;
+  }
+  &--text {
+    padding: 5px 28px 5px 36px;
+    background: #f5f6f6;
+    box-sizing: border-box;
+    height: 30px;
+    width: 100%;
+    line-height: 20px;
+    font-size: 14px;
+    color: #28354c;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+  }
+  &--clear {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    background-color: #aaa;
+    height: 12px;
+    width: 12px;
+    box-sizing: border-box;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: @color-main-white;
+    border-radius: 50%;
+    font-size: 12px;
+    transform: rotate(45deg);
+    transform-origin: 50% 50%;
+  }
+}
+
+.lxy-suggest-item {
+  position: relative;
+  height: 46px;
+  color: #28354c;
+  .fn_line_clamp(1);
+  line-height: 46px;
+  &:active {
+    background-color: darken(@color-main-white, 10%);
+  }
+  &.has-icon::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: url("~img/icons/search-light.png") no-repeat center;
+    background-size: cover;
+  }
+  &:not(:nth-last-of-type(1)) {
+    .border(B);
+  }
+}

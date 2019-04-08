@@ -34,4 +34,29 @@ npm build:my
 npm run build --report
 ```
 
+## 项目结构
+```
+├── build
+├── config
+    ├── index.js // 配置文件
+├── dist
+	├── pages // 项目页面文件
+├── src
+    ├── api // 接口
+    ├── components // 公共组件
+    ├── lib // 工具集
+    ├── store
+    ├── pages
+	├── main.js
+	├── App.vue
+	├── app.json
+  ├── _app.js // 原生小程序全局js文件
+  ├── _app.wxss // 原生小程序全局样式
+```
+## 技术栈
+
+* [mpvue-zanui](https://github.com/samwang1027/mpvue-zanui)
+* [mpvue](https://github.com/Meituan-Dianping/mpvue)
+* [vuex](https://vuex.vuejs.org/zh-cn/)
+
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
