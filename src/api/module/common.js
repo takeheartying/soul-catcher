@@ -6,3 +6,10 @@ export const login = (params) => {
     return res || {}
   })
 }
+
+// 获取用户信息
+export const getUserInfo = (params) => {
+  return wxRequest.post('https://route.showapi.com/970-1', params).then(res => {
+    return res || {}
+  })
+}

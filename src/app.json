@@ -1,6 +1,23 @@
 {
   "pages": [
     "pages/home/main",
+    "pages/login/main",
+    "pages/my/personal-center/main",
+    "pages/my/detail/main",
+    "pages/my/follow/main",
+    "pages/my/comment/main",
+    "pages/my/consult/main",
+    "pages/my/test/main",
+    "pages/follow/list/main",
+    "pages/follow/detail/main",
+    "pages/test/list/main",
+    "pages/test/detail/main",
+    "pages/test/home/main",
+    "pages/consult/list/main",
+    "pages/consult/detail/main",
+    "pages/consult/home/main",
+    "pages/manager/home/main",
+    "pages/contact-us/main",
     "pages/logs/main",
     "pages/counter/main"
   ],
@@ -13,41 +30,28 @@
   "tabBar": {
     "color": "#666666",
     "backgroundColor": "#fafafa",
-    "selectedColor":"#3F86FF",
+    "selectedColor":"#FFD161",
     "borderStyle": "white",
-
     "list": [{
       "text": "首页",
       "pagePath": "pages/home/main",
-      "iconPath": "static/tabs/home.png",
-      "selectedIconPath": "static/tabs/home-active.png"
+      "iconPath": "static/tabs/homepage.png",
+      "selectedIconPath": "static/tabs/homepage-active.png"
     }, {
-      "text": "订单",
-      "pagePath": "pages/logs/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "text": "我的",
+      "pagePath": "pages/my/personal-center/main",
+      "iconPath": "static/tabs/my.png",
+      "selectedIconPath": "static/tabs/my-active.png"
     }],
-
-    "items": [{
-      "name": "首页",
-      "pagePath": "pages/home/main",
-      "icon": "static/tabs/home.png",
-      "activeIcon": "static/tabs/home-active.png"
-    }, {
-      "name": "订单",
-      "pagePath": "pages/logs/main",
-      "icon": "static/tabs/orders.png",
-      "activeIcon": "static/tabs/orders-active.png"
-    }],
-    "position": "bottom",
-    "debug":true,
-    "navigateToMiniProgramAppIdList": [
-      ""
-    ],
-    "permission": {
-      "scope.userLocation": {
-        "desc": "您的位置信息将用于小程序服务的效果展示"
-      }
+    "position": "bottom"
+    },
+  "debug": true,
+  "navigateToMiniProgramAppIdList": [
+    ""
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于小程序服务的效果展示"
     }
   }
 }

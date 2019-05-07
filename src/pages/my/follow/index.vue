@@ -1,0 +1,91 @@
+<template>
+  <section class="page-my-follow-list">
+    <ul class="list-container" v-if="followList.length">
+      <li class="list-item" v-for="(follow, index) in followList" :key="index">
+        <expert-info-card :expertInfo="follow"></expert-info-card>
+      </li>
+    </ul>
+    <g-noresult v-if="!followList.length" :show="!loading"
+    :message="'还没有任何关注~'"
+    :btn="noresultBtn">
+    </g-noresult>
+  </section>
+</template>
+<script>
+import api from '@/api'
+import GNoresult from '@/components/g-noresult/index.vue'
+import GLoading from '@/components/g-loading/index.vue'
+import ExpertInfoCard from './components/expert-info-card.vue'
+
+export default {
+  data () {
+    return {
+      loading: false,
+      followList: [],
+      userType: '1', // 0 管理员 1 学生 2 专家 3 家长
+      noresultBtn: {
+        content: '去关注',
+        url: '/pages/follow/list'
+      }
+    }
+  },
+  components: {
+    GNoresult,
+    GLoading,
+    ExpertInfoCard
+  },
+  onLoad (options) {
+    this.userType = options.userType || '1'
+  },
+  methods: {
+    async getMyFollowList () {
+      await api.my.getFollowList({
+        userType: this.userType || '1'
+      }).then(res => {
+        this.followList = res || {}
+      }).catch(err => {
+        console.log(err)
+      })
+      // mock数据：
+      this.followList = [
+        {
+          id: '1111111',
+          name: '王灿灿',
+          avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+          authorAcademicTitle: '心理老师',
+          workUnit: '浙江科技学院',
+          tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+          consultNum: 13, // 咨询数量
+          fanNum: 6 // 关注者
+        },
+        {
+          id: '222222',
+          name: '何方',
+          avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
+          authorAcademicTitle: '心理老师',
+          workUnit: '浙江工业大学',
+          tagList: ['爱情脱单', '心理综合'],
+          consultNum: 10, // 咨询数量
+          fanNum: 2 // 关注者
+        }
+      ]
+    }
+  },
+  mounted () {
+    wx._this = this
+    wx.setNavigationBarTitle({
+      title: '我的关注'
+    })
+    this.getMyFollowList()
+  }
+
+}
+</script>
+
+<style lang="less">
+@import '~@/styles/functions.less';
+.page-my-follow-list {
+  height: 100%;
+  background: #fff;
+}
+</style>

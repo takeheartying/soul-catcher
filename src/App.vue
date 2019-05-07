@@ -42,21 +42,15 @@ export default {
 }
 </script>
 
-<style>
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
-  box-sizing: border-box;
-}
-/* this rule will be remove */
-* {
-  transition: width 2s;
-  -moz-transition: width 2s;
-  -webkit-transition: width 2s;
-  -o-transition: width 2s;
-}
+<style lang="less">
+@import "./styles/_app.less";
+@import "./styles/variables.less";
+@import "./styles/functions.less";
+@import "./styles/common.less";
+@import "./styles/g-loading.less";
 </style>
+<style>
+@import './styles/zanui.wxss';
+@import "./styles/iconfont.css";
+</style>
+
