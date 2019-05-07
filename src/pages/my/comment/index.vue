@@ -11,22 +11,26 @@
         <div class="page-my-comment--right-part"  @click="clickComment(comment)">
           <div class="commentator-info">
             <div class="commentator-info-left-part">
-              <p class="commentator-name"><span>{{comment.commentatorName}}</span>回复了你的评论</p>
+              <div class="commentator-name">
+                <div class="name">{{comment.commentatorNickName}}</div>
+                <div class="tip">回复了你的评论</div>
+              </div>
               <p class="commentator-answer-content">{{comment.answerContent}}</p>
             </div>
-            <image class="commentator-info-right-part" @click.stop="clickKnowledge(comment)" mode="aspectFill" :src="comment.commentatorAvatar"></image>
+            <image class="commentator-info-right-part" @click.stop="clickKnowledge(comment)" mode="aspectFill" :src="comment.commentPic"></image>
           </div>
           <div class="my-comment-info">
             我的评论：{{comment.commentContent}}
           </div>
           <div class="other-comment-info">
-            <span>{{comment.commentTime}}</span>&nbsp;.
-            <span @click.stop="clickAnswer()">回复</span>&nbsp;.
-            <span @click.stop="clickLookover()">查看</span>&nbsp;
+            <span>{{comment.commentTime}}</span>&nbsp;&nbsp;.&nbsp;&nbsp;
+            <span @click.stop="clickAnswer()">回复</span>&nbsp;&nbsp;.&nbsp;&nbsp;
+            <span @click.stop="clickLookover()">查看</span>
           </div>
         </div>
       </li>
     </ul>
+    <input class="page-my-comment--input-code" type="text" :focus="isFocus" @input="inputCodes" :value="commentVal"/>
   </div>
 </template>
 <script>
@@ -35,7 +39,9 @@ export default {
   data () {
     return {
       userType: '',
-      commentList: []
+      commentList: [],
+      isFocus: true,
+      commentVal: ''
     }
   },
   methods: {
@@ -55,9 +61,10 @@ export default {
           commentatorId: '1111111111111', // 评论者的id号
           commentatorType: '2', // 评论者的用户类型 -- 只有专家才可以被访问主页
           commentTime: '2018-12-02',
-          commentatorName: '这是评论者的名字',
+          commentatorNickName: '这是评论者的名字',
           commentatorAvatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           commentType: 'vedio',
+          commentPic: 'http://img0.imgtn.bdimg.com/it/u=2845055246,1084882918&fm=26&gp=0.jpg',
           commentId: '324232424' // 评论所在的文章或视频id
         },
         {
@@ -66,9 +73,10 @@ export default {
           commentatorId: '2222222222', // 评论者的id号
           commentatorType: '1', // 评论者的用户类型 -- 只有专家才可以被访问主页
           commentTime: '2018-12-02',
-          commentatorName: '王一慈',
+          commentatorNickName: '王一慈',
           commentatorAvatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           commentType: 'vedio',
+          commentPic: 'http://img0.imgtn.bdimg.com/it/u=2845055246,1084882918&fm=26&gp=0.jpg',
           commentId: '493594589' // 评论所在的文章或视频id
         },
         {
@@ -77,9 +85,10 @@ export default {
           commentatorId: '4444444444', // 评论者的id号
           commentatorType: '2', // 评论者的用户类型 -- 只有专家才可以被访问主页
           commentTime: '2018-12-02',
-          commentatorName: '何专家',
+          commentatorNickName: '何专家',
           commentatorAvatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           commentType: 'article',
+          commentPic: 'http://img0.imgtn.bdimg.com/it/u=2845055246,1084882918&fm=26&gp=0.jpg',
           commentId: '2349459358748' // 评论所在的文章或视频id
         },
         {
@@ -88,9 +97,10 @@ export default {
           commentatorId: '333333333333', // 评论者的id号
           commentatorType: '3', // 评论者的用户类型 -- 只有专家才可以被访问主页
           commentTime: '2018-12-02',
-          commentatorName: '王家长',
+          commentatorNickName: '王家长',
           commentatorAvatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           commentType: 'article',
+          commentPic: 'http://img0.imgtn.bdimg.com/it/u=2845055246,1084882918&fm=26&gp=0.jpg',
           commentId: '493594589' // 评论所在的文章或视频id
         },
         {
@@ -99,9 +109,10 @@ export default {
           commentatorId: '555555555', // 评论者的id号
           commentatorType: '1', // 评论者的用户类型 -- 只有专家才可以被访问主页
           commentTime: '2018-12-02',
-          commentatorName: '赵百川',
+          commentatorNickName: '赵百川',
           commentatorAvatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           commentType: 'vedio',
+          commentPic: 'http://img0.imgtn.bdimg.com/it/u=2845055246,1084882918&fm=26&gp=0.jpg',
           commentId: '334' // 评论所在的文章或视频id
         }
       ]
@@ -140,10 +151,13 @@ export default {
       wx.navigateTo({ url: `/pages/knowledge/${comment.commentType}/detail/main` })
     },
     clickAnswer () { // 回复
-
+      this.isFocus = true
     },
     clickLookover () { // 查看
 
+    },
+    inputCodes () { // 输入回复内容
+      console.log(this.commentVal)
     }
   },
   onLoad (options) {
@@ -163,33 +177,40 @@ export default {
   .page-my-comment {
     background: #fff;
     .page-my-comment--list {
-      padding: 10px;
       .page-my-comment--item {
-        height: 150px;
+        padding: 10px 10px 0 10px;
         display: flex;
         flex-direction: row;
         .page-my-comment--left-part {
-          width: 40px;
-          height: 40px;
+          width: 45px;
+          height: 45px;
           border-radius: 50%;
           margin-right: 10px;
         }
         .page-my-comment--right-part {
+          flex: 1;
           border-bottom: 1px solid #eee;
           .commentator-info {
             display: flex;
             flex-direction: row;
+            justify-content: space-between;
             .commentator-info-left-part {
+              flex: 1;
               .commentator-name {
-                span {
-                  font-weight: bold;
-                  display: inline-block;
-                  width: 200px;
+                display: flex;
+                flex-direction: row;
+                .name {
+                  font-weight: bolder;
+                  max-width: 150px;
                   .fn_ellipsis();
+                }
+                .tip {
+                  position: relative;
+                  margin-left: 3px;
                 }
               }
               .commentator-answer-content {
-                margin: 2px 0;
+                margin: 4px 0 6px 0;
               }
             }
             .commentator-info-right-part {
@@ -199,13 +220,16 @@ export default {
             }
           }
           .my-comment-info {
-            color: rgb(146, 145, 145);
-            background: rgb(224, 222, 222);
-            padding: 5px;
+            color: rgb(202, 199, 199);
+            background: rgb(243, 240, 240);
+            padding: 8px;
             border-radius: 5px;
+            margin: 3px 0 5px 0;
           }
           .other-comment-info {
-            font-sizez: 12px;
+            margin-top: 5px;
+            margin-bottom: 9px;
+            font-size: 12px;
             span {
               color: rgb(146, 145, 145);
             }
