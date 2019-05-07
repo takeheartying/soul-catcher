@@ -59,8 +59,8 @@ export default {
 </script>
 
 <style lang="less">
-@import "../../styles/variable";
-@import "../../styles/function";
+@import "~@/styles/variables.less";
+@import "~@/styles/functions.less";
 .x-action-sheet {
   &--mask {
     position: fixed;

@@ -1,14 +1,14 @@
 <template>
   <!-- 别人给我的评论： -->
   <div class="page-my-comment">
-    <ul class="page-my-comment--list" v-if="commentList && commentList.length">
+    <ul class="page-my-comment--list"  @click="clickPage()" v-if="commentList && commentList.length">
       <li class="page-my-comment--item" v-for="(comment, index) in commentList" :key="index">
         <!--
           用户是 学生、家长时： 访问评论者的主页信息 --- 只限于专家主页
           用户是 专家时:  访问评论者的主页信息 --- 不限
         -->
-        <image class="page-my-comment--left-part" @click="clickAvatar(comment)" mode="aspectFill" :src="comment.commentatorAvatar"></image>
-        <div class="page-my-comment--right-part"  @click="clickComment(comment)">
+        <image class="page-my-comment--left-part" @click.stop="clickAvatar(comment)" mode="aspectFill" :src="comment.commentatorAvatar"></image>
+        <div class="page-my-comment--right-part"  @click.stop="clickComment(comment)">
           <div class="commentator-info">
             <div class="commentator-info-left-part">
               <div class="commentator-name">
@@ -24,24 +24,42 @@
           </div>
           <div class="other-comment-info">
             <span>{{comment.commentTime}}</span>&nbsp;&nbsp;.&nbsp;&nbsp;
-            <span @click.stop="clickAnswer()">回复</span>&nbsp;&nbsp;.&nbsp;&nbsp;
-            <span @click.stop="clickLookover()">查看</span>
+            <span @click.stop="clickAnswer(comment)">回复</span>&nbsp;&nbsp;.&nbsp;&nbsp;
+            <span @click.stop="clickKnowledge(comment)">查看</span>
           </div>
         </div>
       </li>
     </ul>
-    <input class="page-my-comment--input-code" type="text" :focus="isFocus" @input="inputCodes" :value="commentVal"/>
+    <div class="page-my-comment--input-conatiner" v-if="showInput && curComment && curComment.commentTime" @click.stop="clickAnswer(curComment)">
+      <input class="page-my-comment--input-code" :placeholder="'回复' + curComment.commentatorNickName + ':'" type="text" :focus="isFocus" :value="commentVal"></input>
+      <p class="page-my-comment--submit-btn" @click="submitComment()">发送</p>
+    </div>
+    <x-action-sheet
+      :show="showSelect"
+      cancelText="取消"
+      :list="actionsList"
+      @select="selectActionSheet"
+      @cancel="cancelActionSheet" />
   </div>
 </template>
 <script>
 import api from '@/api'
+import XActionSheet from '@/components/x-action-sheet/index.vue'
 export default {
+  components: {
+    XActionSheet
+  },
   data () {
     return {
       userType: '',
       commentList: [],
       isFocus: true,
-      commentVal: ''
+      showInput: false, // 显示回复的输入框
+      commentVal: '', // 输入框的回复内容
+      curComment: {}, // 当前评论
+      selectIndex: -1,
+      showSelect: false, // 显示 ActionSheet
+      actionsList: ['回复', '查看'] // 显示的actionSheet 选择的项目列表
     }
   },
   methods: {
@@ -131,33 +149,70 @@ export default {
           commentatorType = 'expert'
           break
         }
-        case '3': {
-          commentatorType = 'parent'
-          break
-        }
         default: break
       }
-      if (this.userType !== '2' && comment.commentatorType !== '2') {
-        url = ``
-      } else {
+      if ((this.userType === '1' || this.userType === '3') && commentatorType === 'expert') { // 学生或家长 只能看专家主页
+        url = `/pages/expert/detail/main?id=${comment.commentatorId}`
+        wx.navigateTo({url})
+      } else if (this.userType === '2' && commentatorType) { // 专家 可看 学生或其他专家主页
         url = `/pages/${commentatorType}/detail/main?id=${comment.commentatorId}`
-        wx.navigateTo({ url })
+        wx.navigateTo({url})
+      } else {
+        url = ``
       }
     },
-    clickComment (comment) {
-
+    clickComment (comment) { // 唤起ActionSheet
+      if (this.showInput) { //
+        this.clickPage()
+      } else {
+        this.curComment = comment
+        this.showSelect = true
+        this.showInput = false
+      }
+    },
+    cancelActionSheet () {
+      this.showSelect = false
+      this.curComment = {}
+      this.selectIndex = -1
+    },
+    selectActionSheet (index) {
+      this.showSelect = false
+      this.selectIndex = index
+      if (index === 0) {
+        this.clickAnswer(this.curComment)
+      } else if (index === 1) {
+        this.clickKnowledge(this.curComment)
+      }
     },
     clickKnowledge (comment) {
-      wx.navigateTo({ url: `/pages/knowledge/${comment.commentType}/detail/main` })
+      if (comment) {
+        wx.navigateTo({ url: `/pages/knowledge/${comment.commentType}/detail/main?id=${comment.commentId}` })
+      }
     },
-    clickAnswer () { // 回复
+    clickAnswer (comment) { // 回复
       this.isFocus = true
+      this.curComment = comment
+      this.showInput = true
     },
-    clickLookover () { // 查看
-
+    async submitComment () { // 发送回复
+      await api.comment.submitComment({
+        comment: this.commentVal
+      }).then(res => {
+        this.commentVal = ''
+        this.curComment = {}
+        this.$toast('发送成功！')
+        this.focus = false
+        this.showInput = false
+      }).catch(err => {
+        console.log(err)
+        this.$toast('发送失败！')
+      })
     },
-    inputCodes () { // 输入回复内容
-      console.log(this.commentVal)
+    clickPage () {
+      this.commentVal = ''
+      this.focus = false
+      this.curComment = {}
+      this.showInput = false
     }
   },
   onLoad (options) {
@@ -176,6 +231,36 @@ export default {
   @import "~@/styles/functions.less";
   .page-my-comment {
     background: #fff;
+    padding-bottom: 20px;
+    .page-my-comment--input-conatiner {
+      width: 100%;
+      position: fixed;
+      background: #fff;
+      bottom: 0;
+      height: 50px;
+      padding: 5px 10px;
+      display: flex;
+      border: 1px solid #eee;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      .page-my-comment--input-code {
+        height: 40px;
+        display: block;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        flex: 1;
+        padding: 5px 10px;
+      }
+      .page-my-comment--submit-btn {
+        font-size: 16px;
+        width: 50px;
+        height: 100%;
+        display: flex;
+        margin-left: 10px;
+        align-items: center;
+      }
+    }
     .page-my-comment--list {
       .page-my-comment--item {
         padding: 10px 10px 0 10px;
