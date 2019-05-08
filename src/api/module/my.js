@@ -24,3 +24,21 @@ export const getCommentList = (params) => {
     return res || {}
   })
 }
+// 关注用户
+export const concernFans = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 取消关注
+export const cancelConcern = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 同意进入咨询室
+export const agreeConsult = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}

@@ -166,7 +166,7 @@ export default {
     },
     clickAvatar (comment) {
       // 用户是 学生、家长时： 访问评论者的主页信息 --- 只限于专家主页
-      // 用户是 专家时:  访问评论者的主页信息 --- 不限
+      // 用户是 专家时:  访问评论者的主页信息[家长无主页] --- 不限
       let url = ''
       let commentatorType = ''
       switch (comment.commentatorType) {
@@ -299,7 +299,7 @@ export default {
         width: 0;
         height: 0;
         color: transparent;
-      }      
+      }
     }
     .page-my-comment--list {
       .page-my-comment--item {

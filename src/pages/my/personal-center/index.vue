@@ -22,7 +22,7 @@
           <i class="iconfont icon-pinglun"></i>
           <p>我的评论</p>
         </navigator>
-        <navigator class="function-item"  url="/pages/logs/main" hover-class="none">
+        <navigator class="function-item"  url="/pages/my/message/main" hover-class="none">
           <i class="iconfont icon-xiaoxi1"></i>
           <p>我的消息</p>
         </navigator>
