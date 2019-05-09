@@ -24,7 +24,6 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "echarts": "^4.2.1",
     "js-md5": "^0.7.3",
     "moment": "^2.24.0",
     "mpvue": "^2.0.0",

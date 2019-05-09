@@ -14,7 +14,7 @@
 <script>
 
 import mpvueEcharts from 'mpvue-echarts'
-import echarts from 'echarts'
+import echarts from 'public/lib/echarts.min.js'
 import api from '@/api'
 import GNoresult from '@/components/g-noresult/index.vue'
 import moment from 'moment'
@@ -34,7 +34,6 @@ export default {
   },
   methods: {
     initChart (canvas, width, height) {
-      debugger
       chart = echarts.init(canvas, 'light', {
         width: width,
         height: height
@@ -44,44 +43,59 @@ export default {
     },
     setChartOption () {
       if (!this.recordInfo) return false
-      debugger
       let option = {
-        title: '心理状况记录图',
+        title: {
+          text: '心理状况记录图',
+          textStyle: {
+            fontSize: 16
+          },
+          itemGap: 4,
+          subtext: `平均分：${this.recordInfo.averageScore} 分    时间段：${this.recordInfo.interval}\n咨询师：${this.recordInfo.expertName || this.recordInfo.expertNickName}`,
+          subtextStyle: {
+            lineHeight: 20,
+            height: 40
+          }
+        },
         tooltip: {
           trigger: 'axis'
         },
         legend: { // 图例名
-          data: ['分数']
+          data: ['分数'],
+          show: false
         },
         // 工具框，可以选择
-        toolbox: {
-          feature: {
-            saveAsImage: {}
-          }
-        },
+        // toolbox: {
+        //   feature: {
+        //     saveAsImage: {}
+        //   }
+        // },
         grid: {
-          left: '3%', // 图表距边框的距离
-          right: '4%',
-          bottom: '3%',
+          top: '25%',
+          left: '2%', // 图表距边框的距离
+          right: '2%',
+          bottom: '2%',
           containLabel: true
         },
         xAxis: {
+          // name: '时间',
           type: 'category',
           boundaryGap: false,
           data: this.recordInfo.timeList,
           // 坐标轴颜色
           axisLine: {
             lineStyle: {
-              color: 'red'
+              // color: 'red'
             }
           },
           // x轴文字旋转
           axisLabel: {
-            rotate: 30,
+            rotate: (this.recordInfo.timeList.length <= 10) ? 40 : -90,
+            fontSize: 10,
             interval: 0
           }
         },
         yAxis: {
+          // name: '评分',
           type: 'value',
           axisLabel: {
             formatter: '{value} 分'
@@ -110,7 +124,7 @@ export default {
       chart.setOption(option)
     },
     async getRecordListByExpertId () {
-      // 获取两天内消息列表：
+      // 获取详情：
       await api.my.getRecordListByExpertId({
         expertId: this.expertId,
         dateBegin: this.dateBegin ? moment().subtract(this.dateBegin, 'months') : ''
@@ -122,43 +136,27 @@ export default {
       // mock数据：
       let res = {
         expertId: '3333',
-        expertName: '王刚',
-        expertNickname: '家的看法开发',
+        expertName: '家的看法',
+        expertNickName: '家的看法迪士尼开发商',
         averageScore: 9.0,
         dateBegin: '',
-        interval: '全部',
+        interval: '六个月内',
         items: [
           {
             createTime: '2019-10-19',
-            score: 3.0
+            score: 7.0
           },
           {
             createTime: '2019-10-19',
-            score: 3.0
+            score: 4.9
           },
           {
             createTime: '2019-10-19',
-            score: 3.0
+            score: 9.0
           },
           {
             createTime: '2019-10-19',
-            score: 3.0
-          },
-          {
-            createTime: '2019-10-19',
-            score: 3.0
-          },
-          {
-            createTime: '2019-10-19',
-            score: 3.0
-          },
-          {
-            createTime: '2019-10-19',
-            score: 3.0
-          },
-          {
-            createTime: '2019-10-19',
-            score: 3.0
+            score: 1.6
           },
           {
             createTime: '2019-10-19',
@@ -197,10 +195,15 @@ export default {
   .page-my-record {
     height: 100%;
     background: #fff;
+    display: flex;
+    justify-content: center;
     .page-my-record--container {
+      padding: 20px;
       width: 100%;
       height: 400px;
-      border: 1px solid pink;
+      margin: 2px;
+      border-radius: 5px;
+      border: 4px solid rgb(241, 163, 163);
     }
   }
 </style>
