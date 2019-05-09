@@ -46,7 +46,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" url="/pages/logs/main">
+        <navigator class="function-item" url="/pages/my/record/list/main">
           <div class="left-part">
             <i class="iconfont icon-xinlidangan"></i>
           </div>
@@ -55,7 +55,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" url="/pages/logs/main">
+        <navigator class="function-item" url="/pages/my/warn/main">
           <div class="left-part">
             <i class="iconfont icon-yujing"></i>
           </div>

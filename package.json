@@ -28,7 +28,6 @@
     "js-md5": "^0.7.3",
     "moment": "^2.24.0",
     "mpvue": "^2.0.0",
-    "vue-filter-bar": "^1.0.7",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

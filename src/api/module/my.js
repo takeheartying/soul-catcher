@@ -24,6 +24,18 @@ export const getCommentList = (params) => {
     return res || {}
   })
 }
+// 获取消息列表
+export const getMsgList = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 获取预警列表
+export const getWarnList = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
 // 关注用户
 export const concernFans = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
@@ -38,6 +50,12 @@ export const cancelConcern = (params) => {
 }
 // 同意进入咨询室
 export const agreeConsult = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 获取心理档案列表
+export const getRecordList = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
     return res || {}
   })

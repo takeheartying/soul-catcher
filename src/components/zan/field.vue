@@ -6,7 +6,8 @@
         class="zan-cell__hd zan-field__title">{{ title }}</div>
       <textarea
         v-if="type === 'textarea'"
-        auto-height
+        :auto-height="height === 0"
+        :style="'height:' + height + 'px'"
         :name="name || componentId || ''"
         :value="value"
         :focus="focus"
@@ -41,6 +42,10 @@
   import {extractComponentId} from '../../utils/helper'
   export default {
     props: {
+      height: { // 我的自定义
+        type: Number,
+        default: 0
+      },
       error: Boolean,
       mode: String,
       title: String,

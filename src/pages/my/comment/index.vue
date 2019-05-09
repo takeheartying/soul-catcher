@@ -60,7 +60,6 @@ export default {
   data () {
     return {
       loading: false,
-      scrollTop: 0,
       finished: false,
       pageNo: 1,
       userType: '',
