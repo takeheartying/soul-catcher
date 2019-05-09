@@ -60,3 +60,9 @@ export const getRecordList = (params) => {
     return res || {}
   })
 }
+// 根据专家id获取心理档案列表
+export const getRecordListByExpertId = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
