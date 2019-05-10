@@ -6,16 +6,16 @@
         <image class="banner-img" mode="aspectFill" src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3573628723,3736684794&fm=11&gp=0.jpg"></image>
       </div>
       <ul class="consult-classification">
-        <navigator class="consult-classification-item-navigator first" url="/pages/consult/list?type=1">
+        <navigator class="consult-classification-item-navigator first" url="/pages/consult/list/main?tagType=1">
           <li class="consult-classification-item">爱情<br/>脱单</li>
         </navigator>
-        <navigator class="consult-classification-item-navigator second" url="/pages/consult/list?type=2">
+        <navigator class="consult-classification-item-navigator second" url="/pages/consult/list/main?tagType=2">
           <li class="consult-classification-item">智商<br/>情商</li>
         </navigator>
-        <navigator class="consult-classification-item-navigator third" url="/pages/consult/list?type=3">
+        <navigator class="consult-classification-item-navigator third" url="/pages/consult/list/main?tagType=3">
           <li class="consult-classification-item">趣味<br/>性格</li>
         </navigator>
-        <navigator class="consult-classification-item-navigator forth" url="/pages/consult/list?type=4">
+        <navigator class="consult-classification-item-navigator forth" url="/pages/consult/list/main?tagType=4">
           <li class="consult-classification-item">心理<br/>综合</li>
         </navigator>
       </ul>
@@ -23,7 +23,7 @@
       <div class="recommend-list" v-if="recConsultList && recConsultList.length">
         <div class="list-container-top-title">
           <p class="list-container-title">人气专家</p>
-          <navigator url="/pages/follow/list/mian"><span class="list-container-show-more">查看更多></span></navigator>
+          <navigator url="/pages/consult/list/main"><span class="list-container-show-more">查看更多></span></navigator>
         </div>
         <ul class="list-container-items">
           <consult-info-card  v-for="(consult, index) in recConsultList" :key="index" :consultInfo="consult"></consult-info-card>
@@ -33,7 +33,7 @@
       <div class="recommend-list" v-if="focusConsultList && focusConsultList.length">
         <div class="list-container-top-title">
           <p class="list-container-title">关注专家</p>
-          <navigator url="/pages/follow/list/mian"><span class="list-container-show-more">查看更多></span></navigator>
+          <navigator url="/pages/consult/list/main"><span class="list-container-show-more">查看更多></span></navigator>
         </div>
         <ul class="list-container-items">
           <consult-info-card  v-for="(consult, index) in focusConsultList" :key="index" :consultInfo="consult"></consult-info-card>
@@ -59,7 +59,9 @@ export default {
     async getConsultList () {
       // 获取人气专家列表：
       await api.consult.getConsultList({
-        limit: 5
+        pageSize: 5,
+        pageNo: 1,
+        searchType: 'consultDesc' // 咨询降序
       }).then(res => {
         this.recConsultList = res || {}
       }).catch(err => {
@@ -67,7 +69,9 @@ export default {
       })
       // 获取关注专家列表
       await api.consult.getConsultList({
-        limit: 5
+        pageSize: 5,
+        pageNo: 1,
+        searchType: 'follow'
       }).then(res => {
         this.focusConsultList = res || {}
       }).catch(err => {
@@ -81,7 +85,7 @@ export default {
           avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
           tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-          consultScore: '9.0',
+          AverageScore: '9.0',
           consultorNum: 20
         },
         {
@@ -90,7 +94,7 @@ export default {
           avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
           tagList: ['爱情脱单', '心理综合'],
-          consultScore: '3.5',
+          AverageScore: '3.5',
           consultorNum: 9000
         },
         {
@@ -99,7 +103,7 @@ export default {
           avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
           tagList: ['爱情脱单', '心理综合'],
-          consultScore: '3.5',
+          AverageScore: '3.5',
           consultorNum: 9
         }
       ]

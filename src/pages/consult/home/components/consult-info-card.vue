@@ -1,12 +1,12 @@
 <template>
-  <navigator class="consult-home-info-card-navigator" v-if="consultInfo && consultInfo.name"  :url="'/pages/follow/detail/main?id=' + consultInfo.id">
+  <navigator class="consult-home-info-card-navigator" v-if="consultInfo && consultInfo.name"  :url="'/pages/expert/detail/main?id=' + consultInfo.id">
     <div class="consult-home-info-card" >
       <image class="consult-home-info-card--image" :src="consultInfo.avatar" mode="aspectFill"></image>
       <p class="consult-home-info-card--name">{{consultInfo.name}}</p>
       <div class="consult-home-info-card--number">
         咨询人数&nbsp;<span class="consult-home-info-card--consultor-num">{{consultInfo.consultorNum}}人</span>
         /&nbsp;
-        <span class="consult-home-info-card--score">{{consultInfo.consultScore}}分</span>
+        <span class="consult-home-info-card--score">{{consultInfo.AverageScore}}分</span>
       </div>
       <p class="consult-home-info-card--goodat">
         擅长: &nbsp;{{goodAt}}
