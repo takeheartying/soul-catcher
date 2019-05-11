@@ -1,6 +1,6 @@
 <template>
   <div class="knowledge-article-card" v-if="knowledge"  @click="gotoDetail(knowledge.id)">
-    <image :src="knowledge.url" class="left-img"  mode="aspectFill"/>
+    <image :src="knowledge.picUrl" class="left-img"  mode="aspectFill"/>
     <div class="middle-content">
       <p class="title">{{knowledge.title}}</p>
       <p class="desc">{{knowledge.desc}}</p>
@@ -20,7 +20,7 @@ export default {
     gotoDetail (id) {
       if (id) {
         wx.navigateTo({
-          url: `/pages/knowledge/arcicle/detail?id=${id}`
+          url: `/pages/knowledge/article/detail?id=${id}`
         })
       }
     }

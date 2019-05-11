@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import api from '@/api'
 import knowledgeArticleCard from './components/knowledge-article-card'
 import knowledgeVedioCard from './components/knowledge-vedio-card'
 import tabBar from '@/components/tab-bar'
@@ -98,21 +99,21 @@ export default {
       ],
       recommendList: [
         {
-          url: 'http://img1.imgtn.bdimg.com/it/u=225858054,3626351077&fm=26&gp=0.jpg',
+          picUrl: 'http://img1.imgtn.bdimg.com/it/u=225858054,3626351077&fm=26&gp=0.jpg',
           title: '恋爱指南',
           desc: '你的恋爱秘籍是？',
           type: '爱情脱单',
           id: '111'
         },
         {
-          url: 'http://img3.imgtn.bdimg.com/it/u=3284983667,2856592112&fm=26&gp=0.jpg',
+          picUrl: 'http://img3.imgtn.bdimg.com/it/u=3284983667,2856592112&fm=26&gp=0.jpg',
           title: '你的人生闪光点是什么？',
           desc: '你最吸引人的闪光点是什么？',
           type: '趣味性格',
           id: '222'
         },
         {
-          url: 'http://img2.imgtn.bdimg.com/it/u=1817295772,2078737438&fm=26&gp=0.jpg',
+          picUrl: 'http://img2.imgtn.bdimg.com/it/u=1817295772,2078737438&fm=26&gp=0.jpg',
           title: '灵魂气味鉴定单',
           desc: '你的灵魂是什么味道的？',
           type: '心理综合',
@@ -121,35 +122,35 @@ export default {
       ],
       hotArticleList: [
         {
-          url: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
+          picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
           title: '从积极心理学到幸福感',
           desc: '心境由心而设，态度可以决定我们的生活',
           type: '心理综合',
           id: '111'
         },
         {
-          url: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
+          picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
           title: '心理健康素养十条',
           desc: '今年的主题是“健康心理，快乐人生',
           type: '心理综合',
           id: '111'
         },
         {
-          url: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
+          picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
           title: '性格与情感',
           desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
           type: '趣味性格',
           id: '111'
         },
         {
-          url: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
+          picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
           title: '原来是爱情',
           desc: '感情不是兔子，守株是没用的',
           type: '爱情脱单',
           id: '111'
         },
         {
-          url: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
+          picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
           title: '决定你上限的，不是智商，而是自律',
           desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
           type: '智商情商',
@@ -221,6 +222,47 @@ export default {
     tabBar
   },
   methods: {
+    async getInitList () {
+      // banner列表：
+      let promise1 = api.common.getBannerList().then(res => {
+        this.bannerList = res || []
+      }).catch(err => {
+        console.log(err)
+      })
+      // 推荐【最新】文章
+      let promise2 = api.knowledgeBase.getKnowledgeList({
+        type: 'article',
+        searchType: 'newDesc',
+        limit: 3
+      }).then(res => {
+        this.recommendList = res || []
+      }).catch(err => {
+        console.log(err)
+      })
+      // 最热文章
+      let promise3 = api.knowledgeBase.getKnowledgeList({
+        type: 'article',
+        searchType: 'hotDesc',
+        limit: 5
+      }).then(res => {
+        this.hotArticleList = res || []
+      }).catch(err => {
+        console.log(err)
+      })
+      // 最热视频：
+      let promise4 = api.knowledgeBase.getKnowledgeList({
+        type: 'vedio',
+        searchType: 'hotDesc',
+        limit: 5
+      }).then(res => {
+        this.hotVedioList = res || []
+      }).catch(err => {
+        console.log(err)
+      })
+      let promises = [promise1, promise2, promise3, promise4]
+      await Promise.all(promises)
+      // mock数据：在上边
+    },
     showMore (type) {
       wx.navigateTo({
         url: '/pages/knowledge/list/main?type=' + type
@@ -232,6 +274,7 @@ export default {
     if (this.userType && this.userType !== '0') { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
       wx.hideTabBar() // 显示自定义tabTab
     }
+    this.getInitList()
   }
 }
 </script>

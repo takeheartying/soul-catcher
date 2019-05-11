@@ -21,7 +21,7 @@ export default {
   methods: {
     confirmClick (userType) { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
       let that = this
-      wx.wx.showToast({
+      wx.showToast({
         title: '确认该角色？',
         icon: 'none',
         image: '',

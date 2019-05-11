@@ -37,13 +37,7 @@ export const getWarnList = (params) => {
   })
 }
 // 关注用户
-export const concernFans = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
-    return res || {}
-  })
-}
-// 取消关注
-export const cancelConcern = (params) => {
+export const concernUser = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
     return res || {}
   })
@@ -62,6 +56,30 @@ export const getRecordList = (params) => {
 }
 // 根据专家id获取心理档案列表
 export const getRecordListByExpertId = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 新增聊天记录：
+export const submitChat = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 取消单次咨询
+export const cancelConsult = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 获取单次咨询详情
+export const getConsultDetailById = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 邀请用户【学生或家长】加入咨询
+export const addConsultUser = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
     return res || {}
   })

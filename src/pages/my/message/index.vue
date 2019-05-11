@@ -195,8 +195,9 @@ export default {
       }
     },
     async concernFans (message, index) { // 回粉、关注粉丝
-      await api.my.concernFans({
-        fansId: message.fansId
+      await api.my.concernUser({
+        concernedId: message.fansId, // 被关注者id
+        hasConcern: true
       }).then((res) => {
         if (res) {
           this.messageList[index].hasConcern = true
@@ -222,8 +223,9 @@ export default {
             // 点击取消,默认隐藏弹框
           } else {
             // 点击确定
-            await api.my.cancelConcern({
-              fansId: message.fansId
+            await api.my.concernUser({
+              concernedId: message.fansId, // 被关注者id
+              hasConcern: false
             }).then((res) => {
               if (res) {
                 that.messageList[index].hasConcern = false
