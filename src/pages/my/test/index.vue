@@ -35,12 +35,12 @@ export default {
     TestInfoCard
   },
   onLoad (options) {
-    this.userType = options.userType || '1'
+    this.userType = this.$app.globalData.userType || ''
   },
   methods: {
     async getMyTestList () {
       await api.my.getTestList({
-        userType: this.userType || '1'
+        userType: this.userType
       }).then(res => {
         this.testList = res || {}
       }).catch(err => {

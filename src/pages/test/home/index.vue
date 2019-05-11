@@ -2,7 +2,7 @@
   <section class="page-test-home">
     <div class="test-container">
       <ul class="test-classification">
-        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?type=1">
+        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?tagType=1">
           <li class="test-classification-item">
             <image class="left-part" mode="aspetFill" src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4131402201,1846744217&fm=11&gp=0.jpg"></image>
             <p class="middle-part">爱情脱单测试</p>
@@ -11,7 +11,7 @@
             </div>
           </li>
         </navigator>
-        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?type=2">
+        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?tagType=2">
           <li class="test-classification-item">
             <image class="left-part" mode="aspetFill" src="https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2058245127,2767535828&fm=26&gp=0.jpg"></image>
             <p class="middle-part">智商情商测试</p>
@@ -20,7 +20,7 @@
             </div>
           </li>
         </navigator>
-        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?type=3">
+        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?tagType=3">
           <li class="test-classification-item">
             <image class="left-part" mode="aspetFill" src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3203841623,3937599443&fm=11&gp=0.jpg"></image>
             <p class="middle-part">趣味性格测试</p>
@@ -29,7 +29,7 @@
             </div>
           </li>
         </navigator>
-        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?type=4">
+        <navigator class="test-classification-item-navigator"  url="/pages/test/list/main?tagType=4">
           <li class="test-classification-item">
             <image class="left-part" mode="aspetFill" src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1753670289,1375509139&fm=11&gp=0.jpg"></image>
             <p class="middle-part">心理综合测试</p>
@@ -43,7 +43,7 @@
       <ul class="recommend-list" v-if="testList.length">
         <div class="list-container-top-title">
           <p class="list-container-title">推荐测试</p>
-          <navigator url="/pages/test/list/mian"><span class="list-container-show-more">查看更多></span></navigator>
+          <navigator url="/pages/test/list/main"><span class="list-container-show-more">查看更多></span></navigator>
         </div>
         <li class="list-item" v-for="(test, index) in testList" :key="index">
           <test-info-card :testInfo="test"></test-info-card>

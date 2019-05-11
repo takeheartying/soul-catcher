@@ -153,9 +153,10 @@ export default {
           }
         ]
       }
-      this.loading = false
       this.commentList = this.commentList.concat(res.items)
       this.finished = (res.pageCount && this.pageNo >= res.pageCount)
+
+      this.loading = false
     },
     bindDownLoad () { // 上拉加载
       if (!this.finished) {

@@ -100,9 +100,11 @@ export default {
         wx.makePhoneCall({
           phoneNumber: phone,
           success: (result) => {
-            console.log('拨打成功')
+            console.log('拨打电话成功！')
           },
-          fail: () => {},
+          fail: () => {
+            console.log('拨打电话失败！')
+          },
           complete: () => {}
         })
       }

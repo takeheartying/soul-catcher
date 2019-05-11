@@ -1,61 +1,159 @@
 <template>
-  <div>
-      <swiper v-if="imgUrls.length > 0" indidator-dots="imgUrls.length > 1" >
-      <block v-for="(item, index) in imgUrls" :key="index" >
-        <swiper-item>
-          <image :src="item" mode="scaleToFill"></image>
-        </swiper-item>
-      </block>
-    </swiper>
-
-    <ul class="container log-list">
-      <li v-for="(log, index) in logs" :class="{ red: aa }" :key="index" class="log-item">
-        <card :text="(index + 1) + ' . ' + log"></card>
-      </li>
-    </ul>
-  </div>
+  <section class="page-test-list">
+    <!-- 测试列表页： -->
+    <scroll-view  class="page-my-comment--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
+      <ul class="list-container" v-if="testList.length">
+        <li class="list-item" v-for="(test, index) in testList" :key="index">
+          <test-info-card :testInfo="test"></test-info-card>
+        </li>
+      </ul>
+      <g-loading :loading="loading"></g-loading>
+      <g-noresult v-if="!testList.length" :show="!loading"
+      :message="'还没有任何测试~'">
+      </g-noresult>
+    </scroll-view>
+  </section>
 </template>
-
 <script>
-import { formatTime } from '@/utils/index'
-import card from '@/components/card'
+import api from '@/api'
+import GNoresult from '@/components/g-noresult/index.vue'
+import GLoading from '@/components/g-loading/index.vue'
+import TestInfoCard from '../components/test-info-card.vue'
 
 export default {
-  components: {
-    card
-  },
-
   data () {
     return {
-      logs: [],
-      imgUrls: [
-        'http://mss.sankuai.com/v1/mss_51a7233366a4427fa6132a6ce72dbe54/newsPicture/05558951-de60-49fb-b674-dd906c8897a6',
-        'http://mss.sankuai.com/v1/mss_51a7233366a4427fa6132a6ce72dbe54/coursePicture/0fbcfdf7-0040-4692-8f84-78bb21f3395d',
-        'http://mss.sankuai.com/v1/mss_51a7233366a4427fa6132a6ce72dbe54/management-school-picture/7683b32e-4e44-4b2f-9c03-c21f34320870'
-      ]
+      tagTypeDesc: '', // 测试类型
+      loading: false,
+      finished: false,
+      pageNo: 1,
+      testList: [],
+      userType: '1' // 0 管理员 1 学生 2 专家 3 家长
     }
   },
-
-  created () {
-    let logs
-    if (mpvuePlatform === 'my') {
-      logs = mpvue.getStorageSync({key: 'logs'}).data || []
-    } else {
-      logs = mpvue.getStorageSync('logs') || []
+  components: {
+    GNoresult,
+    GLoading,
+    TestInfoCard
+  },
+  onLoad (options) {
+    this.userType = this.$app.globalData.userType || ''
+    switch (options.tagType) {
+      case '1':
+        this.tagTypeDesc = '爱情脱单'
+        break
+      case '2':
+        this.tagTypeDesc = '智商情商'
+        break
+      case '3':
+        this.tagTypeDesc = '趣味性格'
+        break
+      case '4':
+        this.tagTypeDesc = '心理综合'
+        break
+      default:
+        this.tagTypeDesc = ''
+        break
     }
-    this.logs = logs.map(log => formatTime(new Date(log)))
+  },
+  methods: {
+    async getTestList () {
+      // 获取测试列表：
+      this.loading = true
+      this.finished = false
+      await api.test.getTestList({
+        pageSize: 5,
+        pageNo: this.pageNo
+      }).then(res => {
+        this.testList = res || {}
+      }).catch(err => {
+        console.log(err)
+      })
+      // mock数据：
+      let res = {
+        pageSize: 5,
+        pageNo: 1,
+        pageCount: 3,
+        items: [
+          {
+            picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
+            title: '从积极心理学到幸福感',
+            desc: '心境由心而设，态度可以决定我们的生活',
+            type: '心理综合',
+            testNum: 111,
+            id: '111'
+          },
+          {
+            picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
+            title: '心理健康素养十条',
+            desc: '今年的主题是“健康心理，快乐人生',
+            type: '心理综合',
+            testNum: 3,
+            id: '111'
+          },
+          {
+            picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
+            title: '性格与情感',
+            desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
+            type: '趣味性格',
+            testNum: 904,
+            id: '39'
+          },
+          {
+            picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
+            title: '原来是爱情',
+            desc: '感情不是兔子，守株是没用的',
+            type: '爱情脱单',
+            testNum: 3004,
+            id: '111'
+          },
+          {
+            picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
+            title: '决定你上限的，不是智商，而是自律',
+            desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
+            type: '智商情商',
+            testNum: 21,
+            id: '111'
+          }
+        ]
+      }
+      this.testList = this.testList.concat(res.items)
+      this.finished = (res.pageCount && this.pageNo >= res.pageCount)
+
+      this.loading = false
+    },
+    bindDownLoad () { // 上拉加载
+      if (!this.finished) {
+        this.pageNo++
+        this.getTestList()
+      }
+    }
+  },
+  mounted () {
+    wx.setNavigationBarTitle({
+      title: this.tagTypeDesc + '测试列表'
+    })
+    this.getTestList()
   }
+
 }
 </script>
 
-<style>
-.log-list {
-  display: flex;
-  flex-direction: column;
-  padding: 40rpx;
-}
-
-.log-item {
-  margin: 10rpx;
+<style lang="less">
+@import '~@/styles/functions.less';
+.page-test-list {
+    height:100%;
+    background: #fff;
+    padding-bottom: 20px;
+    display: flex;
+    .page-my-comment--scroll-view {
+      flex: 1;
+      /*隐藏滚动条*/
+      ::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        color: transparent;
+      }
+    }
 }
 </style>
