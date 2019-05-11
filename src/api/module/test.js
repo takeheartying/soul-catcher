@@ -12,3 +12,9 @@ export const getTestDetailInfoById = (params) => {
     return res || {}
   })
 }
+// 提交测试
+export const submitTest = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}

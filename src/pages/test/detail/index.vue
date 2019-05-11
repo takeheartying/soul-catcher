@@ -2,7 +2,7 @@
   <div class="page-test-detail">
     <!-- 心理测试详情页： -->
     <!-- 1.开始测试导引： -->
-    <div class="page-test-detail--description" v-if="!hasStartTest && testInfo.id">
+    <div class="page-test-detail--description" v-if="!hasStartTest && testInfo.id && !showResult">
       <div class="test-title">{{testInfo.title}}</div>
       <div class="test-num">{{testInfo.testNum}}人测过</div>
       <image class="test-pic" mode="aspectFill" :src="testInfo.picUrl"></image>
@@ -24,7 +24,7 @@
       <button class="test-btn" @click="startTest()">开始测试</button>
     </div>
     <!-- 2.具体测试题目： -->
-    <div class="page-test-detail--examination" v-if="hasStartTest && testInfo.examList && testInfo.examList.length">
+    <div class="page-test-detail--examination" v-if="hasStartTest && !showResult && testInfo.examList && testInfo.examList.length">
       <div class="page-test-detail--examination-container">
         <div class="page-test-detail--examination-item-wrap" v-for="(question, index) in testInfo.examList" :key="index">
           <li class="page-test-detail--examination-item" v-if="index === curIndex">
@@ -35,7 +35,10 @@
                 <p class="content">{{option.content}}</p>
               </radio-group>
             </div>
-            <button class="page-test-detail--examination-item-btn" v-if="curIndex > 0 && curIndex < testInfo.examList.length" @click="clickLastQuestion()">上一题</button>
+            <div class="page-test-detail--examination-item-btns">
+              <button class="page-test-detail--examination-item-btn" v-if="curIndex > 0 && curIndex < testInfo.examList.length" @click="clickLastQuestion()">上一题</button>
+              <button class="page-test-detail--examination-item-btn" v-if="(curIndex + 1) === testInfo.examList.length" @click="submitExam()">提交</button>
+            </div>
           </li>
         </div>
       </div>
@@ -43,16 +46,26 @@
         {{curIndex + 1}}/{{testInfo.examList.length}}
       </div>
     </div>
+    <!-- 3.展示结果： -->
+    <div class="page-test-detail--result" v-if="showResult">
+      <image class="page-test-detail--result-avatar" mode="aspectFill" :src="resultInfo.avatar"></image>
+      <div class="page-test-detail--result-score">
+        <p class="title">你的心理状况</p>
+        <p class="score">{{resultInfo.score}}分</p>
+      </div>
+      <div class="page-test-detail--result-tip" v-if="resultInfo.score < 4">当前心理状况不佳，建议向相关专家咨询哦~</div>
+      <div class="page-test-detail--result-tip" v-if="resultInfo.score >= 4 && resultInfo.score < 8">当前心理状况良好，按需咨询哦~</div>
+      <div class="page-test-detail--result-tip" v-if="resultInfo.score >= 8">当前心理状况不错，继续保持哦~</div>
+    </div>
   </div>
 </template>
 <script>
 import api from '@/api'
 export default {
-  components: {
-  },
-
   data () {
     return {
+      resultInfo: {},
+      showResult: false,
       hasStartTest: false,
       testId: '',
       curIndex: 0, // 当前测试题index
@@ -153,13 +166,53 @@ export default {
       this.hasStartTest = true
     },
     clickRadio (question, questionIndex, option, optionIndex) { // 选择radio，进入下一题
+      // 除了更改当前选择，其他全部置否：
+      this.testInfo.examList[this.curIndex].options.forEach((option, index) => {
+        if (index === optionIndex) {
+          option.isChecked = true
+        } else {
+          option.isChecked = false
+        }
+      })
       if (this.curIndex + 1 < this.testInfo.examList.length) {
         this.curIndex++
       }
-      this.testInfo.examList[questionIndex].options[optionIndex].isChecked = !this.testInfo.examList[questionIndex].options[optionIndex].isChecked
+      // 下一题也已经全部置空
     },
     clickLastQuestion () { // 点击上一题
+      // 这一题的选择清空：
+      this.testInfo.examList[this.curIndex].options.forEach(option => {
+        option.isChecked = false
+      })
+      // 上一题的选择清空：
       this.curIndex--
+      this.testInfo.examList[this.curIndex].options.forEach(option => {
+        option.isChecked = false
+      })
+    },
+    async submitExam () {
+      await api.test.submitTest({
+        id: this.testInfo.id,
+        examList: this.testInfo.examList
+      }).then(res => {
+        if (res) {
+          this.$toast('提交成功！')
+          // 展示结果：
+          this.showResult = true
+          this.resultInfo = res
+        } else {
+          this.$toast('提交失败！')
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$toast('提交失败！')
+      })
+      // mock数据：
+      this.showResult = true
+      this.resultInfo = {
+        score: 9.0,
+        avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg'
+      }
     }
   },
   onLoad (options) {
@@ -188,7 +241,7 @@ export default {
     height: 100%;
     .page-test-detail--description {
       border-radius: 8px;
-      box-shadow: 0 0 10px rgb(73, 73, 73);
+      box-shadow: 0 0 10px #63B8FF;
       margin: 10px;
       padding: 10px;
       height: 100%;
@@ -241,7 +294,7 @@ export default {
         background: #fff;
         height: 100%;
         border-radius: 8px;
-        box-shadow: 0 0 10px rgb(73, 73, 73);
+        box-shadow: 0 0 10px #63B8FF;
         margin: 20px;
         padding: 10px;
         .page-test-detail--examination-item-wrap {
@@ -276,17 +329,23 @@ export default {
                 }
               }
             }
-            .page-test-detail--examination-item-btn {
-              height: 40px;
-              width: 90px;
-              padding: 5px 10px;
-              font-size: 16px;
+            .page-test-detail--examination-item-btns {
               display: flex;
-              align-items: center;
-              justify-content: center;
-              background: #63B8FF;
-              border: 1px solid rgb(64, 112, 243);
+              flex-direction: row;
+              justify-content: space-around;
+              align-content: center;
               margin-top: 10px;
+              .page-test-detail--examination-item-btn {
+                height: 40px;
+                width: 90px;
+                padding: 5px 10px;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #63B8FF;
+                border: 1px solid rgb(64, 112, 243);
+              }
             }
           }
         }
@@ -296,6 +355,42 @@ export default {
         width: 100%;
         font-size: 16px;
         font-weight: bolder;
+      }
+    }
+    .page-test-detail--result {
+      height: 100%;
+      text-align: center;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #63B8FF;
+      margin: 20px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      .page-test-detail--result-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+      }
+      .page-test-detail--result-score {
+        .title {
+          margin-bottom: 10px;
+          font-weight: bold;
+          font-size: 16px;
+          color: #63B8FF;
+        }
+        .score {
+          color: rgb(71, 167, 245);
+          font-size: 24px;
+          font-weight: bold;
+        }
+      }
+      .page-test-detail--result-tip {
+        color: #63B8FF;
+        margin-top: 10px;
       }
     }
   }
