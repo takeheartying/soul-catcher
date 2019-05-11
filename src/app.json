@@ -16,6 +16,7 @@
     "pages/follow/detail/main",
     "pages/test/list/main",
     "pages/test/detail/main",
+    "pages/test/result/main",
     "pages/test/home/main",
     "pages/consult/list/main",
     "pages/consult/detail/main",

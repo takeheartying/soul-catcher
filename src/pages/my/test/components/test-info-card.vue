@@ -1,5 +1,5 @@
 <template>
-  <navigator class="test-info-card" v-if="testInfo" :url="'/pages/test/detail/main?id=' + testInfo.id" >
+  <navigator class="test-info-card" v-if="testInfo" :url="'/pages/test/result/main?id=' + testInfo.id" >
     <div class="middle-content">
       <p class="title">{{testInfo.title}}</p>
       <p class="desc">{{testInfo.desc}}</p>
