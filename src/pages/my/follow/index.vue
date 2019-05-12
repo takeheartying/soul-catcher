@@ -2,7 +2,7 @@
   <section class="page-my-follow-list">
     <ul class="list-container" v-if="followList.length">
       <li class="list-item" v-for="(follow, index) in followList" :key="index">
-        <expert-info-card :expertInfo="follow"></expert-info-card>
+        <follow-info-card :followInfo="follow"></follow-info-card>
       </li>
     </ul>
     <g-noresult v-if="!followList.length" :show="!loading"
@@ -15,7 +15,7 @@
 import api from '@/api'
 import GNoresult from '@/components/g-noresult/index.vue'
 import GLoading from '@/components/g-loading/index.vue'
-import ExpertInfoCard from './components/expert-info-card.vue'
+import FollowInfoCard from './components/follow-info-card.vue'
 
 export default {
   data () {
@@ -32,15 +32,15 @@ export default {
   components: {
     GNoresult,
     GLoading,
-    ExpertInfoCard
+    FollowInfoCard
   },
   onLoad (options) {
-    this.userType = options.userType || '1'
+    this.userType = this.$app.globalData.userType || ''
   },
   methods: {
     async getMyFollowList () {
       await api.my.getFollowList({
-        userType: this.userType || '1'
+        userType: this.userType
       }).then(res => {
         this.followList = res || {}
       }).catch(err => {
@@ -50,10 +50,11 @@ export default {
       this.followList = [
         {
           id: '1111111',
+          userType: '1',
           name: '王灿灿',
           avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
-          workUnit: '浙江科技学院',
+          organization: '浙江科技学院',
           tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
           consultNum: 13, // 咨询数量
           fanNum: 6 // 关注者
@@ -61,9 +62,10 @@ export default {
         {
           id: '222222',
           name: '何方',
+          userType: '2',
           avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
-          workUnit: '浙江工业大学',
+          organization: '浙江工业大学',
           tagList: ['爱情脱单', '心理综合'],
           consultNum: 10, // 咨询数量
           fanNum: 2 // 关注者
@@ -72,7 +74,6 @@ export default {
     }
   },
   mounted () {
-    wx._this = this
     wx.setNavigationBarTitle({
       title: '我的关注'
     })

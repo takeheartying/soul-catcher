@@ -23,13 +23,14 @@ export default {
   },
   data () {
     return {
-      defaultPic: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1320258899,2257109664&fm=26&gp=0.jpg',
+      defaultPic: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1320258899,2257109664&fm=26&gp=0.jpg'
     }
   }
 }
 </script>
 
 <style lang="less">
+  @import "~@/styles/functions.less";
   .warn-item-card {
     .warn-item-card--item {
       background: #fff;

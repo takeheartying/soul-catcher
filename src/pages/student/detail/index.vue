@@ -18,7 +18,7 @@
         <ul class="warn-list">
           <li class="warn-list-item"
             v-for="(article, index) in studentInfo.warnList" :key="index" >
-            <!-- <warn-article-card :warn="article"></warn-article-card> -->
+            <warn-item-card :warn="article"></warn-item-card>
           </li>
         </ul>
       </div>
@@ -41,11 +41,12 @@
 </template>
 <script>
 // import warnArticleCard from '../../warn/components/warn-article-card.vue'
+import warnItemCard from './component/warn-item-card.vue'
 import GNoresult from '@/components/g-noresult/index.vue'
 import api from '@/api'
 export default {
   components: {
-    // warnArticleCard,
+    warnItemCard,
     GNoresult
   },
   data () {

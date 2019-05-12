@@ -12,8 +12,6 @@
     "pages/my/warn/main",
     "pages/my/record/list/main",
     "pages/my/record/detail/main",
-    "pages/follow/list/main",
-    "pages/follow/detail/main",
     "pages/test/list/main",
     "pages/test/detail/main",
     "pages/test/result/main",

@@ -30,7 +30,7 @@
             </li>
             <span class="expert-info-bottom-statistic-item-split"></span>
             <li class="expert-info-bottom-statistic-item">
-              <div class="item-num">{{expertInfo.fansNum}}</div>
+              <div class="item-num">{{expertInfo.fanNum}}</div>
               <div class="item-unit">人关注</div>
             </li>
           </ul>
@@ -191,7 +191,7 @@ export default {
         hasConcern: true, // 是否关注了
         phone: '15868157426',
         consultorNum: 39, // 咨询者
-        fansNum: 20, // 粉丝数量
+        fanNum: 20, // 粉丝数量
         knowledgeNum: 20, // 知识库数目
         knowledgeList: [
           {
