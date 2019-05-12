@@ -62,10 +62,10 @@ export default {
         this.tabBars = [knowledgeTab, testTab, consultTab, personalCenterTab]
       }
       if (this.userType === '2') { // 专家
-        this.tabBars = [knowledgeTab, testTab, consultTab, personalCenterTab]
+        this.tabBars = [knowledgeTab, consultTab, personalCenterTab]
       }
       if (this.userType === '3') { // 家长
-        this.tabBars = [knowledgeTab, testTab, consultTab, personalCenterTab]
+        this.tabBars = [knowledgeTab, consultTab, personalCenterTab]
       }
     }
   }

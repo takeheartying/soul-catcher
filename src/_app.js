@@ -8,7 +8,7 @@ let code
 
 let appConfig = {
   globalData: {
-    userType: '2', // 0 管理员 1 学生 2 专家 3 家长 [默认为'']
+    userType: '3', // 0 管理员 1 学生 2 专家 3 家长 [默认为'']
     userInfo: null,
     loginState: 'noLogin', // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功
     loginInfo: {

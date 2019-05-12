@@ -9,8 +9,8 @@
         <button class="page-consult-detail--btn" v-if="userType === '2'"  @click="editScore()">学生状况评分</button>
 
         <button class="page-consult-detail--btn" v-if="consultInfo.consultStatus !== 3"  @click="closeConsult()">关闭咨询室</button>
-        <button class="page-consult-detail--btn" v-if="consultInfo.userList && consultInfo.userList.parent && !consultInfo.userList.parent.isInvited" @click="inviteUser('parent')">邀请家长</button>
-        <button class="page-consult-detail--btn" v-if="consultInfo.userList && consultInfo.userList.student && !consultInfo.userList.student.isInvited"  @click="inviteUser('student')">邀请学生</button>
+        <button class="page-consult-detail--btn" v-if="userType !== '3' && consultInfo.userList && consultInfo.userList.parent && !consultInfo.userList.parent.isInvited" @click="inviteUser('parent')">邀请家长</button>
+        <button class="page-consult-detail--btn" v-if="userType !== '1' && consultInfo.userList && consultInfo.userList.student && !consultInfo.userList.student.isInvited"  @click="inviteUser('student')">邀请学生</button>
       </div>
     </div>
     <scroll-view  class="page-consult-detail--scroll-view" :scroll-into-view="scrollToView" @scrolltoupper="bindLoadData()"  scroll-y v-if="consultInfo.id" :upper-threshold="50">

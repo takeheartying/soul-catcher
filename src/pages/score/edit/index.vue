@@ -3,8 +3,8 @@
     <!-- 专家评分预警编辑页 + 学生咨询评分编辑页 -->
     <form @submit="formSubmit" class="page-score-edit--form">
       <div class="zan-panel">
-        <zan-field v-bind="Object.assign({}, handleFunctions, base.score)" :focus="true" :value="scoreInfo.score + '分'"/>
-        <zan-field v-if="userType === '2'" type="textarea" :height="150" v-bind="Object.assign({}, handleFunctions, base.reason)" :value="scoreInfo.reason"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.score)" :focus="curComponentId === base.score.componentId" :value="typeof scoreInfo.score === 'number' ? scoreInfo.score + '分' : scoreInfo.score"/>
+        <zan-field v-if="userType === '2'" type="textarea" :height="150"  :focus="curComponentId === base.reason.componentId" v-bind="Object.assign({}, handleFunctions, base.reason)" :value="scoreInfo.reason"/>
         <div>
         </div>
       </div>
@@ -24,6 +24,7 @@ export default {
   },
   data () {
     return {
+      curComponentId: '',
       userType: '',
       id: '',
       scoreInfo: {},
@@ -34,7 +35,7 @@ export default {
       },
       base: {
         score: {
-          focus: true,
+          focus: false,
           title: '我的评分：',
           placeholder: '请输入0-10的评分，<=4为预警',
           componentId: 'score'
@@ -67,16 +68,17 @@ export default {
     },
     async formSubmit (e) {
       if (e && e.target && e.target.value) {
-        if (!e.target.value.score) {
-          this.$toast('请输入评价！')
+        let score = e.target.value.score.replace('分', '')
+        if (!score) {
+          this.$toast('请输入评分！')
           return false
         }
-        if (isNaN(Number(e.target.value.score))) {
-          this.$toast('请输入正确格式的评价数！')
+        if (isNaN(Number(score))) {
+          this.$toast('请输入正确格式的评分！')
           return false
         }
-        if (Number(e.target.value.score) >= 10) {
-          this.$toast('评价范围为0-10！')
+        if (Number(score) > 10) {
+          this.$toast('评分范围在0-10之间！')
           return false
         }
         if (!e.target.value.reason && this.userType === '2') {
@@ -84,11 +86,11 @@ export default {
           return false
         }
       } else {
-        this.$toast('请输入评分！')
+        this.$toast('请输入评价！')
         return false
       }
       await api.score.submitScore({
-        score: Number(e.target.value.score).toFixed(),
+        score: Number(e.target.value.score.replace('分', '')).toFixed(1),
         reason: e.target.value.reason,
         id: this.id || ''
       }).then(res => {
@@ -99,12 +101,32 @@ export default {
       })
     },
     handleZanFieldChange (e) {
+      // const { componentId, target } = e
+      // this.scoreInfo[componentId] = target.value
     },
-
     handleZanFieldFocus (e) {
+      this.curComponentId = e.componentId
     },
-
     handleZanFieldBlur (e) {
+      const { componentId, target } = e
+      if (componentId === 'score') {
+        let score = target.value.replace('分', '')
+        if (isNaN(Number(score))) {
+          this.$toast('请输入正确格式的评分！')
+          return false
+        }
+        if (Number(score) < 0 || Number(score) >= 10) {
+          this.$toast('评分范围在0-10之间！')
+          return false
+        }
+        if (Number(score) === 0) {
+          this.$toast('请输入评分！')
+          return false
+        }
+        this.scoreInfo.score = Number(score).toFixed(1) + '分'
+      }
+      // 清除当前focus的输入框：
+      this.curComponentId = ''
     }
   },
   onLoad (options) {
