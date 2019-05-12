@@ -8,7 +8,8 @@
         <span class="tag" v-for="(tag, index) in consultInfo.tagList" :key="index">{{tag}}</span>
       </p>
     </div>
-    <div class="right-part">
+    <!-- 专家不可以咨询其他专家,但可以查看咨询主页 -->
+    <div class="right-part" v-if="userType !== '2'">
       <button class="consult-btn" @click.stop="clickConsult(consultInfo)">咨询</button>
     </div>
   </navigator>
@@ -16,6 +17,11 @@
 <script>
 import api from '@/api'
 export default {
+  data () {
+    return {
+      userType: ''
+    }
+  },
   props: {
     consultInfo: {
       type: Object,
@@ -45,6 +51,9 @@ export default {
       }
       wx.navigateTo({url: `/pages/consult/detail/main?id=${consultInfo.consultId}`})
     }
+  },
+  onLoad (options) {
+    this.userType = this.$app.globalData.userType || ''
   }
 }
 </script>
