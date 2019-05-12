@@ -5,6 +5,9 @@
     <div class="page-consult-detail--status-container">
       <div class="page-consult-detail--status" v-if="consultInfo.consultStatusDesc">状态：{{consultInfo.consultStatusDesc}}</div>
       <div class="page-consult-detail--btns" v-if="consultInfo.consultStatus !== 3">
+        <button class="page-consult-detail--btn" v-if="userType !== '2'"  @click="editScore()">专家咨询评分</button>
+        <button class="page-consult-detail--btn" v-if="userType === '2'"  @click="editScore()">学生状况评分</button>
+
         <button class="page-consult-detail--btn" v-if="consultInfo.consultStatus !== 3"  @click="closeConsult()">关闭咨询室</button>
         <button class="page-consult-detail--btn" v-if="consultInfo.userList && consultInfo.userList.parent && !consultInfo.userList.parent.isInvited" @click="inviteUser('parent')">邀请家长</button>
         <button class="page-consult-detail--btn" v-if="consultInfo.userList && consultInfo.userList.student && !consultInfo.userList.student.isInvited"  @click="inviteUser('student')">邀请学生</button>
@@ -321,6 +324,17 @@ export default {
     },
     getChatRecord () { // 获取实时聊天记录 ---- ？？？？？？？？？？？？？？？？？？？？？？？？
 
+    },
+    editScore () { // 去评分按钮
+      let id = ''
+      if (this.userType === '1' || this.userType === '3') { // 学生或家长 给专家进行 咨询评分
+        id = this.consultInfo.userList.expert.id
+      } else if (this.userType === '2') { // 专家给学生进行 心理状况评分
+        id = this.consultInfo.userList.student.id
+      }
+      if (id) { // 前往编辑页 给用户id 为id的人评分
+        wx.navigateTo({url: `/pages/score/edit/main?id=${id}&consultId=${this.consultInfo.id}`})
+      }
     }
   },
   onLoad (options) {

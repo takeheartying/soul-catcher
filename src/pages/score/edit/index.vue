@@ -51,8 +51,9 @@ export default {
   methods: {
     async getScoreInfo () {
       // 获取评分信息：
-      await api.score.getScoreInfo({
-        id: this.id
+      await api.score.getConsultScoreInfo({
+        userId: this.id, // 被评分者id
+        consultId: this.consultId // 咨询室id
       }).then(res => {
         this.scoreInfo = res || []
       }).catch(err => {
@@ -108,7 +109,8 @@ export default {
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
-    this.id = options.id
+    this.id = options.id // 被评分者id
+    this.consultId = options.consultId
   },
   mounted () {
     let title = this.userType === '1' ? '学生心理状况评分' : '专家咨询评分'

@@ -66,7 +66,7 @@
         </navigator>
         <navigator class="function-item" url="/pages/knowledge/list/main?isShowMy=1" v-if="userType === '2'">
           <div class="left-part">
-            <i class="iconfont icon-yujing"></i>
+            <i class="iconfont icon-zhishiku"></i>
           </div>
           <div class="right-part">
             <p>我的知识库</p>
@@ -75,7 +75,7 @@
         </navigator>
         <navigator class="function-item" :url="'/pages/student/detail/main?id=' + userInfo.studentId" v-if="userType === '3'">
           <div class="left-part">
-            <i class="iconfont icon-yujing"></i>
+            <i class="iconfont icon-haizi1"></i>
           </div>
           <div class="right-part">
             <p>我的孩子</p>

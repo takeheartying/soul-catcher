@@ -19,3 +19,9 @@ export const getBannerList = (params) => {
     return res || {}
   })
 }
+// 根据学生id获取记录 【score：4代表小于等于4的预警记录】
+export const getRecordListByUserId = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}

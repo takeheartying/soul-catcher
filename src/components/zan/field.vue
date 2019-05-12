@@ -79,7 +79,7 @@
         const componentId = extractComponentId(event)
         event.componentId = componentId
 
-        console.info('[zan:field:focus]', event)
+        // console.info('[zan:field:focus]', event)
 
         if (this.handleZanFieldFocus) {
           return this.handleZanFieldFocus(event)
@@ -92,7 +92,7 @@
         const componentId = extractComponentId(event)
         event.componentId = componentId
 
-        console.info('[zan:field:blur]', event)
+        // console.info('[zan:field:blur]', event)
 
         if (this.handleZanFieldBlur) {
           return this.handleZanFieldBlur(event)

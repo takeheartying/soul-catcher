@@ -1,20 +1,30 @@
 <template>
+  <!-- 专家查看-- 我的咨询： 有学生的咨询室显示学生信息，没有学生的咨询室显示家长信息 -->
   <navigator class="consult-info-card" v-if="consultInfo" :url="'/pages/consult/detail/main?id=' + consultInfo.id" >
     <image mode="aspectFit" :src="consultInfo.avatar" class="left-part"></image>
-    <div class="right-part">
-      <p class="line1">{{consultInfo.name}} <span>{{consultInfo.authorAcademicTitle}}</span></p>
-      <p class="line2">状况评分：&nbsp;{{consultInfo.consultScore}}</p>
+    <div class="middle-part">
+      <p class="line1" v-if="userType !== '2'">{{consultInfo.name}} <span>{{consultInfo.authorAcademicTitle}}</span></p>
+      <p class="line1" v-if="userType === '2'">{{consultInfo.name || consultInfo.nickName}}</p>
+      <p class="line2" v-if="userType === '1' || userType === '3'">{{userType === '1' ? '状况评分' : '孩子状况评分'}}：&nbsp;{{consultInfo.consultScore}}</p>
       <p class="line3">
         <span>咨询时间：&nbsp;{{consultInfo.consultTime}}</span>
       </p>
-      <p class="line4" v-if="consultInfo.tagList">
+      <p class="line4" v-if="consultInfo.tagList && userType !== '2'">
         <span class="tag" v-for="(tag, index) in consultInfo.tagList" :key="index">{{tag}}</span>
       </p>
+    </div>
+    <div class="right-part">
+      <button class="right-part-btn" @click.stop="lookOverScore()">查看评分</button>
     </div>
   </navigator>
 </template>
 <script>
 export default {
+  data () {
+    return {
+      userType: ''
+    }
+  },
   props: {
     consultInfo: {
       type: Object,
@@ -22,6 +32,24 @@ export default {
         return {}
       }
     }
+  },
+  methods: {
+    lookOverScore () { // 查看评分
+      let scoreType = ''
+      if (this.userType === '1' || this.userType === '3') { // 家长或学生 查看 学生状况评分
+        scoreType = 'student'
+      } else if (this.userType === '2') {
+        scoreType = 'expert'
+      }
+      if (scoreType) {
+        wx.navigateTo({
+          url: `/pages/score/detail/main?id=${this.consultInfo.consultorId}&scoreType=${scoreType}`
+        })
+      }
+    }
+  },
+  onLoad (options) {
+    this.userType = this.$app.globalData.userType || ''
   }
 }
 </script>
@@ -40,7 +68,8 @@ export default {
     border-radius: 50%;
     margin-right: 15px;
   }
-  .right-part {
+  .middle-part {
+    flex: 1;
     .line1 {
       font-size: 16px;
       font-weight: bolder;
@@ -74,6 +103,25 @@ export default {
         border: 1px solid #eee;
         border-radius: 3px;
       }
+    }
+  }
+  .right-part {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    .right-part-btn {
+      border-radius: 10px;
+      border: 1px solid #FFD161;
+      font-size: 14px;
+      color: #FFD161;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      height: 30px;
     }
   }
 }

@@ -49,7 +49,8 @@ export default {
       // mock数据：
       this.consultList = [
         {
-          id: '1111111',
+          id: '1111111', // 咨询id
+          consultorId: '2344234', // 咨询者id
           name: '王灿灿',
           avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
@@ -59,6 +60,7 @@ export default {
         },
         {
           id: '222222',
+          consultorId: '2344234', // 咨询者id
           name: '何方',
           avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',

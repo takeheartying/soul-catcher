@@ -50,9 +50,23 @@ export default {
   },
   data () {
     return {
+      studentId: '',
       studentInfo: {},
-      curTab: 'warn', // 当前tab 'warn' 或 'warn'
-      userType: ''
+      curTab: 'warn', // 当前tab 'warn' 或 'record' 或 'test'
+      userType: '',
+      loading: false,
+      warnFinished: false,
+      warnPageNo: 1,
+      warnList: [],
+      warnNum: 0,
+      recordFinished: false,
+      recordPageNo: 1,
+      recordList: [],
+      recordNum: 0,
+      testFinished: false,
+      testPageNo: 1,
+      testList: [],
+      testNum: 0
     }
   },
   methods: {
@@ -126,11 +140,172 @@ export default {
     },
     switchTab (tab) {
       this.curTab = tab || 'warn'
+      switch (tab) { // 初始加载列表
+        case 'warn':
+          if (this.warnPageNo === 1) {
+            this.getWarnList()
+          }
+          break
+        case 'record':
+          if (this.recordPageNo === 1) {
+            this.getRecordList()
+          }
+          break
+        case 'test':
+          if (this.testPageNo === 1) {
+            this.getTestList()
+          }
+          break
+        default:
+          break
+      }
+    },
+    async getWarnList () {
+      // 获取预警列表：<= 4分
+      this.loading = true
+      this.warnFinished = false
+      await api.common.getRecordListByUserId({
+        pageSize: 10,
+        pageNo: this.warnPageNo,
+        score: 4,
+        userId: this.studentId
+      }).then(res => {
+        this.warnList = this.warnList.concat(res.items)
+        this.warnFinished = (res.pageCount && this.pageNo >= res.pageCount)
+        this.warnPageNo++
+        this.warnNum = res.totalCount
+      }).catch(err => {
+        console.log(err)
+      })
+      // mock数据：
+      let res = {
+        pageSize: 5,
+        pageNo: 1,
+        pageCount: 3,
+        totalCount: 15,
+        items: [
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 3.0,
+            id: '23343243'
+          },
+          {
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            name: '王大锤',
+            goodAt: '开始大量、开始大量、开始大量、开始大量',
+            createTime: '2019-03-39',
+            score: 0,
+            id: '23343243'
+          }
+        ]
+      }
+      this.warnList = this.warnList.concat(res.items)
+      this.warnFinished = (res.pageCount && this.pageNo >= res.pageCount)
+      this.warnNum = res.totalCount
+
+      this.loading = false
+    },
+    bindDownLoad () { // 上拉加载
+      switch (this.curTab) {
+        case 'warn':
+          if (!this.warnFinished) {
+            this.getWarnList()
+          }
+          break
+        case 'record':
+          if (!this.recordFinished) {
+            this.getRecordList()
+          }
+          break
+        case 'test':
+          if (!this.testFinished) {
+            this.getTestList()
+          }
+          break
+        default:
+          break
+      }
     },
     async getExpertInfo () {
       await api.common.getUserInfo({
-        id: this.studentId,
-        userType: '2'
+        id: this.studentId
       }).then(res => {
         this.studentInfo = res || {}
       }).catch(err => {
@@ -148,51 +323,15 @@ export default {
         desc: 'kfdjsakfjkdjsafklj附近肯德基案发福建斯科拉放假快乐撒九分裤电费卡开飞机拉师傅就看到了撒父级士大夫附件啊时空裂缝京东数科拉风加快速度拉法基第三方进口量撒酒疯考虑到精神科拉飞机考虑到就说了的顺丰快递费啦', // 详细介绍
         organization: '浙江科技学院',
         hasConcern: true, // 是否关注了
-        phone: '15868157426',
-        warnNum: 20, // 预警数目
-        warnList: [
-          {
-            picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
-            title: '从积极心理学到幸福感',
-            desc: '心境由心而设，态度可以决定我们的生活',
-            type: '心理综合',
-            id: '111'
-          },
-          {
-            picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
-            title: '心理健康素养十条',
-            desc: '今年的主题是“健康心理，快乐人生',
-            type: '心理综合',
-            id: '111'
-          },
-          {
-            picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
-            title: '性格与情感',
-            desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
-            type: '趣味性格',
-            id: '111'
-          },
-          {
-            picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
-            title: '原来是爱情',
-            desc: '感情不是兔子，守株是没用的',
-            type: '爱情脱单',
-            id: '111'
-          },
-          {
-            picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
-            title: '决定你上限的，不是智商，而是自律',
-            desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
-            type: '智商情商',
-            id: '111'
-          }
-        ]
+        phone: '15868157426'
       }
     }
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
+    this.studentId = options.id || ''
     this.getExpertInfo()
+    this.switchTab('warn') // 初始显示预警tab
   },
   mounted () {
     wx.setNavigationBarColor({

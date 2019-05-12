@@ -1,7 +1,7 @@
 import wxRequest from '../wxRequest.js'
 
-// 获取评分信息
-export const getScoreInfo = (params) => {
+// 获取单次咨询的 用户被评分信息
+export const getConsultScoreInfo = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
     return res || {}
   })
