@@ -1,28 +1,34 @@
 <template>
   <!-- 专家查看-- 我的咨询： 有学生的咨询室显示学生信息，没有学生的咨询室显示家长信息 -->
-  <navigator class="consult-info-card" v-if="consultInfo" :url="'/pages/consult/detail/main?id=' + consultInfo.id" >
-    <image mode="aspectFit" :src="consultInfo.avatar" class="left-part"></image>
+  <div class="consult-info-card" v-if="consultInfo" @click="goToConsultDetail()">
+    <image mode="aspectFit" :src="consultInfo.avatar" class="left-part" @click.stop="goToUserHomePage()"></image>
     <div class="middle-part">
       <p class="line1" v-if="userType !== '2'">{{consultInfo.name}} <span>{{consultInfo.authorAcademicTitle}}</span></p>
       <p class="line1" v-if="userType === '2'">{{consultInfo.name || consultInfo.nickName}}</p>
-      <p class="line2" v-if="userType === '1' || userType === '3'">{{userType === '1' ? '状况评分' : '孩子状况评分'}}：&nbsp;{{consultInfo.consultScore}}</p>
-      <p class="line3">
+      <p class="line2" v-if="userType === '1' || userType === '3'">{{userType === '1' ? '状况评分' : '孩子状况评分'}}：&nbsp;{{consultInfo.consultScore || '暂无'}}</p>
+      <p class="line3" v-if="consultInfo.consultTime">
         <span>咨询时间：&nbsp;{{consultInfo.consultTime}}</span>
       </p>
       <p class="line4" v-if="consultInfo.tagList && userType !== '2'">
         <span class="tag" v-for="(tag, index) in consultInfo.tagList" :key="index">{{tag}}</span>
       </p>
     </div>
-    <div class="right-part">
+    <!-- 咨询状态： 邀请中 0   待同意 1   已同意 2   已关闭 3 -->
+    <div class="right-part" v-if="consultInfo.consultStatusDesc !== '邀请中' && consultInfo.consultScore">
       <button class="right-part-btn" @click.stop="lookOverScore()">查看评分</button>
     </div>
-  </navigator>
+    <div class="right-part" v-if="consultInfo.consultStatusDesc === '邀请中'">
+      <button class="right-part-btn" @click.stop="agreeJoin()">同意邀请</button>
+    </div>    
+  </div>
 </template>
 <script>
+import api from '@/api'
 export default {
   data () {
     return {
-      userType: ''
+      userType: '',
+      url: ''
     }
   },
   props: {
@@ -46,10 +52,58 @@ export default {
           url: `/pages/score/detail/main?id=${this.consultInfo.consultorId}&scoreType=${scoreType}`
         })
       }
+    },
+    goToUserHomePage () { // 去用户主页
+      if (this.consultInfo.userType === '1') {
+        wx.navigateTo({url: `/pages/student/detail/main?id=${this.consultInfo.consultorId}`})
+      } else if (this.consultInfo.userType === '2') {
+        wx.navigateTo({url: `/pages/expert/detail/main?id=${this.consultInfo.consultorId}`})
+      }
+    },
+    goToConsultDetail () {
+      if (this.url) {
+        wx.navigateTo({url: this.url})
+      }
+    },
+    async agreeJoin () { // 同意邀请
+      let that = this
+      wx.showModal({
+        content: '同意邀请？',
+        showCancel: true, // 是否显示取消按钮
+        cancelColor: 'skyblue', // 取消文字的颜色
+        confirmColor: 'skyblue', // 确定文字的颜色
+        success: async function (res) {
+          if (res.cancel) {
+            // 点击取消,默认隐藏弹框
+          } else {
+            // 点击确定
+            await api.my.agreeConsult({ // 同意别邀请--进入
+              consultId: that.consultInfo.id,
+              hasJoined: true
+            }).then((res) => {
+              if (res) {
+                that.consultInfo.consultStatusDesc = '已同意'
+                that.consultInfo.consultStatus = 1
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+
+            // mock数据：
+            that.consultInfo.consultStatusDesc = '已同意'
+            that.consultInfo.consultStatus = 1
+          }
+        }
+      })
     }
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
+    if (this.consultInfo.consultStatusDesc !== '邀请中') {
+      this.url = '/pages/consult/detail/main?id=' + this.consultInfo.id
+    } else {
+      this.url = ''
+    }
   }
 }
 </script>

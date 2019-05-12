@@ -1,5 +1,6 @@
 <template>
   <section class="page-my-follow-list">
+    <!-- 我的关注列表页： -->
     <ul class="list-container" v-if="followList.length">
       <li class="list-item" v-for="(follow, index) in followList" :key="index">
         <follow-info-card :followInfo="follow"></follow-info-card>
@@ -69,6 +70,17 @@ export default {
           tagList: ['爱情脱单', '心理综合'],
           consultNum: 10, // 咨询数量
           fanNum: 2 // 关注者
+        },
+        {
+          id: '222222',
+          name: '方家长',
+          userType: '3',
+          avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
+          authorAcademicTitle: '心理老师',
+          organization: '浙江工业大学',
+          tagList: ['爱情脱单', '心理综合'],
+          consultNum: 10, // 咨询数量
+          fanNum: 2
         }
       ]
     }

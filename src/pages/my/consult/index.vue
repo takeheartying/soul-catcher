@@ -1,5 +1,6 @@
 <template>
   <section class="page-my-consult-list">
+    <!-- 我的咨询列表： -->
     <ul class="list-container" v-if="consultList.length">
       <li class="list-item" v-for="(consult, index) in consultList" :key="index">
         <consult-info-card :consultInfo="consult"></consult-info-card>
@@ -50,21 +51,27 @@ export default {
       this.consultList = [
         {
           id: '1111111', // 咨询id
+          userType: '1', // 咨询者用户类型
           consultorId: '2344234', // 咨询者id
-          name: '王灿灿',
+          name: '王学生',
           avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
           tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+          consultStatus: 2, // 邀请中 0   待同意 1   已同意 2   已关闭 3
+          consultStatusDesc: '已同意',
           consultScore: '9.0',
           consultTime: '2019-03-20 16:30'
         },
         {
           id: '222222',
+          userType: '2',
           consultorId: '2344234', // 咨询者id
           name: '何方',
           avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
           authorAcademicTitle: '心理老师',
           tagList: ['爱情脱单', '心理综合'],
+          consultStatus: 0, // 邀请中 0   待同意 1   已同意 2   已关闭 3
+          consultStatusDesc: '邀请中',
           consultScore: '3.5',
           consultTime: '2019-03-21 12:30'
         }

@@ -244,7 +244,8 @@ export default {
     },
     async agreeConsult (message, index) { // 同意进入咨询室
       await api.my.agreeConsult({
-        consultId: message.consultId
+        consultId: message.consultId,
+        hasJoind: true
       }).then((res) => {
         if (res) {
           this.messageList[index].hasJoin = true

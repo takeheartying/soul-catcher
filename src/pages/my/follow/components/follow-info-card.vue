@@ -1,5 +1,5 @@
 <template>
-  <navigator class="expert-info-card" v-if="followInfo" :url="url" >
+  <div class="expert-info-card" v-if="followInfo" @click="goToUserHomePage()">
     <image mode="aspectFit" :src="followInfo.avatar" class="left-part"></image>
     <div class="right-part">
       <p class="line1" v-if="followInfo.userType === '2'">{{followInfo.name}} <span>{{followInfo.authorAcademicTitle}}</span></p>
@@ -8,12 +8,12 @@
       <p class="line3" v-if="followInfo.tagList && followInfo.userType === '2'">
         <span class="tag" v-for="(tag, index) in followInfo.tagList" :key="index">{{tag}}</span>
       </p>
-      <p class="line4">
+      <p class="line4" :style="followInfo.userType === '3' ? 'font-size: 28rpx;' : ''">
         <span>咨询数&nbsp;{{followInfo.consultNum}}</span>
         <span v-if="userType !== '3'">关注者&nbsp;{{followInfo.fanNum}}</span>
       </p>
     </div>
-  </navigator>
+  </div>
 </template>
 <script>
 export default {
@@ -28,6 +28,13 @@ export default {
   data () {
     return {
       url: ''
+    }
+  },
+  methods: {
+    goToUserHomePage () { // 查看用户主页
+      if (this.url) {
+        wx.navigateTo({url: this.url})
+      }
     }
   },
   onLoad () {
