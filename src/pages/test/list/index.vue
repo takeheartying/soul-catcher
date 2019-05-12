@@ -4,7 +4,7 @@
     <scroll-view  class="page-my-comment--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
       <ul class="list-container" v-if="testList.length">
         <li class="list-item" v-for="(test, index) in testList" :key="index">
-          <test-info-card :testInfo="test"></test-info-card>
+          <test-info-card :testInfo="test" :showType="showType" :studentId="studentId"></test-info-card>
         </li>
       </ul>
       <g-loading :loading="loading"></g-loading>
@@ -23,6 +23,8 @@ import TestInfoCard from '../components/test-info-card.vue'
 export default {
   data () {
     return {
+      showType: '',
+      studentId: '', // 学生Id,查询学生所做测试题
       tagTypeDesc: '', // 测试类型
       loading: false,
       finished: false,
@@ -38,7 +40,7 @@ export default {
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
-    switch (options.tagType) {
+    switch (options.tagType) { // 测试类型
       case '1':
         this.tagTypeDesc = '爱情脱单'
         break
@@ -55,6 +57,8 @@ export default {
         this.tagTypeDesc = ''
         break
     }
+    this.showType = options.showType || '' // 展示类型： 'result' 'test / 空'【默认】
+    this.studentId = options.studentId || '' // 查询该学生的测试集
   },
   methods: {
     async getTestList () {
@@ -63,7 +67,8 @@ export default {
       this.finished = false
       await api.test.getTestList({
         pageSize: 5,
-        pageNo: this.pageNo
+        pageNo: this.pageNo,
+        studentId: this.studentId || ''
       }).then(res => {
         this.testList = res || {}
       }).catch(err => {

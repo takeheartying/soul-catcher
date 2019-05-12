@@ -12,6 +12,12 @@ export const getTestDetailInfoById = (params) => {
     return res || {}
   })
 }
+// 根据学生id获取测试结果列表,没有则默认studentId是该用户
+export const getTestResultListById = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
 // 提交测试
 export const submitTest = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {

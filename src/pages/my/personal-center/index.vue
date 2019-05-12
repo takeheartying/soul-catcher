@@ -28,7 +28,7 @@
         </navigator>
       </div>
       <div class="column-functions">
-        <navigator class="function-item" url="/pages/my/test/main">
+        <navigator class="function-item" url="/pages/my/test/main" v-if="userType === '1'">
           <div class="left-part">
             <i class="iconfont icon-ceshi"></i>
           </div>
@@ -46,7 +46,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" url="/pages/my/record/list/main">
+        <navigator class="function-item" url="/pages/my/record/list/main" v-if="userType === '1'">
           <div class="left-part">
             <i class="iconfont icon-xinlidangan"></i>
           </div>
@@ -55,12 +55,30 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" url="/pages/my/warn/main">
+        <navigator class="function-item" url="/pages/my/warn/main" v-if="userType === '1'">
           <div class="left-part">
             <i class="iconfont icon-yujing"></i>
           </div>
           <div class="right-part">
             <p>我的预警</p>
+            <i class="iconfont icon-fanhui-copy"></i>
+          </div>
+        </navigator>
+        <navigator class="function-item" url="/pages/knowledge/list/main?isShowMy=1" v-if="userType === '2'">
+          <div class="left-part">
+            <i class="iconfont icon-yujing"></i>
+          </div>
+          <div class="right-part">
+            <p>我的知识库</p>
+            <i class="iconfont icon-fanhui-copy"></i>
+          </div>
+        </navigator>
+        <navigator class="function-item" :url="'/pages/student/detail/main?id=' + userInfo.studentId" v-if="userType === '3'">
+          <div class="left-part">
+            <i class="iconfont icon-yujing"></i>
+          </div>
+          <div class="right-part">
+            <p>我的孩子</p>
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
@@ -101,7 +119,8 @@ export default {
       // mock数据：
       this.userInfo = {
         avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1293892983,611103898&fm=27&gp=0.jpg',
-        nickName: '驾辕的位置'
+        nickName: '驾辕的位置',
+        studentId: '323434' // 用户是家长的时候
       }
     }
   },

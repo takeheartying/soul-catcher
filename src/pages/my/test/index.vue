@@ -25,7 +25,7 @@ export default {
       userType: '1', // 0 管理员 1 学生 2 专家 3 家长
       noresultBtn: {
         content: '去测试',
-        url: '/pages/test/list'
+        url: '/pages/test/list/main'
       }
     }
   },

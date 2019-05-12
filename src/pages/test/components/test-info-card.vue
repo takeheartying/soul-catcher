@@ -1,5 +1,5 @@
 <template>
-  <navigator class="test-info-card" v-if="testInfo" :url="'/pages/test/detail/main?id=' + testInfo.id" >
+  <navigator class="test-info-card" v-if="testInfo" :url="url">
     <div class="middle-content">
       <p class="title">{{testInfo.title}}</p>
       <p class="desc">{{testInfo.desc}}</p>
@@ -16,7 +16,32 @@ export default {
       default () {
         return {}
       }
+    },
+    showType: { // 展示类型---   'result':测试结果列表  '': 测试列表
+      type: String,
+      default: ''
+    },
+    studentId: { // 学生id,用于查询该学生测试题的相应测试结果
+      type: String,
+      default: ''
     }
+  },
+  data () {
+    return {
+      url: ''
+    }
+  },
+  methods: {
+    getUrl () {
+      if (this.showType === 'result') {
+        this.url = `/pages/test/result/main?id=${this.testInfo.id}&studentId=${this.studentId}` // 根据testId 和 userId 查询 对应的测试题结果 详情信息
+      } else {
+        this.url = `/pages/test/detail/main?id=${this.testInfo.id}` // 根据testId 查询测试题 详情信息
+      }
+    }
+  },
+  onLoad () {
+    this.getUrl()
   }
 }
 </script>
