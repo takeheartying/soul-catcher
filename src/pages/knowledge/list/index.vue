@@ -130,6 +130,9 @@ export default {
     }
   },
   methods: {
+    addKnowledge () { // 添加知识库
+      wx.navigateTo({url: '/pages/knowledage/add/main'})
+    },
     changeData (v) { // 返回最终结果。(注：筛选结果的value返回json对象)
       if (v && v.length >= 2) {
         this.tagType = v[0].value || ''

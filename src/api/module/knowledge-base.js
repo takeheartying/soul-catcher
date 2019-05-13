@@ -14,3 +14,15 @@ export const getKnowledgeDetailById = (params) => {
     return res || {}
   })
 }
+// 添加知识库
+export const addKnowledge = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 修改知识库
+export const updateKnowledge = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}

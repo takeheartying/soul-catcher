@@ -22,6 +22,7 @@
     "pages/knowledge/article/detail/main",
     "pages/knowledge/vedio/detail/main",
     "pages/knowledge/list/main",
+    "pages/knowledage/add/main",
     "pages/score/detail/main",
     "pages/score/edit/main",
     "pages/expert/detail/main",
