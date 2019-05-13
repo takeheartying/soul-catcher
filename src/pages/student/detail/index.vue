@@ -13,16 +13,19 @@
         <!-- 家长不可以看学生所做测试题： -->
         <div :class="curTab === 'test' ? 'student-info-middle-tab active' : 'student-info-middle-tab'" v-if="userType != '3'" @click="switchTab('test')">测试集</div>
       </div>
-      <div class="tab-warn" v-if="curTab === 'warn'">
-        <div class="warn-title">总数【{{studentInfo.warnNum}}】</div>
-        <ul class="warn-list">
-          <li class="warn-list-item"
-            v-for="(article, index) in studentInfo.warnList" :key="index" >
-            <warn-item-card :warn="article"></warn-item-card>
-          </li>
-        </ul>
+      <div class="student-info-tabs" v-if="curTab === 'warn'">
+        <div class="tab-title" v-if="warnNum">总数【{{warnNum}}】</div>
+        <div class="tab-noresult" v-if="!warnNum && !loading">当前没有数据哦~</div>
+        <scroll-view  class="tab-scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
+          <ul class="tab-list" v-if="warnNum">
+            <li class="tab-list-item"
+              v-for="(warn, index) in warnList" :key="index" >
+              <warn-item-card :warn="warn"></warn-item-card>
+            </li>
+          </ul>
+        </scroll-view>
       </div>
-      <div class="student-info-footer">
+      <div class="student-info-footer" v-if="userType !== '3'">
         <div class="student-info-footer-item concern" @click.stop="concernChange()">
           <i class="iconfont icon-quxiaoguanzhu" v-if="studentInfo.hasConcern"></i>
           <i class="iconfont icon-tianjiaguanzhu" v-if="!studentInfo.hasConcern"></i>
@@ -172,9 +175,9 @@ export default {
         userId: this.studentId
       }).then(res => {
         this.warnList = this.warnList.concat(res.items)
-        this.warnFinished = (res.pageCount && this.pageNo >= res.pageCount)
+        this.warnFinished = (res.pageCount && this.warnPageNo >= res.pageCount)
+        this.warnNum = res.totalCount || 0
         this.warnPageNo++
-        this.warnNum = res.totalCount
       }).catch(err => {
         console.log(err)
       })
@@ -229,57 +232,13 @@ export default {
             createTime: '2019-03-39',
             score: 0,
             id: '23343243'
-          },
-          {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
-            score: 3.0,
-            id: '23343243'
-          },
-          {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
-            score: 3.0,
-            id: '23343243'
-          },
-          {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
-            score: 3.0,
-            id: '23343243'
-          },
-          {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
-            score: 3.0,
-            id: '23343243'
-          },
-          {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
-            score: 0,
-            id: '23343243'
           }
         ]
       }
       this.warnList = this.warnList.concat(res.items)
-      this.warnFinished = (res.pageCount && this.pageNo >= res.pageCount)
-      this.warnNum = res.totalCount
+      this.warnFinished = (res.pageCount && this.warnPageNo >= res.pageCount)
+      this.warnNum = res.totalCount || 0
+      this.warnPageNo++
 
       this.loading = false
     },
@@ -346,9 +305,17 @@ export default {
 <style lang="less">
   .page-student-detail {
     background: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     .page-student-detail--container {
-      margin-bottom: 50px;
+      height: 100%;
+      flex:1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       .student-info-top {
+        height: 135px;
         padding: 15px 10px;
         display: flex;
         width: 100%;
@@ -372,6 +339,7 @@ export default {
         }
       }
       .student-info-middle {
+        height: 39px;
         border-bottom: 10px solid rgb(240, 240, 240);
         border-top: 2px solid #eee;
         display: flex;
@@ -398,84 +366,46 @@ export default {
           }
         }
       }
-      .student-info-bottom {
-        overflow-x: hidden;
-        overflow-y: auto;
-        .student-info-bottom-statistic {
-          border-bottom: 5px solid rgb(240, 240, 240);
-          height: 55px;
-          padding: 5px 20px;
-          display: flex;
-          width: 100%;
-          flex-direction: row;
-          justify-content: space-around;
-          align-self: center;
-          .student-info-bottom-statistic-item {
-            padding: 5px 0;
-            width: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            .item-num {
-              font-size: 16px;
-              color:  #FFD161;
-            }
-            .item-unit {
-              color: rgb(194, 186, 186);
-            }
-          }
-          .student-info-bottom-statistic-item-split {
-            position: relative;
-            right: 0;
-            display: block;
-            width: 5px;
-            height: 30px;
-            top: 50%;
-            line-height: 45px;
-            transform: translateY(-15px);
-            background: rgb(238, 237, 237);
-          }
-        }
-        .student-info-bottom-info {
-          padding: 10px 20px;
-          .student-info-bottom-info-item {
-            .item-title {
-              font-weight: bold;
-            }
-            .item-content {
-              margin: 5px 0 10px 0;
-              span {
-                display: inline-block;
-                border: 0.5px solid #FFD161;
-                margin-right: 10px;
-                border-radius: 8px;
-                color:  #FFD161;
-                padding: 3px;
-              }
-            }
-          }
-        }
-      }
-      .tab-warn {
-        .warn-title {
+      .student-info-tabs {
+        flex:1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        .tab-title {
           height: 40px;
           font-weight: bold;
           line-height: 40px;
           padding: 0 20px;
           border-bottom: 0.5px solid #eee;
         }
-        .warn-list {
-          .warn-list-item {
+        .tab-noresult {
+          height: 300px;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .tab-list {
+          .tab-list-item {
             border-bottom: 0.5px solid #eee;
+          }
+        }
+        .tab-scroll-view {
+          flex: 1;
+          overflow: auto;
+          /*隐藏滚动条*/
+          ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            color: transparent;
           }
         }
       }
       .student-info-footer {
+        display: none;
+        height: 53px;
         width: 100%;
-        position: fixed;
-        bottom: 0;
         display: flex;
         flex-direction: row;
         justify-content: space-around;

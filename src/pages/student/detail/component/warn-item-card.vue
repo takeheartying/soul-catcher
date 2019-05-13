@@ -1,6 +1,6 @@
 <template>
   <div class="warn-item-card">
-    <navigator class="warn-item-card--item" v-for="(warn, index) in warnList" :key="index" :url="'/pages/score/detail/main?id=' + warn.id + '&scoreType=student'">
+    <navigator class="warn-item-card--item" :url="'/pages/score/detail/main?id=' + warn.id + '&scoreType=student'">
       <image class="warn-item-card--item-left-part" :src="warn.avatar || defaultPic" mode="aspectFill"></image>
       <div class="warn-item-card--item-middle-part">
         <p class="warn-nickname">{{warn.name || warn.nickName}}</p>
@@ -16,9 +16,11 @@
 <script>
 export default {
   props: {
-    type: Object,
-    default () {
-      return {}
+    warn: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -34,8 +36,8 @@ export default {
   .warn-item-card {
     .warn-item-card--item {
       background: #fff;
-      border-bottom: 1px solid #eee;
-      padding: 10px 10px 0 10px;
+      border-bottom: 0.5px solid #eee;
+      padding: 10px;
       display: flex;
       flex-direction: row;
       .warn-item-card--item-left-part {
