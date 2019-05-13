@@ -34,10 +34,6 @@
           <filter-bar
             :top="0"
             :bar-menus="barMenus"
-            @showDialog="handleShowDialog"
-            @closeDialog="handleCloseDialog"
-            @changeTab="handleChangeTab"
-            @changeMainItem="handleChangeMainItem"
             @changeSelect="changeRecordData">
           </filter-bar>
         </div>

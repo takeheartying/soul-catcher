@@ -6,10 +6,6 @@
       <filter-bar
         :top="0"
         :bar-menus="barMenus"
-        @showDialog="handleShowDialog"
-        @closeDialog="handleCloseDialog"
-        @changeTab="handleChangeTab"
-        @changeMainItem="handleChangeMainItem"
         @changeSelect="changeData">
       </filter-bar>
     </div>
@@ -88,7 +84,7 @@ export default {
           }]
         },
         {
-          name: '评论筛选',
+          name: '列表排序',
           icon: '',
           value: '',
           showTabHeader: true,
@@ -97,7 +93,7 @@ export default {
           selectIndex: 0,
           tabs: [{
             icon: '',
-            name: '评论筛选',
+            name: '列表排序',
             selectIndex: 0,
             detailList: [{
               name: '全部',
@@ -105,17 +101,22 @@ export default {
               value: '',
               selectIndex: 0
             }, {
-              name: '评论最多',
+              name: '评论数由高到低',
               icon: '',
-              value: '1',
+              value: 'mostComment',
               selectIndex: 1
+            }, {
+              name: '发表时间由近到远',
+              icon: '',
+              value: 'newTime',
+              selectIndex: 2
             }]
           }]
         }
       ],
       userType: '',
       knowledgeType: 'article', // 当前只设置article
-      showCommentMost: false, // 显示评论数最多的文章
+      searchType: '', // 排序类型： 'newTime' 或者 'mostComment'
       tagType: '',
       expertId: '',
       knowledgeList: [],
@@ -128,7 +129,7 @@ export default {
     changeData (v) { // 返回最终结果。(注：筛选结果的value返回json对象)
       if (v && v.length >= 2) {
         this.tagType = v[0].value || ''
-        this.showCommentMost = (v[1].value === '1') // 按评论数筛选
+        this.searchType = v[1].value || '' // 按评论数筛选 或 按时间顺序筛选
         // 重置信息：请求数据
         this.pageNo = 1
         this.finished = false
@@ -142,13 +143,14 @@ export default {
       }
     },
     async getKnowledgeList () {
-      // 获取我的心理档案（记录）列表：
+      // 获取知识库列表：
       this.loading = true
       this.finished = false
       await api.knowledgeBase.getKnowledgeList({
         expertId: this.expertId,
         tagType: this.tagType,
-        knowledgeType: this.knowledgeType,
+        knowledgeType: this.knowledgeType || 'article',
+        searchType: this.searchType, // newTime: 最新   mostComment: 评论最多
         pageNo: this.pageNo,
         pageSize: 10
       }).then(res => {
@@ -248,6 +250,7 @@ export default {
     this.userType = this.$app.globalData.userType || ''
     this.expertId = options.expertId || '' // 指定专家的知识库列表
     this.tagType = options.tagType || '' // 1 2 3 4
+    this.searchType = options.searchType || '' // newTime 或者 mostComment
     this.knowledgeType = options.knowledgeType || 'article' // vedio 或者 article 【目前只做article】
   },
   mounted () {

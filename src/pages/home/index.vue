@@ -26,11 +26,12 @@
       </navigator>
     </div>
     <div class="daily-recommend-container">
-      <div class="left-part">
+      <!-- 推荐最新知识库： -->
+      <navigator class="left-part" url="/pages/knowledge/list/main?searchType=newTime">
         <div>每日</div>
         <div>推荐</div>
         <button class="btn-go">></button>
-      </div>
+      </navigator>
       <div class="right-part">
         <swiper class="swiper" :indicator-dots="false" :display-multiple-items="1"  autoplay="true" interval="4000" duration="1000"
           circular="true">
@@ -45,7 +46,7 @@
     <div class="list-container" v-if="hotArticleList && hotArticleList.length">
       <div class="list-container-top-title">
         <p class="list-container-title">热门文章</p>
-        <span class="list-container-show-more" @click="showMore('article')">查看更多></span>
+        <span class="list-container-show-more" @click.stop="showMore('article')">查看更多></span>
       </div>
       <ul class="list-container-ul">
         <li class="list-container-item"
@@ -57,7 +58,7 @@
     <div class="list-container" v-if="hotVedioList && hotVedioList.length">
       <div class="list-container-top-title">
         <p class="list-container-title">热门视频</p>
-        <span class="list-container-show-more" @click="showMore('vedio')">查看更多></span>
+        <span class="list-container-show-more" @click.stop="showMore('vedio')">查看更多></span>
       </div>
       <ul class="list-container-ul">
         <li class="list-container-item"
@@ -176,18 +177,20 @@ export default {
       // 推荐【最新】文章
       let promise2 = api.knowledgeBase.getKnowledgeList({
         knowledgeType: 'article',
-        searchType: 'newDesc',
-        limit: 3
+        searchType: 'newTime',
+        pageSize: 3,
+        pageNo: 1
       }).then(res => {
         this.recommendList = res || []
       }).catch(err => {
         console.log(err)
       })
-      // 最热文章
+      // 最热文章 【评论数量最多】
       let promise3 = api.knowledgeBase.getKnowledgeList({
         knowledgeType: 'article',
-        searchType: 'hotDesc',
-        limit: 5
+        searchType: 'mostComment',
+        pageSize: 5,
+        pageNo: 1
       }).then(res => {
         this.hotArticleList = res || []
       }).catch(err => {
@@ -283,6 +286,9 @@ export default {
       flex: 1;
       width: calc(100% - 70px);
       height: 100%;
+      .swiper {
+        height: 100%;
+      }
     }
   }
   .list-container {
