@@ -4,7 +4,7 @@
     <div class="middle-content">
       <p class="title">{{knowledge.title}}</p>
       <p class="desc">{{knowledge.desc}}</p>
-      <p class="type">{{knowledge.type}}</p>
+      <p class="type">{{knowledge.tagType}}</p>
     </div>
     <div class="right-content"><button class="right-btn">查看</button></div>
   </div>

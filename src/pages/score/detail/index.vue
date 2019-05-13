@@ -51,7 +51,6 @@ export default {
       this.scoreInfo = [
         {
           createTime: '2019-10-10 10:00',
-          type: '',
           userType: '2',
           score: 3.0,
           name: '王一舟',
@@ -60,7 +59,6 @@ export default {
         },
         {
           createTime: '2019-10-10 10:00',
-          type: '',
           userType: '3',
           score: 9.0,
           name: '成家长',

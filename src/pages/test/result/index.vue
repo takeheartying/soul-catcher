@@ -61,7 +61,7 @@ export default {
         picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
         title: '从积极心理学到幸福感',
         desc: '心境由心而设，态度可以决定我们的生活',
-        type: '心理综合',
+        tagType: '心理综合',
         testNum: 111,
         id: '111',
         testScore: 8.0,

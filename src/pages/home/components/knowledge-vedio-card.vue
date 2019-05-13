@@ -12,7 +12,7 @@
       <p class="desc">简介：{{knowledge.desc}}</p>
       <p class="author-info">发布者：{{knowledge.authorName}}【{{knowledge.authorAcademicTitle}}】</p>
       <p class="create-time">发布时间：{{knowledge.createTime}}</p>
-      <p class="type">类型：{{knowledge.type}}</p>
+      <p class="type">类型：{{knowledge.tagType}}</p>
     </div>
   </div>
 </template>
