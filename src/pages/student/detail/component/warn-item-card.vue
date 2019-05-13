@@ -1,14 +1,14 @@
 <template>
   <div class="warn-item-card">
-    <navigator class="warn-item-card--item" :url="'/pages/score/detail/main?id=' + warn.id + '&scoreType=student'">
-      <image class="warn-item-card--item-left-part" :src="warn.avatar || defaultPic" mode="aspectFill"></image>
+    <navigator class="warn-item-card--item" :url="'/pages/score/detail/main?id=' + warnInfo.id + '&scoreType=student'">
+      <image class="warn-item-card--item-left-part" :src="warnInfo.avatar || defaultPic" mode="aspectFill"></image>
       <div class="warn-item-card--item-middle-part">
-        <p class="warn-nickname">{{warn.name || warn.nickName}}</p>
-        <p class="warn-goodat">擅长：{{warn.goodAt}}</p>
-        <p class="warn-time">{{warn.createTime}}</p>
+        <p class="warn-nickname">{{warnInfo.name || warnInfo.nickName}}</p>
+        <p class="warn-goodat">擅长：{{warnInfo.goodAt}}</p>
+        <p class="warn-time">{{warnInfo.createTime}}</p>
       </div>
       <div class="warn-item-card--item-right-part">
-        <div class="consult-score-content" >{{warn.score ? warn.score + '分' : '暂无'}}</div>
+        <div class="consult-score-content" >{{warnInfo.score ? warnInfo.score + '分' : '暂无'}}</div>
       </div>
     </navigator>
   </div>
@@ -16,7 +16,7 @@
 <script>
 export default {
   props: {
-    warn: {
+    warnInfo: {
       type: Object,
       default () {
         return {}

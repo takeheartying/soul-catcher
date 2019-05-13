@@ -15,7 +15,7 @@
     </div>
     <div class="page-my-record--list" v-if="recordList && recordList.length">
       <div class="page-my-record--items">
-        <div class="page-my-record--item" v-for="(record, index) in recordList" :key="index" @click="gotoDetail(record)">
+        <div class="page-my-record--item" v-for="(record, index) in recordList" :key="index" @click="goToDetail(record)">
           <navigator class="page-my-record--item-left-part" :url="'/pages/expert/detail/main?id=' + record.expertId">
             <image class="page-my-record--item-left-part-image" mode="aspectFill" :src="record.expertAvatar"></image>
           </navigator>
@@ -25,7 +25,7 @@
             <p class="record-time">时间段：{{record.interval}}</p>
           </div>
           <div class="page-my-record--item-right-part">
-            <button class="record-btn" @click.stop="gotoDetail(record)">查看</button>
+            <button class="record-btn" @click.stop="goToDetail(record)">查看</button>
           </div>
         </div>
       </div>
@@ -145,6 +145,9 @@ export default {
       if (v && v.length >= 2) {
         this.dateBegin = v[0].value || ''
         this.showConsultMost = (v[1].value === '1') // 按专家筛选
+        // 重置信息：请求数据
+        this.recordList = []
+        this.getRecordList()
       }
     },
     async getRecordList () {
@@ -187,7 +190,7 @@ export default {
         }
       ]
     },
-    gotoDetail (record) {
+    goToDetail (record) {
       wx.navigateTo({url: `/pages/my/record/detail/main?expertId=${record.expertId}&dateBegin=${record.dateBegin}`})
     }
   },

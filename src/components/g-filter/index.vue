@@ -107,7 +107,7 @@
     z-index:1;
     width: 100%;
     background: #fff;
-    position: fixed;
+    position:relative;
     top: 0;
     left: 0;
     right: 0;

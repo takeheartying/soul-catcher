@@ -70,7 +70,7 @@ export default {
         pageNo: this.pageNo,
         studentId: this.studentId || ''
       }).then(res => {
-        this.testList = res || {}
+        this.testList = res || []
       }).catch(err => {
         console.log(err)
       })
