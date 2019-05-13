@@ -1,22 +1,28 @@
 <template>
   <section class="page-knowledge-add-or-edit">
+    <g-loading :loading="loading"></g-loading>
     <g-noresult
-    v-if="knowledgeId && !knowledgeInfo.id"
-    :show="true"
-    :knowledge="'未能查到知识库~'">
-    </g-noresult>      
-    <form @submit="formSubmit" v-else>
+    v-if="!loading && knowledgeId && !knowledgeInfo.id"
+    :show="knowledgeId && !knowledgeInfo.id"
+    :message="'未能查到知识库~'">
+    </g-noresult>
+    <form @submit="formSubmit" v-if="!loading && (!knowledgeId || knowledgeInfo.id)">
       <div class="zan-panel">
+        <div class="upload-img-warp">
+          <div class="upload-label">图片：</div>
+          <i class="iconfont icon-shangchuan" @click="chooseImage()" v-if="(!pic && !knowledgeInfo.pic)"></i>
+          <image class="upload-image" :src="pic || knowledgeInfo.pic" v-if="pic || knowledgeInfo.pic" @click="chooseImage()" mode="aspectFill"></image>
+        </div>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.title)" :value="knowledgeInfo.title" :focus="curComponentId === base.title.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.desc)" :value="knowledgeInfo.desc" :focus="curComponentId === base.desc.componentId"/>
-        <div class="good-at">类型：</div>
-        <checkbox-group class="tag-list" @change="checkboxChange($event)" v-if="userType === '2'">
-          <label class="tag-list-item" v-for="(item, index) in base.tagList" :key="index">
-            <checkbox class="checkbox" :value="item.name" :checked="item.checked" />
-            <span class="checkbox-value">{{item.value}}</span>
-          </label>
-        </checkbox-group>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.content)" :value="knowledgeInfo.content" v-if="userType === '2'" :focus="curComponentId === base.content.componentId"/>
+        <div class="good-at">类型：</div>
+        <radio-group class="tag-list" @change="radioChange($event)" v-if="userType === '2'">
+          <label class="tag-list-item" v-for="(item, index) in base.tagList" :key="index">
+            <radio class="radio" :value="item.name" :checked="tagType === item.name || item.checked" />
+            <span class="radio-value">{{item.value}}</span>
+          </label>
+        </radio-group>
       </div>
       <div class="zan-btns">
         <button class="zan-btn submit-btn" formType="submit">提交</button>
@@ -27,14 +33,18 @@
 <script>
 import ZanField from '@/components/zan/field'
 import GNoresult from '@/components/g-noresult/index.vue'
+import GLoading from '@/components/g-loading/index.vue'
 import api from '@/api'
 export default {
   components: {
     ZanField,
-    GNoresult
+    GNoresult,
+    GLoading
   },
   data () {
     return {
+      loading: false,
+      pic: '',
       title: '',
       knowledgeId: '',
       knowledgeInfo: {},
@@ -69,12 +79,12 @@ export default {
           },
           {
             name: '3',
-            value: '心理综合',
+            value: '趣味性格',
             checked: false
           },
           {
             name: '4',
-            value: '智商情商',
+            value: '心理综合',
             checked: false
           }
         ]
@@ -84,7 +94,7 @@ export default {
         handleZanFieldBlur: this.handleZanFieldBlur,
         handleZanFieldChange: this.handleZanFieldChange
       },
-      tagList: [], // '1' '2' '3' '4'
+      tagType: '',
       userType: '' // 0 管理员 1 学生 2 专家 3 家长
     }
   },
@@ -96,8 +106,45 @@ export default {
     }
   },
   methods: {
+    async upload (file) { // 上传单张图片
+      const tempFiles = file.tempFiles
+      const path = tempFiles[0].path
+      const size = tempFiles[0].size
+      if (size > 2 * 1024 * 1024) {
+        this.$toast('请上传小于2M的图片')
+        return
+      }
+      this.$loading.show('正在上传')
+      await api.upload({
+        url: '/kanoupload/imageupload.json', // 上传的地址
+        path: path,
+        name: 'upload'
+      }).then(res => {
+        if (res) {
+          console.log('上传成功！')
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$toast('上传失败！')
+      })
+      this.$loading.hide()
+    },
+    chooseImage () { // 图片上传
+      let that = this
+      wx.chooseImage({
+        count: 1,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success (res) {
+          that.pic = res.tempFilePaths[0]
+          // 上传图片：
+          that.upload(res)
+        }
+      })
+    },
     async getKnowledgeById () {
-      await api.knowledge.getKnowledgeDetailById({
+      this.loading = true
+      await api.knowledgeBase.getKnowledgeDetailById({
         id: this.knowledgeId
       }).then(res => {
         this.knowledgeInfo = res || {}
@@ -106,11 +153,26 @@ export default {
       })
       // mock数据：
       this.knowledgeInfo = {
+        tagType: '1',
         id: '3333',
+        pic: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
         title: '剪短发放假撒开了房间',
         desc: '代付款撒娇的风口浪尖是否考虑是否就说了放假快乐风',
         content: '发健康的萨拉飞机父级的雷克萨福建省家乐福科技打法是否三答困了就睡考虑发动机开始罗芬接待室里开发及两地分居阿拉水电费垃圾堆里撒发快递'
       }
+
+      this.loading = false
+      this.initData()
+    },
+    initData () {
+      if (this.knowledgeInfo && this.knowledgeInfo.tagType) { // 初始设置radio的值
+        let index = Number(this.knowledgeInfo.tagType) - 1
+        if (this.base.tagList[index]) {
+          this.base.tagList[index].checked = true
+          this.tagType = this.knowledgeInfo.tagType
+        }
+      }
+      this.pic = this.knowledgeInfo.pic || '' // 初始设置pic
     },
     handleZanFieldChange (e) {
       const { componentId, target } = e
@@ -122,20 +184,33 @@ export default {
     handleZanFieldBlur (e) {
       this.curComponentId = ''
     },
-    checkboxChange (e) {
-      this.tagList = e.target.value
+    radioChange (e) {
+      this.tagType = e.target.value
     },
-    async submitEdit () {
-      await api.knowledgeBase.updateKnowledge(submitInfo).then(res => {
-        if (res) {
-          this.$toast('提交成功！')
+    async submitEdit (submitInfo) {
+      wx.showModal({
+        content: '确定提交？',
+        showCancel: true, // 是否显示取消按钮
+        cancelColor: 'skyblue', // 取消文字的颜色
+        confirmColor: 'skyblue', // 确定文字的颜色
+        success: async res => {
+          if (res.cancel) {
+            // 点击取消,默认隐藏弹框
+          } else {
+            // 点击确定
+            await api.knowledgeBase.updateKnowledge(submitInfo).then(res => {
+              if (res) {
+                this.$toast('提交成功！')
+              }
+            }).catch(err => {
+              console.log(err)
+              this.$toast('系统错误！')
+            })
+          }
         }
-      }).catch(err => {
-        console.log(err)
-        this.$toast('系统错误！')
       })
-    }
-    async submitAdd () {
+    },
+    async submitAdd (submitInfo) {
       let that = this
       wx.showModal({
         content: '确定添加？',
@@ -153,14 +228,14 @@ export default {
               }
             }).catch(err => {
               console.log(err)
-              that.$toast('提交失败！')
+              that.$toast('系统错误！')
             })
           }
         }
       })
     },
     formSubmit (event) {
-      let submitInfo = Object.assign({}, event.target.value, {tagList: this.tagList})
+      let submitInfo = Object.assign({}, event.target.value, {tagType: this.tagType, pic: this.pic})
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
@@ -171,10 +246,10 @@ export default {
         }
       }
       if (this.knowledgeId) { // 修改知识库
-        this.submitEdit()
+        this.submitEdit(submitInfo)
       } else { // 添加知识库
-        this.submitAdd()
-      }     
+        this.submitAdd(submitInfo)
+      }
     }
   },
   mounted () {
@@ -196,6 +271,29 @@ export default {
     padding: 15px 0 0 20px;
     font-size: 16px;
   }
+  .upload-img-warp {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .upload-label {
+      padding: 15px 0 0 20px;
+      font-size: 16px;
+    }
+    .upload-image {
+      width: 90px;
+      height: 70px;
+      border-radius: 3px;
+      padding-top: 20px;
+      padding-left: 40px;
+    }
+    .iconfont {
+      color: #63B8FF;
+    font-size: 60px;
+      left: 31px;
+      position: relative;
+      top: 10px;
+    }
+  }
   .tag-list {
     width: 100%;
     display: flex;
@@ -204,10 +302,10 @@ export default {
     align-items: center;
     padding: 15px 0;
     .tag-list-item {
-      .checkbox-value {
+      .radio-value {
         margin-left: -3px;
       }
-      .checkbox {
+      .radio {
         transform: scale(0.5);
         position: relative;
         top: -1.5px;

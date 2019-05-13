@@ -13,7 +13,7 @@
       <ul class="page-knowledge-list--items" v-if="knowledgeList && knowledgeList.length">
         <li class="page-knowledge-list--item"
           v-for="(article, index) in knowledgeList" :key="index" >
-          <knowledge-article-card :knowledge="article"></knowledge-article-card>
+          <knowledge-article-card :knowledge="article" :showEdit="showEdit"></knowledge-article-card>
         </li>
       </ul>
     </scroll-view>
@@ -126,12 +126,13 @@ export default {
       knowledgeList: [],
       loading: false,
       finished: false,
-      pageNo: 1
+      pageNo: 1,
+      showEdit: false
     }
   },
   methods: {
     addKnowledge () { // 添加知识库
-      wx.navigateTo({url: '/pages/knowledage/add/main'})
+      wx.navigateTo({url: '/pages/knowledge/edit/main'})
     },
     changeData (v) { // 返回最终结果。(注：筛选结果的value返回json对象)
       if (v && v.length >= 2) {
@@ -259,6 +260,7 @@ export default {
     this.tagType = options.tagType || '' // 1 2 3 4
     this.searchType = options.searchType || '' // newTime 或者 mostComment
     this.knowledgeType = options.knowledgeType || 'article' // vedio 或者 article 【目前只做article】
+    this.showEdit = (this.userType === '2' && this.expertId) // 专家查看我的知识库 -- 前往编辑
   },
   mounted () {
     wx.setNavigationBarTitle({

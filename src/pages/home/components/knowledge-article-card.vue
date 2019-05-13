@@ -6,22 +6,24 @@
       <p class="desc">{{knowledge.desc}}</p>
       <p class="type">{{knowledge.tagType}}</p>
     </div>
-    <div class="right-content"><button class="right-btn">查看</button></div>
+    <div class="right-content"><button class="right-btn" @click="lookOver()">{{showEdit ? '编辑' : '查看'}}</button></div>
   </div>
 </template>
 <script>
 export default {
-  data () {
-    return {
-
-    }
-  },
   methods: {
     gotoDetail (id) {
       if (id) {
         wx.navigateTo({
           url: `/pages/knowledge/article/detail?id=${id}`
         })
+      }
+    },
+    lookOver () { // 查看
+      if (this.showEdit) { // 专家查看我的知识库-- 前往编辑页
+        wx.navigateTo({url: `/pages/knowledge/edit/main?id=${this.knowledge.id}`})
+      } else {
+        this.gotoDetail(this.knowledge.id)
       }
     }
   },
@@ -31,6 +33,10 @@ export default {
       default () {
         return {}
       }
+    },
+    showEdit: {
+      type: Boolean,
+      default: false
     }
   }
 }

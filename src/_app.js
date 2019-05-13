@@ -1,5 +1,4 @@
-// import config from './config'
-// import api from './api'
+import config from './config'
 
 let toResolve
 let ready
@@ -19,21 +18,7 @@ let appConfig = {
       smsType: '',
       signature: ''
     },
-    locationInfo: {
-      latitude: '',
-      longitude: '',
-      provinceId: '',
-      provinceName: '',
-      areaId: '',
-      areaName: '',
-      autoCityId: '',
-      setted: false
-    }
-    // gatewayServer: config.gatewayServer,
-    // serviceServer: config.serviceServer,
-    // staticServer: config.staticServer,
-    // mircoServer: config.mircoServer,
-    // imServer: config.imServer
+    gatewayServer: config.gatewayServer
   },
   loginInit (callback) {
     if (typeof callback !== 'function') {
@@ -88,7 +73,7 @@ let appConfig = {
   },
   wyLogin (re) {
     wx.$p.request({
-      url: this.globalData.serviceServer + '/json/white/miniprogrom/login',
+      url: this.globalData.gatewayServer + '/json/white/miniprogrom/login',
       header: {
         'appid': 'soul-catcher'
       },
@@ -137,74 +122,6 @@ let appConfig = {
     // }).catch(e => {
     //   this.loginfail()
     // })
-  },
-  getAddress: function (cb) {
-    var that = this
-    if (that.globalData.locationInfo.setted) {
-      typeof cb === 'function' && cb(that.globalData.locationInfo)
-    } else {
-      wx.getLocation({
-        type: 'wgs84',
-        success: function (res) {
-          var latitude = res.latitude
-          var longitude = res.longitude
-          // 自动定位
-          wx.request({
-            url: that.globalData.psServer + '/json/white/location/get',
-            data: {
-              longitude: longitude,
-              latitude: latitude
-            },
-            method: 'GET',
-            success: function (res) {
-              if (res && res.data && res.data.success && res.data.data) {
-                var r = res.data.data
-                var cityid = r.cityId
-                // 获取到地址
-                // 对于请求到的定位地址，如果城市是“不限”的，则id取省份id，名称取“不限”，全国的不限id同全国id：“all”
-                that.globalData.locationInfo = {
-                  latitude: latitude,
-                  longitude: longitude,
-                  provinceId: r.provinceId,
-                  provinceName: r.province,
-                  areaId: (cityid === 'all') ? r.provinceId : cityid,
-                  areaName: r.city,
-                  autoCityId: (cityid === 'all') ? r.provinceId : cityid,
-                  setted: true
-                }
-              } else {
-                console.log('自动定位接口请求失败')
-                getLocationFailed(latitude, longitude)
-              }
-              typeof cb === 'function' && cb(that.globalData.locationInfo)
-            },
-            fail: function (res) {
-              console.log('自动定位接口请求失败！')
-              getLocationFailed(latitude, longitude)
-              typeof cb === 'function' && cb(that.globalData.locationInfo)
-            }
-          })
-        },
-        fail: function () {
-          console.log('未开启定位授权或其他错误！')
-          getLocationFailed()
-          typeof cb === 'function' && cb(that.globalData.locationInfo)
-        }
-      })
-    }
-
-    function getLocationFailed (latitude, longitude) {
-      that.globalData.locationInfo = {
-        latitude: latitude || '',
-        longitude: longitude || '',
-        provinceId: 'all',
-        provinceName: '全国',
-        areaId: '',
-        areaName: '不限',
-        autoCityId: '',
-        setted: true
-      }
-    }
   },
   requestH5api (options) {
     var that = this
