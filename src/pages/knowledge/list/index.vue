@@ -17,6 +17,10 @@
         </li>
       </ul>
     </scroll-view>
+    <!-- 我的知识库 --- 添加知识库按钮： -->
+    <div class="page-knowledge-list--add-wrap" v-if="userType === '2' && expertId" @click="addKnowledge()">
+      <i class="iconfont icon-tianjia"></i>
+    </div>
     <g-noresult
     v-if="!knowledgeList.length"
     :show="true"
@@ -286,6 +290,17 @@ export default {
     }
     .page-knowledge-list--filter{
       height: 40px;
+    }
+    .page-knowledge-list--add-wrap {
+      position: absolute;
+      bottom: 100px;
+      right: 40px;
+      .iconfont {
+        display: block;
+        font-size: 50px;
+        color: #63B8FF;
+        border-radius: 50%;
+      }
     }
   }
 </style>
