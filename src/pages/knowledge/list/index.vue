@@ -8,7 +8,7 @@ export default {
   data () {
     return {
       userType: '',
-      isShowMy: false
+      expertId: ''
     }
   },
   methods: {
@@ -16,7 +16,7 @@ export default {
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
-    this.isShowMy = (options.isShowMy === '1' && this.userType === '2') // 是否展示的是某专家知识库列表
+    this.expertId = options.expertId || '' // 展示的是某专家知识库列表
   },
   mounted () {
 

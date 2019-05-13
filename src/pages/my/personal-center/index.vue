@@ -64,7 +64,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" url="/pages/knowledge/list/main?isShowMy=1" v-if="userType === '2'">
+        <navigator class="function-item" :url="'/pages/knowledge/list/main?expertId=' + userInfo.id" v-if="userType === '2'">
           <div class="left-part">
             <i class="iconfont icon-zhishiku"></i>
           </div>
@@ -118,6 +118,7 @@ export default {
       })
       // mock数据：
       this.userInfo = {
+        id: '4444', // 用户id
         avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1293892983,611103898&fm=27&gp=0.jpg',
         nickName: '驾辕的位置',
         studentId: '323434' // 用户是家长的时候
