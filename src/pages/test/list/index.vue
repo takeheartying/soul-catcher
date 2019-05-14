@@ -1,12 +1,16 @@
 <template>
   <section class="page-test-list">
     <!-- 测试列表页： -->
-    <scroll-view  class="page-my-comment--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
+    <scroll-view  class="page-test-list--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
       <ul class="list-container" v-if="testList.length">
         <li class="list-item" v-for="(test, index) in testList" :key="index">
           <test-info-card :testInfo="test" :showType="showType" :studentId="studentId"></test-info-card>
         </li>
       </ul>
+      <!-- 管理员管理测试题 --- 添加测试题按钮： -->
+      <div class="page-test-list--add-wrap" v-if="userType === '0'" @click="addTest()">
+        <i class="iconfont icon-tianjia"></i>
+      </div>
       <g-loading :loading="loading"></g-loading>
       <g-noresult v-if="!testList.length" :show="!loading"
       :message="'还没有任何测试~'">
@@ -132,6 +136,9 @@ export default {
         this.pageNo++
         this.getTestList()
       }
+    },
+    addTest () { // 添加测试题
+      wx.navigateTo({url: '/pages/test/edit/main'})
     }
   },
   mounted () {
@@ -151,13 +158,24 @@ export default {
     background: #fff;
     padding-bottom: 20px;
     display: flex;
-    .page-my-comment--scroll-view {
+    .page-test-list--scroll-view {
       flex: 1;
       /*隐藏滚动条*/
       ::-webkit-scrollbar {
         width: 0;
         height: 0;
         color: transparent;
+      }
+      .page-test-list--add-wrap {
+        position: absolute;
+        bottom: 100px;
+        right: 40px;
+        .iconfont {
+          display: block;
+          font-size: 50px;
+          color: #63B8FF;
+          border-radius: 50%;
+        }
       }
     }
 }

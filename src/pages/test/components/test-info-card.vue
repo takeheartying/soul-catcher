@@ -28,7 +28,8 @@ export default {
   },
   data () {
     return {
-      url: ''
+      url: '',
+      userType: ''
     }
   },
   methods: {
@@ -43,6 +44,7 @@ export default {
     }
   },
   onLoad () {
+    this.userType = this.$app.globalData.userType || ''
     this.getUrl()
   }
 }
