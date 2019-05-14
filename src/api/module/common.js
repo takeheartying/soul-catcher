@@ -13,12 +13,6 @@ export const getUserInfo = (params) => {
     return res || {}
   })
 }
-// 获取首页banner信息
-export const getBannerList = (params) => {
-  return wxRequest.post('https://route.showapi.com/970-1', params).then(res => {
-    return res || {}
-  })
-}
 // 根据学生id获取记录 【score：4代表小于等于4的预警记录】
 export const getRecordListByUserId = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {

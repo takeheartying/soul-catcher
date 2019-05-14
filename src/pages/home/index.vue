@@ -168,14 +168,8 @@ export default {
   },
   methods: {
     async getInitList () {
-      // banner列表：
-      let promise1 = api.common.getBannerList().then(res => {
-        this.bannerList = res || []
-      }).catch(err => {
-        console.log(err)
-      })
       // 推荐【最新】文章
-      let promise2 = api.knowledgeBase.getKnowledgeList({
+      let promise1 = api.knowledgeBase.getKnowledgeList({
         knowledgeType: 'article',
         searchType: 'newTime',
         pageSize: 3,
@@ -186,7 +180,7 @@ export default {
         console.log(err)
       })
       // 最热文章 【评论数量最多】
-      let promise3 = api.knowledgeBase.getKnowledgeList({
+      let promise2 = api.knowledgeBase.getKnowledgeList({
         knowledgeType: 'article',
         searchType: 'mostComment',
         pageSize: 5,
@@ -196,7 +190,7 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-      let promises = [promise1, promise2, promise3]
+      let promises = [promise1, promise2]
       await Promise.all(promises)
       // mock数据：在上边
     },
