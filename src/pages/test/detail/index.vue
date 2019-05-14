@@ -9,7 +9,7 @@
       <ul class="test-info">
         <li class="test-info-item">
           <div class="test-info-item-title">类型：</div>
-          <div class="test-info-item-content">{{testInfo.typeDesc}}</div>
+          <div class="test-info-item-content">{{testInfo.tagTypeDesc}}</div>
         </li>
         <li class="test-info-item">
           <div class="test-info-item-title">简述：</div>
@@ -90,8 +90,8 @@ export default {
         title: '从积极心理学到幸福感',
         desc: '心境由心而设，态度可以决定我们的生活',
         detail: '围殴减肥的空间打发时间爱发科的结论是开饭啦司法解释口岸疯狂夺金萨福克精神科拉飞机拉萨九分裤大富科技按时付款了贷款酸辣粉东方健康路撒放开了的附件安联大厦积分卡斯加咖啡拉萨到付款荆防颗粒三加上端口分类考试了',
-        type: 4, // 1爱情脱单 2智商情商 3趣味性格 4心理综合
-        typeDesc: '心理综合',
+        tagType: 4, // 1爱情脱单 2智商情商 3趣味性格 4心理综合
+        tagTypeDesc: '心理综合',
         testNum: 111,
         id: '111',
         examList: [ // 测试题目列表
@@ -191,7 +191,7 @@ export default {
       })
     },
     async submitExam () {
-      await api.test.submitTest({
+      await api.test.submitTestResult({
         id: this.testInfo.id,
         examList: this.testInfo.examList
       }).then(res => {

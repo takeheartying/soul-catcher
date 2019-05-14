@@ -18,8 +18,14 @@ export const getTestResultListById = (params) => {
     return res || {}
   })
 }
-// 提交测试
-export const submitTest = (params) => {
+// 提交测试结果
+export const submitTestResult = (params) => {
+  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+    return res || {}
+  })
+}
+// 添加测试
+export const addTest = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
     return res || {}
   })
