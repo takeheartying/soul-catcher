@@ -1,7 +1,7 @@
 <template>
   <!-- 我的心理档案 -->
   <section class="page-my-record">
-    <div class="page-my-record--filter">
+    <div class="page-my-record--filter" v-if="!loading && recordList.length">
       <!-- top:筛选条离顶部的距离 -->
       <filter-bar
         top="1"
@@ -30,10 +30,11 @@
         </div>
       </div>
     </div>
+    <g-loading :loading="loading"></g-loading>
     <g-noresult
-    v-if="!recordList.length"
-    :show="true"
-    :record="'还没有任何记录~'">
+    v-if="!recordList.length && !loading"
+    :show="!recordList.length && !loading"
+    :message="'还没有任何记录~'">
     </g-noresult>
   </section>
 </template>
@@ -41,14 +42,17 @@
 import api from '@/api'
 import FilterBar from '@/components/g-filter/index.vue'
 import GNoresult from '@/components/g-noresult/index.vue'
+import GLoading from '@/components/g-loading/index.vue'
 import moment from 'moment'
 export default {
   components: {
     FilterBar,
-    GNoresult
+    GNoresult,
+    GLoading
   },
   data () {
     return {
+      loading: false,
       showConsultMost: false, // 显示专家咨询数最多
       barMenus: [
         {
@@ -152,6 +156,7 @@ export default {
     },
     async getRecordList () {
       // 获取我的心理档案（记录）列表：
+      this.loading = true
       await api.my.getRecordList({
         showConsultMost: this.showConsultMost,
         dateBegin: this.dateBegin ? moment().subtract(this.dateBegin, 'months') : ''
@@ -189,6 +194,7 @@ export default {
           interval: '全部' // 时间段
         }
       ]
+      this.loading = false
     },
     goToDetail (record) {
       wx.navigateTo({url: `/pages/my/record/detail/main?expertId=${record.expertId}&dateBegin=${record.dateBegin}`})

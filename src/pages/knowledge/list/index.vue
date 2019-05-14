@@ -1,7 +1,7 @@
 <template>
   <!-- 知识库列表 -->
   <section class="page-knowledge-list">
-    <div class="page-knowledge-list--filter">
+    <div class="page-knowledge-list--filter" v-if="!loading && knowledgeList.length">
       <!-- top:筛选条离顶部的距离 -->
       <filter-bar
         :top="0"
@@ -21,9 +21,10 @@
     <div class="page-knowledge-list--add-wrap" v-if="userType === '2' && expertId" @click="addKnowledge()">
       <i class="iconfont icon-tianjia"></i>
     </div>
+    <g-loading :loading="loading"></g-loading>
     <g-noresult
-    v-if="!knowledgeList.length"
-    :show="true"
+    v-if="!knowledgeList.length && !loading"
+    :show="!knowledgeList.length && !loading"
     :knowledge="'还没有任何记录~'">
     </g-noresult>
   </section>
@@ -32,11 +33,13 @@
 import api from '@/api'
 import FilterBar from '@/components/g-filter/index.vue'
 import GNoresult from '@/components/g-noresult/index.vue'
+import GLoading from '@/components/g-loading/index.vue'
 import knowledgeArticleCard from '../../home/components/knowledge-article-card'
 export default {
   components: {
     FilterBar,
     GNoresult,
+    GLoading,
     knowledgeArticleCard
   },
   data () {

@@ -15,7 +15,7 @@ export default {
     gotoDetail (id) {
       if (id) {
         wx.navigateTo({
-          url: `/pages/knowledge/article/detail?id=${id}`
+          url: `/pages/knowledge/article/detail/main?id=${id}`
         })
       }
     },

@@ -39,6 +39,7 @@
           </li>
         </navigator>
       </ul>
+      <g-loading :loading="loading"></g-loading>
       <!-- 测试推荐： -->
       <ul class="recommend-list" v-if="testList.length">
         <div class="list-container-top-title">
@@ -55,17 +56,20 @@
 </template>
 <script>
 import tabBar from '@/components/tab-bar'
+import GLoading from '@/components/g-loading/index.vue'
 import TestInfoCard from '../components/test-info-card.vue'
 import api from '@/api'
 export default {
   data () {
     return {
+      loading: false,
       userType: '',
       testList: []
     }
   },
   methods: {
     async getRecommendTestList () {
+      this.loading = true
       await api.test.getTestList({
         limit: 5
       }).then(res => {
@@ -116,6 +120,7 @@ export default {
           id: '111'
         }
       ]
+      this.loading = false
     }
   },
   onLoad (options) {
@@ -132,7 +137,8 @@ export default {
   },
   components: {
     tabBar,
-    TestInfoCard
+    TestInfoCard,
+    GLoading
   }
 }
 </script>

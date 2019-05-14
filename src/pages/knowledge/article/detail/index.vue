@@ -1,5 +1,5 @@
 <template>
-  <div class="page-knowledge-article-detail">
+  <div class="page-knowledge-article-detail" :style="(!articleInfo.id && !loading) ? 'height: 100%;' : ''">
     <!-- 文章知识库详情 -->
     <div class="page-knowledge-article-detail--container" v-if="articleInfo && articleInfo.id">
       <div class="page-knowledge-article-detail--content">
@@ -16,7 +16,7 @@
         </ul>
       </div>
       <div class="page-knowledge-article-detail--input-conatiner">
-        <input class="page-knowledge-article-detail--input-code" :placeholder="'请输入评论内容'" type="text" :focus="isFocus" v-model="commentVal"/>
+        <input class="page-knowledge-article-detail--input-code" :placeholder="'请输入评论内容'" type="text" @focus="showFocus()" :focus="isFocus" v-model="commentVal"/>
         <p class="page-knowledge-article-detail--submit-btn" @click="submitComment()">发送</p>
       </div>
     </div>
@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     async getArticleInfo () {
+      this.loading = true
       await api.knowledgeBase.getKnowledgeDetailById({
         id: this.knowledgeId
       }).then(res => {
@@ -164,15 +165,24 @@ export default {
           }
         ]
       }
+      this.loading = false
     },
-    commentFocus (comment) {
+    commentFocus (comment, type) {
       this.isFocus = true
       this.curComment = comment
-      debugger
+    },
+    showFocus () {
+      console.log(this.isFocus)
     },
     async submitComment () { // 提交评论
+      if (!this.commentVal.trim()) {
+        this.$toast('请提交评论！')
+        return false
+      }
       await api.comment.submitComment({
-        content: this.commentVal
+        knowledgeId: this.knowledgeId,
+        content: this.commentVal.trim(),
+        commentId: this.curComment.id // 对已经存在的评论进行回复，若无，则是新的评论
       }).then(res => {
         if (res) {
           this.commentList.unshift(res)
@@ -214,7 +224,6 @@ export default {
 <style lang="less">
   .page-knowledge-article-detail {
     background: #fff;
-    height: 100%;
     overflow: auto;
     padding-bottom: 50px;
     /*隐藏滚动条*/

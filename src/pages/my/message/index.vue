@@ -40,9 +40,10 @@
         </div>
       </div>
     </div>
+    <g-loading :loading="loading"></g-loading>
     <g-noresult
-    v-if="!messageList.length"
-    :show="true"
+    v-if="!messageList.length && !loading"
+    :show="!messageList.length && !loading"
     :message="'还没有任何消息~'">
     </g-noresult>
   </section>
@@ -50,19 +51,23 @@
 <script>
 import api from '@/api'
 import GNoresult from '@/components/g-noresult/index.vue'
+import GLoading from '@/components/g-loading/index.vue'
 import moment from 'moment'
 export default {
   components: {
-    GNoresult
+    GNoresult,
+    GLoading
   },
   data () {
     return {
+      loading: false,
       userType: '',
       messageList: []
     }
   },
   methods: {
     async getMsgList () {
+      this.loading = true
       // 获取两天内消息列表：
       await api.my.getMsgList({
         dateBegin: moment().subtract(2, 'days')
@@ -149,6 +154,7 @@ export default {
           commentId: '453453' // 评论文章或视频所在的id,用于去查看知识库
         }
       ]
+      this.loading = false
     },
     clickMsg (message) {
       let url = ''

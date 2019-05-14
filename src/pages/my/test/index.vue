@@ -5,7 +5,8 @@
         <test-info-card :testInfo="test"></test-info-card>
       </li>
     </ul>
-    <g-noresult v-if="!testList.length" :show="!loading"
+    <g-loading :loading="loading"></g-loading>
+    <g-noresult v-if="!testList.length" :show="!testList.length && !loading"
     :message="'还没有任何测试~'"
     :btn="noresultBtn">
     </g-noresult>
@@ -39,6 +40,7 @@ export default {
   },
   methods: {
     async getMyTestList () {
+      this.loading = true
       await api.my.getTestList({
         userType: this.userType
       }).then(res => {
@@ -89,6 +91,7 @@ export default {
           id: '111'
         }
       ]
+      this.loading = false
     }
   },
   mounted () {

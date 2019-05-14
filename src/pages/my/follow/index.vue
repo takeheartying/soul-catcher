@@ -6,7 +6,8 @@
         <follow-info-card :followInfo="follow"></follow-info-card>
       </li>
     </ul>
-    <g-noresult v-if="!followList.length" :show="!loading"
+    <g-loading :loading="loading"></g-loading>
+    <g-noresult v-if="!followList.length && !loading" :show="!followList.length && !loading"
     :message="'还没有任何关注~'"
     :btn="noresultBtn">
     </g-noresult>
@@ -40,6 +41,7 @@ export default {
   },
   methods: {
     async getMyFollowList () {
+      this.loading = true
       await api.my.getFollowList({
         userType: this.userType
       }).then(res => {
@@ -83,6 +85,7 @@ export default {
           fanNum: 2
         }
       ]
+      this.loading = false
     }
   },
   mounted () {

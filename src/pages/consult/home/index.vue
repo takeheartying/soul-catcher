@@ -19,6 +19,7 @@
           <li class="consult-classification-item">心理<br/>综合</li>
         </navigator>
       </ul>
+      <g-loading :loading="loading"></g-loading>
       <!-- 人气专家： -->
       <div class="recommend-list" v-if="recConsultList && recConsultList.length">
         <div class="list-container-top-title">
@@ -46,10 +47,12 @@
 <script>
 import tabBar from '@/components/tab-bar'
 import consultInfoCard from './components/consult-info-card.vue'
+import GLoading from '@/components/g-loading/index.vue'
 import api from '@/api'
 export default {
   data () {
     return {
+      loading: false,
       userType: '',
       recConsultList: [], // 人气专家列表
       focusConsultList: [] // 关注专家列表
@@ -58,6 +61,7 @@ export default {
   methods: {
     async getConsultList () {
       // 获取人气专家列表：
+      this.loading = true
       await api.consult.getConsultList({
         pageSize: 5,
         pageNo: 1,
@@ -107,6 +111,7 @@ export default {
           consultorNum: 9
         }
       ]
+      this.loading = false
     }
   },
   onLoad (options) {
@@ -123,6 +128,7 @@ export default {
   },
   components: {
     tabBar,
+    GLoading,
     consultInfoCard
   }
 }

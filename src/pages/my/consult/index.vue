@@ -6,7 +6,8 @@
         <consult-info-card :consultInfo="consult"></consult-info-card>
       </li>
     </ul>
-    <g-noresult v-if="!consultList.length" :show="!loading"
+    <g-loading :loading="loading"></g-loading>
+    <g-noresult v-if="!consultList.length" :show="!loading && !consultList.length"
     :message="'还没有任何咨询~'"
     :btn="noresultBtn">
     </g-noresult>
@@ -40,6 +41,7 @@ export default {
   },
   methods: {
     async getMyConsultList () {
+      this.loading = true
       await api.my.getConsultList({
         userType: this.userType || '1'
       }).then(res => {
@@ -76,6 +78,7 @@ export default {
           consultTime: '2019-03-21 12:30'
         }
       ]
+      this.loading = false
     }
   },
   mounted () {
