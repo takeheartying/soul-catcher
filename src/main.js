@@ -13,7 +13,6 @@ import GAuth from '@/components/g-auth/index.vue'
 import GItem from '@/components/g-item/index.vue'
 
 // 全局组件
-// 全局组件
 Vue.component('x-popup', XPopup)
 Vue.component('x-confirm', XConfirm)
 Vue.component('x-button', XButton)

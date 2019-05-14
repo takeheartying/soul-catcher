@@ -1,7 +1,7 @@
 <template>
   <section class="page-my-personal-center">
-    <div class="inner-content">
-      <navigator class="user-info" url="/pages/my/detail/main">
+    <div class="inner-content" v-if="userType">
+      <navigator class="user-info" url="/pages/my/detail/main" v-if="userType">
         <div class="avatar">
           <image class="avatar-pic" :src="userInfo.avatar"></image>
         </div>
@@ -13,7 +13,7 @@
           <i class="iconfont icon-fanhui-copy"></i>
         </div>
       </navigator>
-      <div class="row-functions">
+      <div class="row-functions" v-if="userType !== '0'">
         <navigator class="function-item"  url="/pages/my/follow/main" hover-class="none">
           <i class="iconfont icon-guanzhu"></i>
           <p>我的关注</p>
@@ -37,7 +37,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" url="/pages/my/consult/main">
+        <navigator class="function-item" url="/pages/my/consult/main" v-if="userType !== '0'">
           <div class="left-part">
             <i class="iconfont icon-zixun1"></i>
           </div>
@@ -82,12 +82,34 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
+        <!-- 以下是管理员内容： -->
+        <navigator class="function-item" url="/pages/test/list/main" v-if="userType === '0'">
+          <div class="left-part">
+            <i class="iconfont icon-ceshi"></i>
+          </div>
+          <div class="right-part">
+            <p>测试管理</p>
+            <i class="iconfont icon-fanhui-copy"></i>
+          </div>
+        </navigator>  
+        <navigator class="function-item" :url="'/pages/knowledge/list/main'" v-if="userType === '0'">
+          <div class="left-part">
+            <i class="iconfont icon-zhishiku"></i>
+          </div>
+          <div class="right-part">
+            <p>知识库管理</p>
+            <i class="iconfont icon-fanhui-copy"></i>
+          </div>
+        </navigator>              
       </div>
       <navigator class="contact-us" url="/pages/contact-us/main">
         联系我们
       </navigator>
     </div>
     <tab-bar :userType="userType" v-if="userType" :curUrl="'/pages/my/personal-center/main'"></tab-bar>
+    <!-- 登录授权：     -->
+    <div class="go-to-choose-usertype" v-if="!userType && (loginState === 'done' || loginState === 'logining')"><button @click="goToChooseUserType()">选择角色</button></div>
+    <g-auth ref="auth"></g-auth>
   </section>
 </template>
 <script>
@@ -97,15 +119,12 @@ import tabBar from '@/components/tab-bar'
 export default {
   data () {
     return {
+      loginState: 'nologin',
       userInfo: {},
       userType: '' // 0 管理员 1 学生 2 专家 3 家长
     }
   },
   onLoad (options) {
-    this.userType = this.$app.globalData.userType || ''
-    if (this.userType && this.userType !== '0') { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
-      wx.hideTabBar() // 显示自定义tabTab
-    }
   },
   methods: {
     async getUserInfo () {
@@ -123,10 +142,23 @@ export default {
         nickName: '驾辕的位置',
         studentId: '323434' // 用户是家长的时候
       }
+    },
+    goToChooseUserType () {
+      wx.navigateTo({url: '/pages/login/main'})
     }
   },
   mounted () {
-    wx._this = this
+    this.$refs.auth.run(true).then(() => {
+      // 正常账号
+      this.userType = this.$app.globalData.userType || ''
+      this.loginState = this.$app.globalData.loginState // // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功
+      if (this.userType && this.userType !== '0') { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
+        wx.hideTabBar() // 显示自定义tabTab
+      } else {
+        // 选择角色页面：
+        // wx.navigateTo({url: '/pages/login/main'})
+      }
+    })
     wx.setNavigationBarTitle({
       title: '个人中心'
     })
@@ -273,6 +305,19 @@ export default {
     font-size: 16px;
     justify-content: center;
     align-items: center;
+  }
+  .go-to-choose-usertype {
+    height: 100%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    button {
+      padding: 5px 10px;
+      font-size: 16px;
+      color: #63B8FF;
+      border-color: #63B8FF;
+    }
   }
 }
 </style>

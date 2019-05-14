@@ -17,7 +17,7 @@
         <zan-field v-bind="Object.assign({}, handleFunctions, base.desc)" :value="knowledgeInfo.desc" :focus="curComponentId === base.desc.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.content)" :value="knowledgeInfo.content" v-if="userType === '2'" :focus="curComponentId === base.content.componentId"/>
         <div class="good-at">类型：</div>
-        <radio-group class="tag-list" @change="radioChange($event)" v-if="userType === '2'">
+        <radio-group class="tag-list" @change="radioChange($event)" v-if="userType === '2' || userType === '0'">
           <label class="tag-list-item" v-for="(item, index) in base.tagList" :key="index">
             <radio class="radio" :value="item.name" :checked="tagType === item.name || item.checked" />
             <span class="radio-value">{{item.value}}</span>

@@ -17,8 +17,8 @@
         </li>
       </ul>
     </scroll-view>
-    <!-- 我的知识库 --- 添加知识库按钮： -->
-    <div class="page-knowledge-list--add-wrap" v-if="userType === '2' && expertId" @click="addKnowledge()">
+    <!-- 专家查看我的知识库 || 管理员管理知识库 --- 添加知识库按钮： -->
+    <div class="page-knowledge-list--add-wrap" v-if="(userType === '2' && expertId) || userType === '0'" @click="addKnowledge()">
       <i class="iconfont icon-tianjia"></i>
     </div>
     <g-loading :loading="loading"></g-loading>
@@ -263,7 +263,7 @@ export default {
     this.tagType = options.tagType || '' // 1 2 3 4
     this.searchType = options.searchType || '' // newTime 或者 mostComment
     this.knowledgeType = options.knowledgeType || 'article' // vedio 或者 article 【目前只做article】
-    this.showEdit = (this.userType === '2' && this.expertId) // 专家查看我的知识库 -- 前往编辑
+    this.showEdit = (this.userType === '2' && this.expertId) || this.userType === '0' // 专家或管理员查看我的知识库 -- 前往编辑
   },
   mounted () {
     wx.setNavigationBarTitle({

@@ -5,8 +5,9 @@
         <zan-field v-bind="Object.assign({}, handleFunctions, base.nickName)" :value="userInfo.nickName" :focus="curComponentId === base.nickName.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.name)" :value="userInfo.name" :focus="curComponentId === base.name.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.academicTitle)" :value="userInfo.academicTitle" v-if="userType === '2'" :focus="curComponentId === base.academicTitle.componentId"/>
-        <zan-field v-bind="Object.assign({}, handleFunctions, base.phone)"  :value="userInfo.phone" :focus="curComponentId === base.phone.componentId"/>
-        <zan-field v-bind="Object.assign({}, handleFunctions, base.organization)" :value="userInfo.organization" v-if="userType !== '3'" :focus="curComponentId === base.organization.componentId"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.phone)"  :value="userInfo.phone" v-if="userType !== '0'" :focus="curComponentId === base.phone.componentId"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.relationPhone)"  :value="userInfo.relationPhone" v-if="userType === '1' || userType === '3'" :focus="curComponentId === base.relationPhone.componentId"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.organization)" :value="userInfo.organization" v-if="userType === '1' || userType === '2'" :focus="curComponentId === base.organization.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.detail)" :value="userInfo.detail" v-if="userType === '2'" :focus="curComponentId === base.detail.componentId"/>
         <div class="good-at" v-if="userType === '2'">擅长领域：</div>
         <checkbox-group class="tag-list" @change="checkboxChange($event)" v-if="userType === '2'">
@@ -53,6 +54,13 @@ export default {
           placeholder: '请输入手机号',
           componentId: 'phone'
         },
+        relationPhone: {
+          // focus: false,
+          title: '学生电话',
+          inputType: 'number',
+          placeholder: '请输入手机号',
+          componentId: 'relationPhone'
+        },
         academicTitle: {
           // focus: false,
           title: '职称：',
@@ -68,7 +76,7 @@ export default {
         },
         organization: {
           // focus: false,
-          title: this.userType === '2' ? '工作单位：' : '学校名称：',
+          title: '学校名称：',
           placeholder: '请输入学校名称',
           componentId: 'organization'
         },
@@ -106,11 +114,14 @@ export default {
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
+    this.initData()
   },
   methods: {
+    // 登录检测：
     async getUserInfo () {
       await api.common.getUserInfo({
-        userType: this.userType
+        userType: this.userType,
+        userId: this.$app.globalData.userInfo.userId
       }).then(res => {
         this.userInfo = res || {}
       }).catch(err => {
@@ -118,13 +129,23 @@ export default {
       })
       // mock数据：
       this.userInfo = {
+        userType: '1',
         avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1293892983,611103898&fm=27&gp=0.jpg',
         nickName: '驾辕的位置',
         phone: '15868157426',
         name: '梁晓莹',
+        relationPhone: '15869702839',
         academicTitle: '心理老师',
         organization: '浙江科技学院',
         detail: '发健康的萨拉飞机父级的雷克萨福建省家乐福科技打法是否三答困了就睡考虑发动机开始罗芬接待室里开发及两地分居阿拉水电费垃圾堆里撒发快递'
+      }
+    },
+    initData () {
+      this.base.relationPhone.title = this.userType === '3' ? '孩子电话：' : '家长电话：'
+      this.base.organization = {
+        title: this.userType === '2' ? '工作单位：' : '学校名称：',
+        placeholder: this.userType === '2' ? '请输入工作单位' : '请输入学校名称',
+        componentId: 'organization'
       }
     },
     handleZanFieldChange (e) {
@@ -140,8 +161,34 @@ export default {
     checkboxChange (e) {
       this.tagList = e.target.value
     },
-    async formSubmit (event) {
-      let submitInfo = Object.assign({}, event.target.value, {tagList: this.tagList})
+    async formSubmit (e) {
+      let submitInfo = {}
+      if (this.userType === '0') {
+        submitInfo = {
+          nickName: e.target.value.nickName,
+          name: e.target.value.name
+        }
+      }
+      if (this.userType === '1') {
+        submitInfo = {
+          name: e.target.value.name,
+          nickName: e.target.value.nickName,
+          organization: e.target.value.organization,
+          phone: e.target.value.phone,
+          relationPhone: e.target.value.relationPhone
+        }
+      }
+      if (this.userType === '2') {
+        submitInfo = Object.assign({}, e.target.value, {tagList: this.tagList})
+      }
+      if (this.userType === '3') {
+        submitInfo = {
+          name: e.target.value.name,
+          nickName: e.target.value.nickName,
+          phone: e.target.value.phone,
+          relationPhone: e.target.value.relationPhone
+        }
+      }
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
@@ -154,11 +201,16 @@ export default {
       await api.my.submitUserInfo(submitInfo).then(res => {
         if (res) {
           this.$toast('提交成功！')
+          // 前往个人中心主页：
+          wx.navigateTo({url: `/pages/my/personal-center/main`})
         }
       }).catch(err => {
         console.log(err)
-        this.$toast('系统错误！')
+        this.$toast('抱歉，系统错误！')
       })
+
+      // mock数据：
+      wx.reLaunch({url: `/pages/my/personal-center/main`})
     }
   },
   mounted () {

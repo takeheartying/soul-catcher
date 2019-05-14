@@ -33,14 +33,11 @@ export default {
           resolveFn = resolve
           if (!needMobile || this.$app.globalData.loginInfo.state === 1) {
             this.done()
-          } else if (this.$store.state.wxmobile) {
-            this.needAddMobile = true // 临时账号,需绑定
           } else {
-            this.needAddMobile = true
-            // this.showConfirm = true // 获取微信手机号弹窗
-            // wx.$p.login().then(res => {
-            //   this.code = res.code
-            // })
+            this.showConfirm = true // 获取微信手机号弹窗
+            wx.$p.login().then(res => {
+              this.code = res.code
+            })
           }
         })
       })
@@ -48,15 +45,18 @@ export default {
     },
     getphonenumber (e) {
       if (e.target.errMsg === 'getPhoneNumber:ok') {
-        this.$api.common.decryptWxData({
+        this.$api.common.skipverifybind({
           authCode: this.code,
           encryptedData: e.target.encryptedData,
           iv: e.target.iv,
           plat: 'mircowx'
         })
           .then(res => {
-            this.$store.commit('wxmobile', Number(JSON.parse(res.item.info).purePhoneNumber))
-            this.needAddMobile = true // 临时账号,需绑定
+            Object.assign(this.$app.globalData.loginInfo, {
+              loginToken: res.item.loginToken,
+              state: 1
+            })
+            this.done()
           })
       } else { // 用户拒绝获取微信手机号
         this.needAddMobile = true // 临时账号,需绑定
