@@ -9,13 +9,13 @@
         <image class="image" :src="articleInfo.pic" mode="aspectFill"></image>
         <div class="content">{{articleInfo.content}}</div>
       </div>
-      <div class="page-knowledge-article-detail--comment" v-if="articleInfo.commentNum">
+      <div class="page-knowledge-article-detail--comment" v-if="articleInfo.commentNum && userType">
         <div class="count">共{{articleInfo.commentNum}}条评论</div>
         <ul class="comment-list">
           <comment-item-card v-for="(comment, index) in articleInfo.commentList" :key="index" :comment="comment" @on-focus="commentFocus(comment)"></comment-item-card>
         </ul>
       </div>
-      <div class="page-knowledge-article-detail--input-conatiner">
+      <div class="page-knowledge-article-detail--input-conatiner" v-if="userType">
         <input class="page-knowledge-article-detail--input-code" :placeholder="'请输入评论内容'" type="text" @focus="showFocus()" :focus="isFocus" v-model="commentVal"/>
         <p class="page-knowledge-article-detail--submit-btn" @click="submitComment()">发送</p>
       </div>
