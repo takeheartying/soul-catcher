@@ -7,8 +7,7 @@ export default function (params) {
       name: params.name,
       header: {
         'lxy-authtoken': app.globalData.loginInfo.loginToken,
-        'lxy-version': '1.01',
-        'weiyi-appid': 'p_h5_minapp',
+        'lxy-appid': 'soul-catcher',
         'Content-Type': 'multipart/form-data'
       },
       formData: {

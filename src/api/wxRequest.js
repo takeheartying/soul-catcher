@@ -34,12 +34,12 @@ export default {
         dataType: 'json',
         header: {
           'lxy-authtoken': app.globalData.loginInfo.loginToken,
-          'lxy-version': '1.01',
           'lxy-appid': 'soul-catcher',
           'Content-Type': 'application/json;charset=utf-8'
         },
         data: params,
         success: res => {
+          // 请求首页的接口不需要登录，其他都需要
           syncConfig && wx.hideLoading()
           changeState(state)
           res.data._isLastRequest = requestTs === this[`${url}Ts`] // 用于tab频繁切换调用统一接口时，业务层根据该字端取最后一次发出请求的数据为有效数据
@@ -48,7 +48,7 @@ export default {
           } else if (['-6', '-2'].includes(res.data.code)) { // 未登录统一逻辑
             app.globalData.isLogged = false
             wx.showToast({
-              title: '当前账号在其他地方登录，请重新登录',
+              title: '当前账号未登录，请登录',
               icon: 'none',
               duration: 1000
             })
