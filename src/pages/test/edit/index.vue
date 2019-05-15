@@ -23,7 +23,35 @@
             <span class="radio-value">{{item.value}}</span>
           </label>
         </radio-group>
+        <!-- 测试题： -->
+        <div class="questions-wrap">
+          <div class="question-label">测试题：</div>
+          <ul class="question-list">
+            <li class="question-list-item" v-for="(question, questionIndex) in testInfo.examList" :key="questionIndex">
+              <div class="question-list-title-wrap">
+                <span class="index">{{questionIndex + 1}}、</span>
+                <input class="title" placeholder="请输入标题" v-model="question.questionTitle"/>
+                <!-- 添加选项： -->
+                <i class="option-add iconfont icon-tianjia" @click="addOption(question, questionIndex)"></i>
+                <!-- 删除测试题 -->
+                <i class="question-delete iconfont icon-shanchu3-copy" @click="deleteQuestion(questionIndex)"></i>
+              </div>
+              <ul class="options">
+                <li class="option-item-wrap" v-for="(option, optionIndex) in question.options" :key="optionIndex">
+                  <span class="index">{{optionIndex + 1}}、</span>
+                  <input class="option-item" placeholder="请输入选择项" v-model="option.content"/>
+                  <i class="option-delete iconfont icon-shanchu3-copy" @click="deleteOption(question, questionIndex, optionIndex)"></i>
+                </li>
+              </ul>
+
+            </li>
+          </ul>
+          <!-- 添加测试题： -->
+          <button class="question-add" @click="addQuestion()">添加测试题</button>
+        </div>
+
       </div>
+
       <div class="zan-btns">
         <button class="zan-btn submit-btn" formType="submit">提交</button>
       </div>
@@ -47,7 +75,17 @@ export default {
       pic: '',
       title: '',
       testId: '',
-      testInfo: {},
+      testInfo: {
+        picUrl: '',
+        title: '',
+        desc: '',
+        detail: '',
+        tagType: '', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
+        tagTypeDesc: '',
+        testNum: 0,
+        id: '',
+        examList: []
+      },
       curComponentId: '',
       base: {
         title: {
@@ -101,9 +139,6 @@ export default {
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
     this.testId = options.id
-    if (this.testId) { // 编辑测试
-      this.getTestById()
-    }
   },
   methods: {
     async upload (file) { // 上传单张图片
@@ -147,12 +182,12 @@ export default {
       await api.test.getTestDetailInfoById({
         id: this.testId
       }).then(res => {
-        this.testInfo = res || {}
+        this.initData(res)
       }).catch(err => {
         console.log(err)
       })
       // mock数据：
-      this.testInfo = {
+      let res = {
         picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
         title: '从积极心理学到幸福感',
         desc: '心境由心而设，态度可以决定我们的生活',
@@ -168,13 +203,11 @@ export default {
             options: [
               {
                 content: '想过',
-                score: 7, // 心理健康积分
-                isChecked: false
+                score: 7 // 心理健康积分
               },
               {
                 content: '从没想过',
-                score: 8,
-                isChecked: false
+                score: 8
               }
             ]
           },
@@ -184,13 +217,11 @@ export default {
             options: [
               {
                 content: '是的',
-                score: 7, // 心理健康积分
-                isChecked: false
+                score: 7 // 心理健康积分
               },
               {
                 content: '没有，我一般低调',
-                score: 8,
-                isChecked: false
+                score: 8
               }
             ]
           },
@@ -200,13 +231,11 @@ export default {
             options: [
               {
                 content: '是的',
-                score: 7, // 心理健康积分
-                isChecked: false
+                score: 7 // 心理健康积分
               },
               {
                 content: '当然不是',
-                score: 8,
-                isChecked: false
+                score: 8
               }
             ]
           },
@@ -216,23 +245,30 @@ export default {
             options: [
               {
                 content: '是的',
-                score: 7, // 心理健康积分
-                isChecked: false
+                score: 7 // 心理健康积分
               },
               {
                 content: '不会的呀呀呀呀呀呀呀呀呀晕晕晕晕晕晕晕呀呀呀呀呀呀晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕嘤嘤嘤嘤嘤嘤嘤',
-                score: 8,
-                isChecked: false
+                score: 9.0
               }
             ]
           }
         ]
       }
+      this.initData(res)
 
       this.loading = false
-      this.initData()
     },
-    initData () {
+    initData (testObj) {
+      // 数据绑定：
+
+      if (testObj && testObj.examList) {
+        testObj.examList.forEach((question, index) => {
+          this.$set(this.testInfo.examList, index, question)
+          this.$set(this.testInfo.examList[index], 'options', question.options)
+        })
+      }
+      this.testInfo.id = testObj.id
       if (this.testInfo && this.testInfo.tagType) { // 初始设置radio的值
         let index = Number(this.testInfo.tagType) - 1
         if (this.base.tagList[index]) {
@@ -241,6 +277,70 @@ export default {
         }
       }
       this.pic = this.testInfo.pic || '' // 初始设置pic
+    },
+    addQuestion () { // 添加测试题
+      this.testInfo.examList = this.testInfo.examList.concat({
+        questionTitle: '',
+        questionId: '',
+        options: [
+          {
+            content: '',
+            score: 0 // 心理健康积分
+          },
+          {
+            content: '',
+            score: 0
+          }
+        ]
+      })
+    },
+    addOption (question, questionIndex) { // 添加测试选项
+      if (this.testInfo && this.testInfo.examList && this.testInfo.examList[questionIndex]) {
+        question.options.push({
+          content: '',
+          score: 0
+        })
+        let newExamList = [].concat(this.testInfo.examList)
+        newExamList.splice(questionIndex, 1, question)
+        this.testInfo.examList = newExamList
+      }
+    },
+    deleteQuestion (questionIndex) { // 删除测试题
+      let that = this
+      wx.showModal({
+        content: '确定要删除测试题？',
+        showCancel: true, // 是否显示取消按钮
+        cancelColor: 'skyblue', // 取消文字的颜色
+        confirmColor: 'skyblue', // 确定文字的颜色
+        success: async function (res) {
+          if (res.cancel) {
+            // 点击取消,默认隐藏弹框
+          } else {
+            // 点击确定
+            that.testInfo.examList.splice(questionIndex, 1)
+            that.testInfo.examList = [...that.testInfo.examList]
+          }
+        }
+      })
+    },
+    deleteOption (question, questionIndex, optionIndex) { // 删除测试题选项
+      let that = this
+      wx.showModal({
+        content: '确定要删除测试题选项？',
+        showCancel: true, // 是否显示取消按钮
+        cancelColor: 'skyblue', // 取消文字的颜色
+        confirmColor: 'skyblue', // 确定文字的颜色
+        success: async function (res) {
+          if (res.cancel) {
+            // 点击取消,默认隐藏弹框
+          } else {
+            // 点击确定
+            let newExamList = [].concat(that.testInfo.examList)
+            newExamList[questionIndex].options.splice(optionIndex, 1)
+            that.testInfo.examList = newExamList
+          }
+        }
+      })
     },
     handleZanFieldChange (e) {
       const { componentId, target } = e
@@ -324,13 +424,16 @@ export default {
     wx.setNavigationBarTitle({
       title: this.title
     })
+    if (this.testId) { // 编辑测试
+      this.getTestById()
+    }
   }
 }
 </script>
 
 <style lang="less">
 .page-test-add-or-edit {
-  height: 100%;
+  overflow: auto;
   background: #fff;
   .submit-btn {
     background: #63B8FF;
@@ -378,6 +481,81 @@ export default {
         position: relative;
         top: -1.5px;
       }
+    }
+  }
+  .questions-wrap {
+    .question-label {
+      border-top: 0.5px solid #eee;
+      margin: 15px 15px 15px 20px;
+      font-size: 16px;
+      padding-top: 15px;
+    }
+    .question-list {
+      padding:0 20px;
+      font-size:14px;
+      .question-list-item {
+        margin-bottom: 10px;
+        .question-list-title-wrap {
+          font-weight: bold;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          span.index {
+            width: 20px;
+          }
+          .title {
+            border: 0.5px solid #eee;
+            padding: 5px 10px;
+            flex: 1;
+          }
+          i {
+            font-size: 24px;
+            color: #63B8FF;
+            display: block;
+          }
+          i.question-delete {
+            margin-left: 5px;
+          }
+          i.option-add {
+            margin-left: 5px;
+          }
+        }
+        .options {
+          padding: 10px;
+          .option-item-wrap {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            span.index {
+              width: 20px;
+              font-weight: bold;
+              margin-top: -10px;
+            }
+            .option-item {
+              flex: 1;
+              border: 0.5px solid #eee;
+              padding: 5px 10px;
+              margin-bottom: 10px;
+            }
+            i {
+              font-size: 20px;
+              color: #63B8FF;
+              display: block;
+              margin-left: 10px;
+              position: relative;
+              top: -5px;
+            }
+          }
+        }
+      }
+    }
+    .question-add {
+      width: 120px;
+      padding: 4px 10px;
+      background: #63B8FF;
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 10px;
     }
   }
 }
