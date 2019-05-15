@@ -10,8 +10,8 @@
       <div class="zan-panel">
         <div class="upload-img-warp">
           <div class="upload-label">图片：</div>
-          <i class="iconfont icon-shangchuan" @click="chooseImage()" v-if="(!pic && !testInfo.pic)"></i>
-          <image class="upload-image" :src="pic || testInfo.pic" v-if="pic || testInfo.pic" @click="chooseImage()" mode="aspectFill"></image>
+          <i class="iconfont icon-shangchuan" @click="chooseImage()" v-if="(!picUrl && !testInfo.picUrl)"></i>
+          <image class="upload-image" :src="picUrl || testInfo.picUrl" v-if="picUrl || testInfo.picUrl" @click="chooseImage()" mode="aspectFill"></image>
         </div>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.title)" :value="testInfo.title" :focus="curComponentId === base.title.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.desc)" :value="testInfo.desc" :focus="curComponentId === base.desc.componentId"/>
@@ -30,24 +30,28 @@
             <li class="question-list-item" v-for="(question, questionIndex) in testInfo.examList" :key="questionIndex">
               <div class="question-list-title-wrap">
                 <span class="index">{{questionIndex + 1}}、</span>
-                <input class="title" placeholder="请输入标题" v-model="question.questionTitle"/>
-                <!-- 添加选项： -->
-                <i class="option-add iconfont icon-tianjia" @click="addOption(question, questionIndex)"></i>
+                <input class="title" placeholder="请输入标题" v-model="question.questionTitle" :disabled="noEdit"/>
+                <!-- 添加测试选项： -->
+                <i class="option-add iconfont icon-tianjia" @click="addOption(question, questionIndex)" v-if="!noEdit"></i>
                 <!-- 删除测试题 -->
-                <i class="question-delete iconfont icon-shanchu3-copy" @click="deleteQuestion(questionIndex)"></i>
+                <i class="question-delete iconfont icon-shanchu3-copy" @click="deleteQuestion(questionIndex)" v-if="!noEdit"></i>
               </div>
               <ul class="options">
                 <li class="option-item-wrap" v-for="(option, optionIndex) in question.options" :key="optionIndex">
-                  <span class="index">{{optionIndex + 1}}、</span>
-                  <input class="option-item" placeholder="请输入选择项" v-model="option.content"/>
-                  <i class="option-delete iconfont icon-shanchu3-copy" @click="deleteOption(question, questionIndex, optionIndex)"></i>
+                  <span class="index">{{optionIndex + 1}}.</span>
+                  <div class="option-item">
+                    <input class="option-item-input" placeholder="请输入选择项" v-model="option.content" :disabled="noEdit"/>
+                    <input class="option-item-input score"  placeholder="请输入心理健康程度分 0-10分" maxlength="2" type="number" min="1" max="10" v-model="option.score" :disabled="noEdit"/>
+                  </div>
+                  <!-- 删除测试选项 -->
+                  <i class="option-delete iconfont icon-shanchu3-copy" @click="deleteOption(question, questionIndex, optionIndex)" v-if="!noEdit"></i>
                 </li>
               </ul>
 
             </li>
           </ul>
           <!-- 添加测试题： -->
-          <button class="question-add" @click="addQuestion()">添加测试题</button>
+          <button class="question-add" @click="addQuestion()" v-if="!noEdit">添加测试题</button>
         </div>
 
       </div>
@@ -71,8 +75,9 @@ export default {
   },
   data () {
     return {
+      noEdit: '', // '1': 不可编辑【测试被人测过之后不可编辑测试题】
       loading: false,
-      pic: '',
+      picUrl: '',
       title: '',
       testId: '',
       testInfo: {
@@ -139,6 +144,12 @@ export default {
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
     this.testId = options.id
+    this.noEdit = options.noEdit === '1' // 当测试被人测过之后，就不可编辑了
+    // 初始数据置空：
+    this.initData()
+    if (this.testId) { // 编辑测试
+      this.getTestById()
+    }
   },
   methods: {
     async upload (file) { // 上传单张图片
@@ -171,7 +182,7 @@ export default {
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
         success (res) {
-          that.pic = res.tempFilePaths[0]
+          that.picUrl = res.tempFilePaths[0]
           // 上传图片：
           that.upload(res)
         }
@@ -182,7 +193,7 @@ export default {
       await api.test.getTestDetailInfoById({
         id: this.testId
       }).then(res => {
-        this.initData(res)
+        this.testInfo = res
       }).catch(err => {
         console.log(err)
       })
@@ -192,7 +203,7 @@ export default {
         title: '从积极心理学到幸福感',
         desc: '心境由心而设，态度可以决定我们的生活',
         detail: '围殴减肥的空间打发时间爱发科的结论是开饭啦司法解释口岸疯狂夺金萨福克精神科拉飞机拉萨九分裤大富科技按时付款了贷款酸辣粉东方健康路撒放开了的附件安联大厦积分卡斯加咖啡拉萨到付款荆防颗粒三加上端口分类考试了',
-        tagType: 4, // 1爱情脱单 2智商情商 3趣味性格 4心理综合
+        tagType: '4', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
         tagTypeDesc: '心理综合',
         testNum: 111,
         id: '111',
@@ -255,20 +266,13 @@ export default {
           }
         ]
       }
-      this.initData(res)
+      this.testInfo = res
+      this.setData()
 
       this.loading = false
     },
-    initData (testObj) {
+    setData () {
       // 数据绑定：
-
-      if (testObj && testObj.examList) {
-        testObj.examList.forEach((question, index) => {
-          this.$set(this.testInfo.examList, index, question)
-          this.$set(this.testInfo.examList[index], 'options', question.options)
-        })
-      }
-      this.testInfo.id = testObj.id
       if (this.testInfo && this.testInfo.tagType) { // 初始设置radio的值
         let index = Number(this.testInfo.tagType) - 1
         if (this.base.tagList[index]) {
@@ -276,7 +280,20 @@ export default {
           this.tagType = this.testInfo.tagType
         }
       }
-      this.pic = this.testInfo.pic || '' // 初始设置pic
+      this.picUrl = this.testInfo.picUrl || '' // 初始设置picUrl
+    },
+    initData () { // 初始置空
+      this.testInfo = {
+        picUrl: '',
+        title: '',
+        desc: '',
+        detail: '',
+        tagType: '', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
+        tagTypeDesc: '',
+        testNum: 0,
+        id: '',
+        examList: []
+      }
     },
     addQuestion () { // 添加测试题
       this.testInfo.examList = this.testInfo.examList.concat({
@@ -285,11 +302,11 @@ export default {
         options: [
           {
             content: '',
-            score: 0 // 心理健康积分
+            score: '' // 心理健康积分
           },
           {
             content: '',
-            score: 0
+            score: ''
           }
         ]
       })
@@ -298,7 +315,7 @@ export default {
       if (this.testInfo && this.testInfo.examList && this.testInfo.examList[questionIndex]) {
         question.options.push({
           content: '',
-          score: 0
+          score: ''
         })
         let newExamList = [].concat(this.testInfo.examList)
         newExamList.splice(questionIndex, 1, question)
@@ -403,15 +420,57 @@ export default {
       })
     },
     formSubmit (event) {
-      let submitInfo = Object.assign({}, event.target.value, {tagType: this.tagType, pic: this.pic})
+      let submitInfo = this.testInfo
+      let BreakException = {}
+      let cancelFlag = false
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
-          if (!element || !element.length) {
+          if ((key !== 'testNum' && (!element || !element.length))) { // 跳过testNum属性
             this.$toast('信息不可为空！')
+            cancelFlag = true
             return false
           }
+          if (key === 'examList') {
+            try {
+              element.forEach(question => {
+                if (!question.questionTitle) {
+                  this.$toast('标题不可为空！')
+                  throw BreakException
+                }
+                if (!question.options || question.options.length < 2) {
+                  this.$toast('测试选项数要大于等于2！')
+                  throw BreakException
+                }
+                if (!question.options || question.options.length < 2) {
+                  this.$toast('测试选项数要大于等于2！')
+                  throw BreakException
+                }
+                question.options.forEach(option => {
+                  if (!option.content || !option.score) {
+                    this.$toast('测试选项不可为空！')
+                    throw BreakException
+                  }
+                  if (isNaN(Number(option.score))) {
+                    this.$toast('请输入正确的测试分数！')
+                    throw BreakException
+                  }
+                  if (Number(option.score) < 0 || (Number(option.score) > 10)) {
+                    this.$toast('请输入0-10的测试分数！')
+                    throw BreakException
+                  }
+                })
+              })
+            } catch (e) {
+              if (e === BreakException) {
+                cancelFlag = true
+              }
+            }
+          }
         }
+      }
+      if (cancelFlag) {
+        return false
       }
       if (this.testId) { // 修改测试
         this.submitEdit(submitInfo)
@@ -424,9 +483,6 @@ export default {
     wx.setNavigationBarTitle({
       title: this.title
     })
-    if (this.testId) { // 编辑测试
-      this.getTestById()
-    }
   }
 }
 </script>
@@ -526,24 +582,37 @@ export default {
             display: flex;
             flex-direction: row;
             align-items: center;
+            position: relative;
+            margin-right: 50px;
+            margin-left: 10px;
             span.index {
               width: 20px;
               font-weight: bold;
-              margin-top: -10px;
+              position: absolute;
+              top: 10px;
+              left: -10px;
             }
             .option-item {
               flex: 1;
-              border: 0.5px solid #eee;
-              padding: 5px 10px;
               margin-bottom: 10px;
+              margin-left: 10px;
+              input {
+                border: 0.5px solid #eee;
+                padding: 5px 10px;
+              }
+              input.score {
+                margin: 10px 0;
+              }
             }
             i {
               font-size: 20px;
               color: #63B8FF;
               display: block;
               margin-left: 10px;
-              position: relative;
-              top: -5px;
+              position: absolute;
+              top: 0px;
+              right: -25px;
+              padding: 5px 0;
             }
           }
         }
