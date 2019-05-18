@@ -1,5 +1,14 @@
-const getKnowledgeBaseList = async (cloud, event) => {
-  // let promise = {}
+const cloud = require('wx-server-sdk')
+
+// 初始化 cloud
+cloud.init({
+  env: 'soul-catcher-env-2f8134'
+})
+const dbName = 'article'
+const db = cloud.database()
+
+// 知识库列表：
+const getKnowledgeBaseList = async (event) => {
   let filter = {}
   let orderBy = {}
   if (event.searchType === 'newTime') { // 按照时间顺序
@@ -41,6 +50,16 @@ const getKnowledgeBaseList = async (cloud, event) => {
   })
   return promise
 }
+
+// 知识库详情：
+const getKnowledgeDetailById = async (event) => {
+  let promise = await db.collection(dbName).doc(event._id).get().then(res => {
+    return res
+  })
+  return promise
+}
+
 module.exports = {
-  getKnowledgeBaseList
+  getKnowledgeBaseList,
+  getKnowledgeDetailById
 }

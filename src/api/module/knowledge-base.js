@@ -10,7 +10,7 @@ export const getKnowledgeList = (params) => {
 }
 // 获取知识库详情
 export const getKnowledgeDetailById = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return knowledgeBase.getKnowledgeDetailById(params).then(res => {
     return res || {}
   })
 }

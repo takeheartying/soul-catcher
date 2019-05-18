@@ -1,12 +1,12 @@
 <template>
   <div class="page-knowledge-article-detail" :style="(!articleInfo.id && !loading) ? 'height: 100%;' : ''">
     <!-- 文章知识库详情 -->
-    <div class="page-knowledge-article-detail--container" v-if="articleInfo && articleInfo.id">
+    <div class="page-knowledge-article-detail--container" v-if="articleInfo && articleInfo._id">
       <div class="page-knowledge-article-detail--content">
         <div class="title">{{articleInfo.title}}</div>
-        <div class="tips">{{articleInfo.name || articleInfo.nickName}}  <span class="type">{{articleInfo.tagTypeDesc}}</span></div>
+        <div class="tips" v-if="articleInfo.author">{{articleInfo.author.name || articleInfo.author.nickName}}  <span class="type">{{articleInfo.tagTypeDesc}}</span></div>
         <div class="create-time">{{articleInfo.createTime}}</div>
-        <image class="image" :src="articleInfo.pic" mode="aspectFill"></image>
+        <image class="image" :src="articleInfo.picUrl" mode="aspectFill"></image>
         <div class="content">{{articleInfo.content}}</div>
       </div>
       <div class="page-knowledge-article-detail--comment" v-if="articleInfo.commentNum && userType">
@@ -22,7 +22,7 @@
     </div>
     <g-loading :loading="loading"></g-loading>
     <g-noresult
-      :show="!articleInfo.id && !loading"
+      :show="!articleInfo._id && !loading"
       :message="'未能查到该文章~'">
     </g-noresult>
   </div>
@@ -55,116 +55,15 @@ export default {
     async getArticleInfo () {
       this.loading = true
       await api.knowledgeBase.getKnowledgeDetailById({
-        id: this.knowledgeId
+        _id: this.knowledgeId
       }).then(res => {
-        if (res) {
-          this.articleInfo = res
+        if (res && res.data) {
+          this.articleInfo = res.data
         }
       }).catch(err => {
         console.log(err)
         this.$toast('系统错误')
       })
-      // mock数据：
-      this.articleInfo = {
-        commentNum: 32,
-        tagType: '1',
-        tagTypeDesc: '爱情脱单',
-        id: '3333',
-        name: '额昂一',
-        nickName: '酷酷的积分',
-        createTime: '2019-10-20 10:09:30',
-        pic: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-        title: '剪短发放假撒开了房间',
-        desc: '代付款撒娇的风口浪尖是否考虑是否就说了放假快乐风',
-        content: '发健康的萨拉飞机父级的雷克萨福建省家乐福科技打法是否三答困了就睡考虑发动机开始罗芬接待室里开发及两地分居阿拉水电费垃圾堆里撒发快递',
-        commentList: [
-          {
-            content: '4359459348594',
-            commentId: Math.round(Math.random() * 1000000),
-            userId: '33333',
-            createTime: '2019-04-22 23:00:29',
-            avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-            userType: '1',
-            name: '的基督教',
-            nickName: '将豆腐块',
-            answerList: [
-              {
-                content: '4359459348594',
-                commentId: Math.round(Math.random() * 1000000),
-                userId: '33333',
-                createTime: '2019-04-22 23:00:29',
-                avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-                userType: '2',
-                name: '订单订单付所付',
-                nickName: '将豆腐块'
-              },
-              {
-                content: '回复的设计费肯定返回精神科第三方咖啡机付款撒谎的咖啡设计费收费',
-                commentId: Math.round(Math.random() * 1000000),
-                userId: '33333',
-                createTime: '2019-04-22 23:00:29',
-                avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-                userType: '2',
-                name: '京东方时空拦截啊副书记付老师放假撒发链接的说法第三发顺丰记得了',
-                nickName: '将豆腐块'
-              }
-            ]
-          },
-          {
-            content: '4359459348594',
-            commentId: Math.round(Math.random() * 1000000),
-            userId: '33333',
-            createTime: '2019-04-22 23:00:29',
-            avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-            userType: '1',
-            name: '可安排',
-            nickName: '将豆腐块',
-            answerList: [
-              {
-                content: '4359459348594',
-                commentId: Math.round(Math.random() * 1000000),
-                userId: '33333',
-                createTime: '2019-04-22 23:00:29',
-                avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-                userType: '2',
-                name: '王昭君',
-                nickName: '将豆腐块'
-              },
-              {
-                content: '决胜巅峰接口还是付款好地方接口和奋斗的客户反馈电视剧阿凡达水立方的萨芬的健身房肯定还是分开后的会计法角度看',
-                commentId: Math.round(Math.random() * 1000000),
-                userId: '33333',
-                createTime: '2019-04-22 23:00:29',
-                avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-                userType: '2',
-                name: '放假多家分店',
-                nickName: '将豆腐块'
-              },
-              {
-                content: '我家附近',
-                commentId: Math.round(Math.random() * 1000000),
-                userId: '33333',
-                createTime: '2019-04-22 23:00:29',
-                avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-                userType: '2',
-                name: '的减肥减肥',
-                nickName: '将豆腐块'
-              }
-            ]
-          },
-          {
-            content: '4359459348594',
-            commentId: Math.round(Math.random() * 1000000),
-            userId: '33333',
-            createTime: '2019-04-22 23:00:29',
-            avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-            userType: '1',
-            name: '的基督教',
-            nickName: '将豆腐块',
-            answerList: []
-          }
-        ]
-      }
       this.loading = false
     },
     commentFocus (comment, type) {
@@ -182,7 +81,7 @@ export default {
       await api.comment.submitComment({
         knowledgeId: this.knowledgeId,
         content: this.commentVal.trim(),
-        commentId: this.curComment.id // 对已经存在的评论进行回复，若无，则是新的评论
+        commentId: this.curComment._id // 对已经存在的评论进行回复，若无，则是新的评论
       }).then(res => {
         if (res) {
           this.commentList.unshift(res)
@@ -212,6 +111,7 @@ export default {
     this.userType = this.$app.globalData.userType || ''
     this.knowledgeId = options.id || ''
     if (this.knowledgeId) {
+      this.articleInfo = {}
       this.getArticleInfo()
     }
   },
