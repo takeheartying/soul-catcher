@@ -1,7 +1,7 @@
 <template>
   <div class="page-consult-detail">
     <!-- 咨询详情页： -->
-    <!-- consultStatus: ''    邀请中 0    待同意 1    已同意 2    已关闭 3 -->
+    <!-- consultStatus: ''    初始邀请中 0    待同意 1    已同意 2    已关闭 3 -->
     <div class="page-consult-detail--status-container">
       <div class="page-consult-detail--status" v-if="consultInfo.consultStatusDesc">状态：{{consultInfo.consultStatusDesc}}</div>
       <div class="page-consult-detail--btns" v-if="consultInfo.consultStatus !== 3">

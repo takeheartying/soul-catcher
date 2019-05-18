@@ -1,10 +1,10 @@
 <template>
-  <div class="knowledge-article-card" v-if="knowledge"  @click="gotoDetail(knowledge.id)">
-    <image :src="knowledge.picUrl" class="left-img"  mode="aspectFill"/>
+  <div class="knowledge-article-card" v-if="knowledge"  @click="gotoDetail(knowledge._id)">
+    <image :src="knowledge.picUrl || defaultImg" class="left-img"  mode="aspectFill" />
     <div class="middle-content">
       <p class="title">{{knowledge.title}}</p>
       <p class="desc">{{knowledge.desc}}</p>
-      <p class="type">{{knowledge.tagType}}</p>
+      <p class="type">{{knowledge.tagTypeDesc}}</p>
     </div>
     <div class="right-content"><button class="right-btn" @click="lookOver()">{{showEdit ? '编辑' : '查看'}}</button></div>
   </div>
@@ -21,9 +21,9 @@ export default {
     },
     lookOver () { // 查看
       if (this.showEdit) { // 专家查看我的知识库-- 前往编辑页
-        wx.navigateTo({url: `/pages/knowledge/edit/main?id=${this.knowledge.id}`})
+        wx.navigateTo({url: `/pages/knowledge/edit/main?id=${this.knowledge._id}`})
       } else {
-        this.gotoDetail(this.knowledge.id)
+        this.gotoDetail(this.knowledge._id)
       }
     }
   },
@@ -37,6 +37,11 @@ export default {
     showEdit: {
       type: Boolean,
       default: false
+    }
+  },
+  data () {
+    return {
+      defaultImg: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558159564465&di=f770eac8e641689eab7ea22a48d81297&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F27%2F20180827183035_mnsbn.thumb.700_0.jpg'
     }
   }
 }

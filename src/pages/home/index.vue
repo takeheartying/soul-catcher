@@ -67,6 +67,7 @@
         </li>
       </ul>
     </div>
+    <g-loading :loading="loading"></g-loading>
     <tab-bar :userType="userType" v-if="userType"></tab-bar>
   </section>
 </template>
@@ -76,98 +77,44 @@ import api from '@/api'
 import knowledgeArticleCard from './components/knowledge-article-card'
 import knowledgeVedioCard from './components/knowledge-vedio-card'
 import tabBar from '@/components/tab-bar'
+import GLoading from '@/components/g-loading/index.vue'
 
 export default {
   data () {
     return {
+      loading: false,
       userType: '',
       bannerList: [
         {
-          id: '',
+          _id: '',
           name: 'banner1',
           imgUrl: 'http://img95.699pic.com/photo/50090/0087.jpg_wh300.jpg'
         },
         {
-          id: '',
+          _id: '',
           name: 'banner2',
           imgUrl: 'http://img95.699pic.com/photo/50058/7625.jpg_wh300.jpg'
         },
         {
-          id: '',
+          _id: '',
           name: 'banner3',
           imgUrl: 'http://img95.699pic.com/photo/50106/4305.jpg_wh300.jpg'
         }
       ],
-      recommendList: [
-        {
-          picUrl: 'http://img1.imgtn.bdimg.com/it/u=225858054,3626351077&fm=26&gp=0.jpg',
-          title: '恋爱指南',
-          desc: '你的恋爱秘籍是？',
-          tagType: '爱情脱单',
-          id: '111'
-        },
-        {
-          picUrl: 'http://img3.imgtn.bdimg.com/it/u=3284983667,2856592112&fm=26&gp=0.jpg',
-          title: '你的人生闪光点是什么？',
-          desc: '你最吸引人的闪光点是什么？',
-          tagType: '趣味性格',
-          id: '222'
-        },
-        {
-          picUrl: 'http://img2.imgtn.bdimg.com/it/u=1817295772,2078737438&fm=26&gp=0.jpg',
-          title: '灵魂气味鉴定单',
-          desc: '你的灵魂是什么味道的？',
-          tagType: '心理综合',
-          id: '333'
-        }
-      ],
-      hotArticleList: [
-        {
-          picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
-          title: '从积极心理学到幸福感',
-          desc: '心境由心而设，态度可以决定我们的生活',
-          tagType: '心理综合',
-          id: '111'
-        },
-        {
-          picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
-          title: '心理健康素养十条',
-          desc: '今年的主题是“健康心理，快乐人生',
-          tagType: '心理综合',
-          id: '111'
-        },
-        {
-          picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
-          title: '性格与情感',
-          desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
-          tagType: '趣味性格',
-          id: '111'
-        },
-        {
-          picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
-          title: '原来是爱情',
-          desc: '感情不是兔子，守株是没用的',
-          tagType: '爱情脱单',
-          id: '111'
-        },
-        {
-          picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
-          title: '决定你上限的，不是智商，而是自律',
-          desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
-          tagType: '智商情商',
-          id: '111'
-        }
-      ],
+      recommendList: [],
+      hotArticleList: [],
       hotVedioList: []
     }
   },
   components: {
     knowledgeArticleCard,
     knowledgeVedioCard,
-    tabBar
+    tabBar,
+    GLoading
   },
   methods: {
     async getInitList () {
+      this.loading = true
       // 推荐【最新】文章
       let promise1 = api.knowledgeBase.getKnowledgeList({
         knowledgeType: 'article',
@@ -175,7 +122,9 @@ export default {
         pageSize: 3,
         pageNo: 1
       }).then(res => {
-        this.recommendList = res || []
+        if (res && res.data) {
+          this.recommendList = res.data
+        }
       }).catch(err => {
         console.log(err)
       })
@@ -186,13 +135,15 @@ export default {
         pageSize: 5,
         pageNo: 1
       }).then(res => {
-        this.hotArticleList = res || []
+        if (res && res.data) {
+          this.hotArticleList = res.data
+        }
       }).catch(err => {
         console.log(err)
       })
       let promises = [promise1, promise2]
       await Promise.all(promises)
-      // mock数据：在上边
+      this.loading = false
     },
     showMore (knowledgeType) {
       wx.navigateTo({

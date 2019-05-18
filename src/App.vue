@@ -12,6 +12,16 @@ for (let key in wx) {
 wx.$p = $p
 
 export default {
+  onLaunch: function () {
+    if (!wx.cloud) {
+
+    } else {
+      wx.cloud.init({
+        traceUser: true,
+        env: 'soul-catcher-env-2f8134'
+      })
+    }
+  },
   created () {
     // 调用API从本地缓存中获取数据
     /*

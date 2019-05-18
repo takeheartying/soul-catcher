@@ -64,5 +64,6 @@
     "scope.userLocation": {
       "desc": "您的位置信息将用于小程序服务的效果展示"
     }
-  }
+  },
+  "cloud": true
 }
