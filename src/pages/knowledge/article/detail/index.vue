@@ -6,7 +6,7 @@
         <div class="title">{{articleInfo.title}}</div>
         <div class="tips" v-if="articleInfo.author">{{articleInfo.author.name || articleInfo.author.nickName}}  <span class="type">{{articleInfo.tagTypeDesc}}</span></div>
         <div class="create-time">{{articleInfo.createTime}}</div>
-        <image class="image" :src="articleInfo.picUrl" mode="aspectFill"></image>
+        <image class="image" :src="articleInfo.picUrl || defaultImg" mode="aspectFill"></image>
         <div class="content">{{articleInfo.content}}</div>
       </div>
       <div class="page-knowledge-article-detail--comment" v-if="articleInfo.commentNum && userType">
@@ -40,6 +40,7 @@ export default {
   },
   data () {
     return {
+      defaultImg: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558159564465&di=f770eac8e641689eab7ea22a48d81297&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F27%2F20180827183035_mnsbn.thumb.700_0.jpg',
       isFocus: false, // 输入框是否focus
       userType: '',
       knowledgeId: '',
