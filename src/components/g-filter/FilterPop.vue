@@ -61,6 +61,10 @@
       },
       filterTop: {
         type: String
+      },
+      isSetInitData: { // 重新设置初始数据
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -97,6 +101,10 @@
       }
     },
     methods: {
+      changeInitData (tagBar, tabBarIndex) { // 初始化数据后，再触发 clickSidebar事件更改filterbar显示数据
+        // this.initData()
+        this.clickSidebar(tagBar, tabBarIndex)
+      },
       // 初始化数据
       initData (tabIndex) {
         var tmpTabIndx = 0
@@ -110,7 +118,6 @@
         // 确认选中tab的一级列表
         this.sideMenus = this.menu.tabs[this.selectIndexTab]
         // 如果当前选中tab是对应选中结果的tab
-        // debugger
         if (this.selectIndexTab === this.menu.selectIndex) {
           this.currentSelectIndex = this.sideMenus.selectIndex
         }
@@ -145,7 +152,7 @@
         this.menu.selectIndex = this.selectIndexTab
         // 记录一级列表选项
         this.sideMenus.selectIndex = this.currentSelectIndex
-        if (this.items) {
+        if (this.items && this.items.list) {
           // 确认二级列表选项
           this.items.selectIndex = index
           // 显示名称
@@ -187,7 +194,6 @@
       // 筛选方法
       clickFilterbar (v, I, i) {
         v.detailList[i].selectIndex = i
-        // debugger
         if (!this.range[I]) {
           this.range[I] = {name: v.name, value: {}}
           this.range[I].value[i] = v.detailList[i].value
@@ -205,7 +211,7 @@
         if (this.currentSelectIndex !== i) {
           this.currentSelectIndex = i
           // 存在二级列表
-          if (this.sideMenus.detailList[this.currentSelectIndex].list) {
+          if (this.sideMenus && this.sideMenus.detailList && this.sideMenus.detailList[this.currentSelectIndex].list) {
             this.items = this.sideMenus.detailList[this.currentSelectIndex]
           } else {
             // 只有一级列表，记录选项，退出
@@ -224,8 +230,10 @@
       },
       // 关闭弹框
       closeDialog () {
-        this.visible = false
-        this.$emit('closeDialog')
+        if (this.visible) {
+          this.visible = false
+          this.$emit('closeDialog')
+        }
       },
       // 提交已选内容
       handleEnsure () {

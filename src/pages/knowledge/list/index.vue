@@ -4,12 +4,13 @@
     <div class="page-knowledge-list--filter" v-if="!loading && knowledgeList.length">
       <!-- top:筛选条离顶部的距离 -->
       <filter-bar
+        ref="filter"
         :top="0"
         :bar-menus="barMenus"
         @changeSelect="changeData">
       </filter-bar>
     </div>
-    <scroll-view  class="page-knowledge-list--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
+    <scroll-view class="page-knowledge-list--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
       <ul class="page-knowledge-list--items" v-if="knowledgeList && knowledgeList.length">
         <li class="page-knowledge-list--item"
           v-for="(article, index) in knowledgeList" :key="index" >
@@ -21,7 +22,7 @@
     <div class="page-knowledge-list--add-wrap" v-if="(userType === '2' && expertId) || userType === '0'" @click="addKnowledge()">
       <i class="iconfont icon-tianjia"></i>
     </div>
-    <g-loading :loading="loading"></g-loading>
+    <g-loading ref="loading" :loading="loading"></g-loading>
     <g-noresult
     v-if="!knowledgeList.length && !loading"
     :show="!knowledgeList.length && !loading"
@@ -44,6 +45,7 @@ export default {
   },
   data () {
     return {
+      firstGetData: true, // 第一次获取列表数据
       barMenus: [
         {
           name: '类型筛选', // 按钮名称
@@ -138,7 +140,7 @@ export default {
       wx.navigateTo({url: '/pages/knowledge/edit/main'})
     },
     changeData (v) { // 返回最终结果。(注：筛选结果的value返回json对象)
-      if (v && v.length >= 2) {
+      if (v && v.length >= 2 && !this.firstGetData) {
         this.tagType = v[0].value || ''
         this.searchType = v[1].value || '' // 按评论数筛选 或 按时间顺序筛选
         // 重置信息：请求数据
@@ -146,6 +148,9 @@ export default {
         this.finished = false
         this.knowledgeList = []
         this.getKnowledgeList()
+      }
+      if (this.firstGetData) {
+        this.firstGetData = false
       }
     },
     bindDownLoad () {
@@ -176,28 +181,44 @@ export default {
 
       this.loading = false
     },
-    initData () { // 初始清空数据
+    initData () { // 初始清空数据 + 更改filter显示栏
       this.knowledgeList = []
       this.finished = false
       this.pageNo = 1
-      // this.tagType = ''
-      // this.searchType = ''
+      this.initFilter()
+      this.getKnowledgeList()
+    },
+    initFilter () {
+      let tagIndex = Number(this.tagType)
+      let orderIndex = 0
+      if (this.searchType === 'mostComment') {
+        orderIndex = 1
+      } else if (this.searchType === 'newTime') {
+        orderIndex = 2
+      }
+      setTimeout(() => {
+        if (this.$refs.filter && this.tagType) {
+          this.$refs.filter.handleShowDialog(this.barMenus[0], 0, false, tagIndex)
+        }
+        if (this.$refs.filter && this.searchType) {
+          this.$refs.filter.handleShowDialog(this.barMenus[1], 1, false, orderIndex)
+        }
+      }, 2000)
     }
   },
   onLoad (options) {
-    this.initData()
     this.userType = this.$app.globalData.userType || ''
     this.expertId = options.expertId || '' // 指定专家的知识库列表
     this.tagType = options.tagType || '' // 1 2 3 4
     this.searchType = options.searchType || '' // newTime 或者 mostComment
     this.knowledgeType = options.knowledgeType || 'article' // vedio 或者 article 【目前只做article】
     this.showEdit = (this.userType === '2' && this.expertId) || this.userType === '0' // 专家或管理员查看我的知识库 -- 前往编辑
+    this.initData()
   },
   mounted () {
     wx.setNavigationBarTitle({
       title: '知识库列表'
     })
-    this.getKnowledgeList()
   }
 }
 </script>

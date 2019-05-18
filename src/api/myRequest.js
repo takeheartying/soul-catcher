@@ -5,7 +5,6 @@ const getKnowledgeList = (params) => {
     // 传给云函数的参数
     data: params
   }).then(res => {
-    debugger
     // 调用云函数的分页方法：
     if (res && res.result && res.result.data) {
       return res.result

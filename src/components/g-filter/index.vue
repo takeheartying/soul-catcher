@@ -3,13 +3,13 @@
     <div class="container">
       <div class="row" v-if="barMenus">
         <div :class="index === selectedIndexMenu ? 'selected col' : 'col'"
-          @click="handleShowDialog(menuItem, index)"
+          @click="handleShowDialog(menuItem, index, true)"
           v-for="(menuItem, index) in barMenus" :key="index">
           {{menuItem.name}}
           <span :class="index === selectedIndexMenu ? menuItem.selectIcon : menuItem.defaultIcon"></span>
         </div>
       </div>
-      <filter-bar-pop :filterTop="top" :show-dialog="isShow" :hasTabHeader="hasTabHeader" :menu="selectedMenu" @changeTab="handleChangeTab"
+      <filter-bar-pop ref="filterPop" :filterTop="top" :show-dialog="isShow" :hasTabHeader="hasTabHeader" :menu="selectedMenu" @changeTab="handleChangeTab"
         @changeMainItem="handleChangeMainItem" @changeSelect="changeSelect" @closeDialog="handleCloseDialog">
       </filter-bar-pop>
     </div>
@@ -39,14 +39,19 @@
       }
     },
     methods: {
-      handleShowDialog (menu, index) {
-        this.isShow = true
+      handleShowDialog (menu, index, isShow, sideBarIndex) {
+        this.isShow = isShow
         this.selectedMenu = menu
         this.selectedIndexMenu = index
         if (menu.showTabHeader) {
           this.hasTabHeader = true
         } else {
           this.hasTabHeader = false
+        }
+        if (!isShow) {
+          this.$nextTick(() => {
+            this.$refs.filterPop.changeInitData(this.barMenus[index].tabs[0].detailList[sideBarIndex], sideBarIndex)
+          })
         }
         let _menu = JSON.parse(JSON.stringify(menu))
         _menu.tabs = {}
