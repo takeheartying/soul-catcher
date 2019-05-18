@@ -21,12 +21,14 @@ exports.main = (event, context) => {
     let promise = await knowledgeBase.getKnowledgeBaseList(event)
     // ctx.body = Object.assign()
     ctx.body = promise
-    await next()
   })
   app.router('knowledge/detail', async (ctx, next) => {
     let promise = await knowledgeBase.getKnowledgeDetailById(event)
     ctx.body = promise
-    await next()
+  })
+  app.router('knowledge/update', async (ctx, next) => {
+    let promise = await knowledgeBase.updateKnowledge(event)
+    ctx.body = promise
   })
 
   return app.serve()

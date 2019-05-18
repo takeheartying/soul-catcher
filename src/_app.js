@@ -81,9 +81,9 @@ let appConfig = {
             data: {
               secret: '',
               loginToken: '',
-              userId: '2323323',
+              userId: '5cdbb0131e1bbf04de1a035e',
               state: '1',
-              userType: '0'
+              userType: '2'
             }
           }
           if (wyres.data && wyres.hasError === false) {

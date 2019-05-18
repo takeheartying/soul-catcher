@@ -2,16 +2,16 @@
   <section class="page-knowledge-add-or-edit">
     <g-loading :loading="loading"></g-loading>
     <g-noresult
-    v-if="!loading && knowledgeId && !knowledgeInfo.id"
-    :show="knowledgeId && !knowledgeInfo.id"
+    v-if="!loading && knowledgeId && !knowledgeInfo._id"
+    :show="knowledgeId && !knowledgeInfo._id"
     :message="'未能查到知识库~'">
     </g-noresult>
-    <form @submit="formSubmit" v-if="!loading && (!knowledgeId || knowledgeInfo.id)">
+    <form @submit="formSubmit" v-if="!loading && (!knowledgeId || knowledgeInfo._id)">
       <div class="zan-panel">
         <div class="upload-img-warp">
           <div class="upload-label">图片：</div>
-          <i class="iconfont icon-shangchuan" @click="chooseImage()" v-if="(!pic && !knowledgeInfo.pic)"></i>
-          <image class="upload-image" :src="pic || knowledgeInfo.pic" v-if="pic || knowledgeInfo.pic" @click="chooseImage()" mode="aspectFill"></image>
+          <i class="iconfont icon-shangchuan" @click="chooseImage()" v-if="(!picUrl && !knowledgeInfo.picUrl)"></i>
+          <image class="upload-image" :src="picUrl || knowledgeInfo.picUrl" v-if="picUrl || knowledgeInfo.picUrl" @click="chooseImage()" mode="aspectFill"></image>
         </div>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.title)" :value="knowledgeInfo.title" :focus="curComponentId === base.title.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.desc)" :value="knowledgeInfo.desc" :focus="curComponentId === base.desc.componentId"/>
@@ -43,8 +43,9 @@ export default {
   },
   data () {
     return {
+      file: {}, // 上传的临时文件
       loading: false,
-      pic: '',
+      picUrl: '',
       title: '',
       knowledgeId: '',
       knowledgeInfo: {},
@@ -106,28 +107,34 @@ export default {
     }
   },
   methods: {
-    async upload (file) { // 上传单张图片
-      const tempFiles = file.tempFiles
-      const path = tempFiles[0].path
-      const size = tempFiles[0].size
+    upload (res) { // 上传单张图片
+      let uploadParams = {}
+      const filePath = res.tempFilePaths[0]
+      const size = res.tempFiles[0].size
+      const name = Math.random() * 1000000
+      const cloudPath = name + filePath.match(/\.[^.]+?$/)[0]
       if (size > 2 * 1024 * 1024) {
         this.$toast('请上传小于2M的图片')
-        return
+        return uploadParams
       }
-      this.$loading.show('正在上传')
-      await api.upload({
-        url: '/kanoupload/imageupload.json', // 上传的地址
-        path: path,
-        name: 'knowledgePic'
-      }).then(res => {
-        if (res) {
-          console.log('上传成功！')
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$toast('上传失败！')
-      })
-      this.$loading.hide()
+      uploadParams = {
+        cloudPath,
+        filePath
+      }
+      return uploadParams
+      // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+      // await api.upload({
+      //   cloudPath, // 云存储图片名字
+      //   filePath // 小程序临时文件路径
+      // }).then(res => {
+      //   if (res) {
+      //     console.log('上传成功！')
+      //     this.picUrl = res.fileID // 云存储图片路径,可以把这个路径存到集合，要用的时候再取出来
+      //   }
+      // }).catch(err => {
+      //   console.log(err)
+      //   this.$toast('上传失败！')
+      // })
     },
     chooseImage () { // 图片上传
       let that = this
@@ -136,30 +143,23 @@ export default {
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
         success (res) {
-          that.pic = res.tempFilePaths[0]
-          // 上传图片：
-          that.upload(res)
+          // 存储临时路径 -- 提交之后再上传图片：
+          that.picUrl = res.tempFilePaths[0]
+          that.file = res
         }
       })
     },
     async getKnowledgeById () {
       this.loading = true
       await api.knowledgeBase.getKnowledgeDetailById({
-        id: this.knowledgeId
+        _id: this.knowledgeId
       }).then(res => {
-        this.knowledgeInfo = res || {}
+        if (res && res.data) {
+          this.knowledgeInfo = res.data || {}
+        }
       }).catch(err => {
         console.log(err)
       })
-      // mock数据：
-      this.knowledgeInfo = {
-        tagType: '1',
-        id: '3333',
-        pic: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-        title: '剪短发放假撒开了房间',
-        desc: '代付款撒娇的风口浪尖是否考虑是否就说了放假快乐风',
-        content: '发健康的萨拉飞机父级的雷克萨福建省家乐福科技打法是否三答困了就睡考虑发动机开始罗芬接待室里开发及两地分居阿拉水电费垃圾堆里撒发快递'
-      }
 
       this.loading = false
       this.initData()
@@ -172,7 +172,7 @@ export default {
           this.tagType = this.knowledgeInfo.tagType
         }
       }
-      this.pic = this.knowledgeInfo.pic || '' // 初始设置pic
+      this.picUrl = this.knowledgeInfo.picUrl || '' // 初始设置picUrl
     },
     handleZanFieldChange (e) {
       const { componentId, target } = e
@@ -197,10 +197,12 @@ export default {
           if (res.cancel) {
             // 点击取消,默认隐藏弹框
           } else {
-            // 点击确定
+            // 点击确定 -- 上传图片并存储
             await api.knowledgeBase.updateKnowledge(submitInfo).then(res => {
               if (res) {
                 this.$toast('提交成功！')
+              } else {
+                this.$toast(res.message || '提交失败')
               }
             }).catch(err => {
               console.log(err)
@@ -221,7 +223,7 @@ export default {
           if (res.cancel) {
             // 点击取消,默认隐藏弹框
           } else {
-            // 点击确定
+            // 点击确定 -- 上传图片并存储
             await api.knowledgeBase.addKnowledge(submitInfo).then(res => {
               if (res) {
                 that.$toast('提交成功！')
@@ -235,15 +237,20 @@ export default {
       })
     },
     formSubmit (event) {
-      let submitInfo = Object.assign({}, event.target.value, {tagType: this.tagType, pic: this.pic})
+      let uploadParams = this.upload(this.file)
+      let submitInfo = Object.assign({}, event.target.value, {tagType: this.tagType, picUrl: this.picUrl})
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
           if (!element || !element.length) {
             this.$toast('信息不可为空！')
+            debugger
             return false
           }
         }
+      }
+      if (uploadParams) {
+        submitInfo.uploadParams = uploadParams
       }
       if (this.knowledgeId) { // 修改知识库
         this.submitEdit(submitInfo)

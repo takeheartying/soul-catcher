@@ -22,7 +22,7 @@ export const addKnowledge = (params) => {
 }
 // 修改知识库
 export const updateKnowledge = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return knowledgeBase.updateKnowledge(params).then(res => {
     return res || {}
   })
 }

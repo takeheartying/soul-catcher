@@ -31,7 +31,24 @@ const getKnowledgeDetailById = (params) => {
     return err
   })
 }
+const updateKnowledge = (params) => {
+  return wx.cloud.callFunction({
+    name: 'knowledge-base',
+    data: Object.assign({$url: 'knowledge/update'}, params)
+  }).then(res => {
+    if (res && res.result && res.result.data) {
+      if (res && res.result && res.result.data) {
+        res.result.data.createTime = moment(res.result.data.createTime).format('YYYY-MM-DD')
+        return res.result
+      }
+    }
+  }).catch(err => {
+    return err
+  })
+}
+
 export default {
   getKnowledgeList,
-  getKnowledgeDetailById
+  getKnowledgeDetailById,
+  updateKnowledge
 }

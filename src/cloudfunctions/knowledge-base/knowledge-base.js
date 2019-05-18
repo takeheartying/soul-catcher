@@ -58,8 +58,38 @@ const getKnowledgeDetailById = async (event) => {
   })
   return promise
 }
-
+// 知识库修改：[先上传图片再修改数据库]
+const updateKnowledge = async (event) => {
+  let promise = {}
+  if (event.uploadParams) {
+    promise = await cloud.callFunction({
+      name: 'upload',
+      data: Object.assign({$url: 'upload/add'}, event)
+    }).then(res => {
+      console.log('上传图片结果-----', res)
+      if (res && res.result) {
+        return res.result.fileID
+      }
+    }).then(fileID => {
+      console.log('fileID:', fileID)
+      if (fileID) {
+        event.picUrl = fileID
+        db.collection(dbName).doc(event._id).update({
+          data: event
+        }).then(res => {
+          return res
+        }).catch(err => {
+          return err
+        })
+      }
+    }).catch(err => {
+      return err
+    })
+  }
+  return promise
+}
 module.exports = {
   getKnowledgeBaseList,
-  getKnowledgeDetailById
+  getKnowledgeDetailById,
+  updateKnowledge
 }

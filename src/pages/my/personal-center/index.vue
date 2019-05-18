@@ -91,7 +91,7 @@
             <p>测试管理</p>
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
-        </navigator>  
+        </navigator>
         <navigator class="function-item" :url="'/pages/knowledge/list/main'" v-if="userType === '0'">
           <div class="left-part">
             <i class="iconfont icon-zhishiku"></i>
@@ -100,7 +100,7 @@
             <p>知识库管理</p>
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
-        </navigator>              
+        </navigator>
       </div>
       <navigator class="contact-us" url="/pages/contact-us/main">
         联系我们
@@ -137,7 +137,7 @@ export default {
       })
       // mock数据：
       this.userInfo = {
-        id: '4444', // 用户id
+        id: '5cdbb0131e1bbf04de1a035e', // 用户id
         avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1293892983,611103898&fm=27&gp=0.jpg',
         nickName: '驾辕的位置',
         studentId: '323434' // 用户是家长的时候

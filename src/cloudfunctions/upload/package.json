@@ -1,14 +1,15 @@
 {
-  "name": "sum",
+  "name": "upload",
   "version": "1.0.0",
-  "description": "",
+  "description": "上传-云函数",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "takeheartYing",
   "license": "ISC",
   "dependencies": {
-    "wx-server-sdk": "latest"
+    "wx-server-sdk": "latest",
+    "tcb-router": "latest"
   }
 }
