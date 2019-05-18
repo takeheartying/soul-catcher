@@ -1,10 +1,10 @@
 // 知识库： 文章 视频
 import wxRequest from '../wxRequest.js'
-import myRequest from '../myRequest'
+import knowledgeBase from '../controller/knowledge-base'
 
 // 获取知识库列表
 export const getKnowledgeList = (params) => {
-  return myRequest.getKnowledgeList(params).then(res => {
+  return knowledgeBase.getKnowledgeList(params).then(res => {
     return res || {}
   })
 }
