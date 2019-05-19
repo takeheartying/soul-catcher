@@ -7,6 +7,27 @@ cloud.init({
 const dbName = 'article'
 const db = cloud.database()
 
+const filterTagType = function (event) {
+  if (event.tagType) {
+    switch (event.tagType) {
+      case '1':
+        event.tagTypeDesc = '爱情脱单'
+        break
+      case '2':
+        event.tagTypeDesc = '智商情商'
+        break
+      case '3':
+        event.tagTypeDesc = '趣味性格'
+        break
+      case '4':
+        event.tagTypeDesc = '心理综合'
+        break
+      default: break
+    }
+  }
+  return event
+}
+
 // 知识库列表：
 const getKnowledgeBaseList = async (event) => {
   let filter = {}
@@ -60,23 +81,7 @@ const getKnowledgeDetailById = async (event) => {
 }
 // 知识库修改：[先上传图片再修改数据库]
 const updateKnowledge = async (event) => {
-  if (event.tagType) {
-    switch (event.tagType) {
-      case '1':
-        event.tagTypeDesc = '爱情脱单'
-        break
-      case '2':
-        event.tagTypeDesc = '智商情商'
-        break
-      case '3':
-        event.tagTypeDesc = '趣味性格'
-        break
-      case '4':
-        event.tagTypeDesc = '心理综合'
-        break
-      default: break
-    }
-  }
+  event = filterTagType(event)
   let promise = await db.collection(dbName).doc(event._id).update({
     data: {
       content: event.content,
@@ -97,8 +102,34 @@ const updateKnowledge = async (event) => {
   })
   return promise
 }
+// 知识库修改：[先上传图片再修改数据库]
+const addKnowledge = async (event) => {
+  event = filterTagType(event)
+  let promise = await db.collection(dbName).add({
+    data: {
+      // author: {
+      // },
+      createTime: new Date(),
+      content: event.content,
+      desc: event.desc,
+      picUrl: event.picUrl,
+      tagType: event.tagType,
+      title: event.title,
+      tagTypeDesc: event.tagTypeDesc,
+      commentNum: 0
+    }
+  }).then(res => {
+    console.log('新增知识库成功！')
+    return res
+  }).catch(err => {
+    return err
+  })
+  return promise
+}
 module.exports = {
+  filterTagType,
   getKnowledgeBaseList,
   getKnowledgeDetailById,
-  updateKnowledge
+  updateKnowledge,
+  addKnowledge
 }

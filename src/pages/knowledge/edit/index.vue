@@ -49,7 +49,9 @@ export default {
       picUrl: '',
       title: '',
       knowledgeId: '',
-      knowledgeInfo: {},
+      knowledgeInfo: {
+        _id: ''
+      },
       curComponentId: '',
       base: {
         title: {
@@ -218,12 +220,20 @@ export default {
           } else {
             // 点击确定 -- 上传图片并存储
             await api.knowledgeBase.addKnowledge(submitInfo).then(res => {
-              if (res) {
-                that.$toast('提交成功！')
+              if (res && res.code === '0' && res._id) {
+                if (res.picUrl) {
+                  that.originPic = res.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
+                }
+                that.knowledgeInfo._id = res._id
+                that.knowledgeId = res._id
+                that.$toast(res.message || '添加成功！')
+                return false
               }
-            }).catch(err => {
-              console.log(err)
-              that.$toast('系统错误！')
+              if (res && res.code === '-1') {
+                that.$toast(res.message || '添加失败！')
+                return false
+              }
             })
           }
         }

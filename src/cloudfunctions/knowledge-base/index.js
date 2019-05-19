@@ -29,6 +29,9 @@ exports.main = (event, context) => {
     let promise = await knowledgeBase.updateKnowledge(event)
     ctx.body = promise
   })
-
+  app.router('knowledge/add', async (ctx, next) => {
+    let promise = await knowledgeBase.addKnowledge(event)
+    ctx.body = promise
+  })
   return app.serve()
 }

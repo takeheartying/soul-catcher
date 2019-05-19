@@ -5,6 +5,7 @@
         v-if="title"
         class="zan-cell__hd zan-field__title">{{ title }}</div>
       <textarea
+        maxlength="-1"
         v-if="type === 'textarea'"
         :auto-height="height === 0"
         :style="'height:' + height + 'px'"
