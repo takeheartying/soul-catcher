@@ -19,7 +19,6 @@ exports.main = (event, context) => {
   const app = new TcbRouter({ event })
   app.router('knowledge/list', async (ctx, next) => {
     let promise = await knowledgeBase.getKnowledgeBaseList(event)
-    // ctx.body = Object.assign()
     ctx.body = promise
   })
   app.router('knowledge/detail', async (ctx, next) => {

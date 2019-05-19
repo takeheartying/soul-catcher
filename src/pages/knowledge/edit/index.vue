@@ -110,9 +110,11 @@ export default {
   methods: {
     upload (res) { // 上传单张图片
       let uploadParams = {}
-      const filePath = res.tempFilePaths[0]
-      uploadParams = {
-        filePath
+      if (res && res.tempFilePaths) {
+        const filePath = res.tempFilePaths[0]
+        uploadParams = {
+          filePath
+        }
       }
       return uploadParams
     },
@@ -174,6 +176,7 @@ export default {
       this.tagType = e.target.value
     },
     async submitEdit (submitInfo) {
+      let that = this
       wx.showModal({
         content: '确定提交？',
         showCancel: true, // 是否显示取消按钮
@@ -185,7 +188,18 @@ export default {
           } else {
             // 点击确定 -- 上传图片并存储
             await api.knowledgeBase.updateKnowledge(submitInfo).then(res => {
-              debugger
+              if (res && res.code === '0') {
+                if (res.picUrl) { // 更改了图片
+                  that.originPic = res.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
+                }
+                that.$toast(res.message || '提交成功！')
+                return false
+              }
+              if (res && res.code === '-1') {
+                that.$toast(res.message || '提交失败！')
+                return false
+              }
             })
           }
         }

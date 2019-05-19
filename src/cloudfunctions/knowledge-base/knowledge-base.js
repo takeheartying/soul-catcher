@@ -89,7 +89,7 @@ const updateKnowledge = async (event) => {
   }).then(res => {
     console.log('提交知识库修改成功！')
     if (res && res.result) {
-      // 删除旧的图片：
+      res.result.picUrl = event.picUrl // 返回给前端
     }
     return res
   }).catch(err => {

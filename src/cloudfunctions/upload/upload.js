@@ -9,25 +9,24 @@ const uploadFile = async (event) => {
   try {
     return await cloud.uploadFile({
       cloudPath: event.cloudPath,
-      // fileContent: new Buffer(event.file, 'base64')
       fileContent: Buffer.from(event.file, 'base64')
     })
   } catch (e) {
     return e
   }
 }
-// 图片删除
+// 单个图片删除
 const deleteFile = async (event) => {
-  let promise = {}
-  if (event.uploadParams) {
-    promise = await cloud.deleteFile({
-      fileList: event.fileList
+  try {
+    return await cloud.deleteFile({
+      fileList: [event.originPic] // 云文件 ID 字符串数组
     }).then(res => {
-      console.log('删除图片成功！', res)
+      console.log(res)
       return res
     })
+  } catch (e) {
+    return e
   }
-  return promise
 }
 module.exports = {
   uploadFile,
