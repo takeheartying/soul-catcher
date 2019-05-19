@@ -4,6 +4,9 @@
       <div class="zan-panel">
         <zan-field v-bind="Object.assign({}, handleFunctions, base.nickName)" :value="userInfo.nickName" :focus="curComponentId === base.nickName.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.name)" :value="userInfo.name" :focus="curComponentId === base.name.componentId"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.userName)" :value="userInfo.userName" :focus="curComponentId === base.userName.componentId"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.password)" :value="userInfo.password" :focus="curComponentId === base.password.componentId"/>
+
         <zan-field v-bind="Object.assign({}, handleFunctions, base.academicTitle)" :value="userInfo.academicTitle" v-if="userType === '2'" :focus="curComponentId === base.academicTitle.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.phone)"  :value="userInfo.phone" v-if="userType !== '0'" :focus="curComponentId === base.phone.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.relationPhone)"  :value="userInfo.relationPhone" v-if="userType === '1' || userType === '3'" :focus="curComponentId === base.relationPhone.componentId"/>
@@ -46,6 +49,18 @@ export default {
           title: '姓名：',
           placeholder: '请输入姓名',
           componentId: 'name'
+        },
+        userName: {
+          // focus: false,
+          title: '用户名：',
+          placeholder: '请输入用户名',
+          componentId: 'userName'
+        },
+        password: {
+          type: 'password',
+          title: '密码：',
+          placeholder: '请输入密码',
+          componentId: 'password'
         },
         phone: {
           // focus: false,
@@ -113,7 +128,12 @@ export default {
     }
   },
   onLoad (options) {
-    this.userType = this.$app.globalData.userType || ''
+    if (options.userType) { // 未登录---用户注册，url传参
+      this.userType = options.userType
+    } else { // 已登录
+      this.userType = this.$app.globalData.userType || ''
+      this.getUserInfo()
+    }
     this.initData()
   },
   methods: {
@@ -161,18 +181,22 @@ export default {
     checkboxChange (e) {
       this.tagList = e.target.value
     },
-    async formSubmit (e) {
+    formSubmit (e) {
       let submitInfo = {}
       if (this.userType === '0') {
         submitInfo = {
           nickName: e.target.value.nickName,
-          name: e.target.value.name
+          name: e.target.value.name,
+          userName: e.target.value.userName,
+          password: e.target.value.password
         }
       }
       if (this.userType === '1') {
         submitInfo = {
           name: e.target.value.name,
           nickName: e.target.value.nickName,
+          userName: e.target.value.userName,
+          password: e.target.value.password,
           organization: e.target.value.organization,
           phone: e.target.value.phone,
           relationPhone: e.target.value.relationPhone
@@ -185,6 +209,8 @@ export default {
         submitInfo = {
           name: e.target.value.name,
           nickName: e.target.value.nickName,
+          userName: e.target.value.userName,
+          password: e.target.value.password,
           phone: e.target.value.phone,
           relationPhone: e.target.value.relationPhone
         }
@@ -198,26 +224,41 @@ export default {
           }
         }
       }
-      await api.my.submitUserInfo(submitInfo).then(res => {
+      if (this.userInfo && this.userInfo._id) {
+        this.updateUser(submitInfo)
+      } else {
+        this.addUser(submitInfo)
+      }
+    },
+    async addUser (submitInfo) {
+      await api.my.register(submitInfo).then(res => {
         if (res) {
-          this.$toast('提交成功！')
+          this.$toast('注册成功！')
           // 前往个人中心主页：
-          wx.navigateTo({url: `/pages/my/personal-center/main`})
+          wx.reLaunch({url: `/pages/my/personal-center/main`})
         }
       }).catch(err => {
         console.log(err)
         this.$toast('抱歉，系统错误！')
       })
-
-      // mock数据：
-      wx.reLaunch({url: `/pages/my/personal-center/main`})
+    },
+    async updateUser (submitInfo) {
+      await api.my.updateUserInfo(submitInfo).then(res => {
+        if (res) {
+          this.$toast('修改成功！')
+          // 前往个人中心主页：
+          wx.reLaunch({url: `/pages/my/personal-center/main`})
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$toast('抱歉，系统错误！')
+      })
     }
   },
   mounted () {
     wx.setNavigationBarTitle({
       title: '我的资料'
     })
-    this.getUserInfo()
   }
 }
 </script>

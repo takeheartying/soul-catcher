@@ -1,13 +1,6 @@
 <template>
   <section class="page-login">
-    <!-- 选择角色： -->
-    <div class="page-login--btns" v-if="showChooseUserType">
-      <h1 class="title">请选择角色</h1>
-      <button @click="confirmClick('1')" class="choose-btn">我是学生</button>
-      <button @click="confirmClick('2')" class="choose-btn">我是专家</button>
-      <button @click="confirmClick('3')" class="choose-btn">我是家长</button>
-      <button @click="confirmClick('0')" class="choose-btn">我是管理员</button>
-    </div>
+    <!-- 用户名密码： -->
     <div class="page-login--pwd" v-if="!showChooseUserType">
       <div class="login-item">
         <label for="userName">用户名：</label>
@@ -18,9 +11,18 @@
         <input type="password" v-model="password" placeholder="请输入密码">
       </div>
       <div class="login-item btns">
-        <button class="login-btn" @click="loginConfirm()">确定</button>
-        <button class="login-btn" @click="returnBack()">返回</button>
+        <button class="login-btn" @click="loginConfirm()">登录</button>
+        <button class="login-btn" @click="register()">注册</button>
       </div>
+    </div>
+    <!-- 选择角色： -->
+    <div class="page-login--btns" v-if="showChooseUserType">
+      <h1 class="title">请选择角色</h1>
+      <button @click="confirmClick('1')" class="choose-btn">我是学生</button>
+      <button @click="confirmClick('2')" class="choose-btn">我是专家</button>
+      <button @click="confirmClick('3')" class="choose-btn">我是家长</button>
+      <button @click="confirmClick('0')" class="choose-btn">我是管理员</button>
+      <button @click="returnBack()" class="choose-btn return-btn">返回登录</button>
     </div>
   </section>
 </template>
@@ -29,28 +31,22 @@ import api from '@/api'
 export default {
   mounted () {
     wx.setNavigationBarTitle({
-      title: '选择角色'
+      title: '用户登录'
     })
   },
   data () {
     return {
       userName: '',
       password: '',
-      showChooseUserType: true // 是否展示选择角色
+      showChooseUserType: false // 是否展示选择角色
     }
   },
   methods: {
-    // 初次登录后选择角色：
-    async confirmClick (userType) { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
-      if (userType === '0' && this.showChooseUserType) {
-        this.showChooseUserType = false
-        return false
-      } else {
-        this.submitInfo(userType)
-      }
+    // 注册--1.选择角色：
+    async confirmClick (userType) { // 0 管理员 1 学生 2 专家 3 家长
+      this.submitInfo(userType)
     },
-    submitInfo (userType) {
-      let that = this
+    submitInfo (userType) { // 注册--2.填写信息
       wx.showModal({
         content: '确认该角色？',
         showCancel: true, // 是否显示取消按钮
@@ -61,38 +57,21 @@ export default {
             // 点击取消,默认隐藏弹框
           } else {
             // 点击确定
-            await api.common.updateUserType({
-              userId: that.$app.globalData.userId,
-              userType: userType
-            }).then(res => {
-              if (res.success) {
-                console.log('更改成功')
-                that.$app.globalData.userType = userType
-                that.$app.globalData.userInfo.userType = userType
-              } else {
-                console.log('更改失败')
-              }
-            }).catch(err => {
-              console.log(err)
-              that.$toast('系统错误')
-            })
-
-            // mock数据：
-            that.$app.globalData.userType = userType
-            that.$app.globalData.userInfo.userType = userType
-
             if (userType) {
-              // 前往信息修改页：
-              wx.navigateTo({url: '/pages/my/detail/main'})
+              // 前往信息修改添加页：
+              wx.navigateTo({url: '/pages/my/detail/main?userType=' + userType})
             }
           }
         }
       })
     },
     returnBack () {
+      this.showChooseUserType = false
+    },
+    register () {
       this.showChooseUserType = true
     },
-    loginConfirm () { // 用户名密码输入
+    async loginConfirm () { // 用户名密码输入
       if (!this.userName) {
         this.$toast('请输入用户名！')
         return false
@@ -101,15 +80,10 @@ export default {
         this.$toast('请输入密码！')
         return false
       }
-      if (this.userName !== '111111') {
-        this.$toast('请输入正确的用户名！')
-        return false
-      }
-      if (this.password !== '111111') {
-        this.$toast('请输入正确的密码！')
-        return false
-      }
-      this.confirmClick('0')
+      // 登录api:
+      await api.common.login(res => {
+
+      })
     }
   }
 }
@@ -139,6 +113,9 @@ export default {
       color: #fff;
       padding: 10px 20px;
       font-size: 16px;
+    }
+    .return-btn {
+      margin-top: 10px;
     }
     .title {
       color: rgb(255, 209, 97);

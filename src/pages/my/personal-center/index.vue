@@ -125,6 +125,7 @@ export default {
     }
   },
   onLoad (options) {
+    this.userType = this.$app.globalData.userType || ''
   },
   methods: {
     async getUserInfo () {
@@ -151,7 +152,7 @@ export default {
     this.$refs.auth.run(true).then(() => {
       // 正常账号
       this.userType = this.$app.globalData.userType || ''
-      this.loginState = this.$app.globalData.loginState // // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功
+      this.loginState = this.$app.globalData.loginState // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功
       if (this.userType && this.userType !== '0') { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
         wx.hideTabBar() // 显示自定义tabTab
       } else {
