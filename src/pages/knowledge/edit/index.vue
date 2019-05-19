@@ -45,6 +45,7 @@ export default {
     return {
       file: {}, // 上传的临时文件
       loading: false,
+      originPic: '', // 原有图片，用于删除
       picUrl: '',
       title: '',
       knowledgeId: '',
@@ -110,31 +111,10 @@ export default {
     upload (res) { // 上传单张图片
       let uploadParams = {}
       const filePath = res.tempFilePaths[0]
-      const size = res.tempFiles[0].size
-      const name = Math.random() * 1000000
-      const cloudPath = name + filePath.match(/\.[^.]+?$/)[0]
-      if (size > 2 * 1024 * 1024) {
-        this.$toast('请上传小于2M的图片')
-        return uploadParams
-      }
       uploadParams = {
-        cloudPath,
         filePath
       }
       return uploadParams
-      // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-      // await api.upload({
-      //   cloudPath, // 云存储图片名字
-      //   filePath // 小程序临时文件路径
-      // }).then(res => {
-      //   if (res) {
-      //     console.log('上传成功！')
-      //     this.picUrl = res.fileID // 云存储图片路径,可以把这个路径存到集合，要用的时候再取出来
-      //   }
-      // }).catch(err => {
-      //   console.log(err)
-      //   this.$toast('上传失败！')
-      // })
     },
     chooseImage () { // 图片上传
       let that = this
@@ -144,6 +124,11 @@ export default {
         sourceType: ['album', 'camera'],
         success (res) {
           // 存储临时路径 -- 提交之后再上传图片：
+          const size = res.tempFiles[0].size
+          if (size > 2 * 1024 * 1024) {
+            that.$toast('请上传小于2M的图片')
+            return false
+          }
           that.picUrl = res.tempFilePaths[0]
           that.file = res
         }
@@ -156,6 +141,7 @@ export default {
       }).then(res => {
         if (res && res.data) {
           this.knowledgeInfo = res.data || {}
+          this.originPic = this.knowledgeInfo.picUrl || ''
         }
       }).catch(err => {
         console.log(err)
@@ -199,14 +185,7 @@ export default {
           } else {
             // 点击确定 -- 上传图片并存储
             await api.knowledgeBase.updateKnowledge(submitInfo).then(res => {
-              if (res) {
-                this.$toast('提交成功！')
-              } else {
-                this.$toast(res.message || '提交失败')
-              }
-            }).catch(err => {
-              console.log(err)
-              this.$toast('系统错误！')
+              debugger
             })
           }
         }
@@ -244,13 +223,18 @@ export default {
           const element = submitInfo[key]
           if (!element || !element.length) {
             this.$toast('信息不可为空！')
-            debugger
             return false
           }
         }
       }
+      if (this.knowledgeId) {
+        submitInfo._id = this.knowledgeId
+      }
       if (uploadParams) {
         submitInfo.uploadParams = uploadParams
+      }
+      if (this.originPic) {
+        submitInfo.originPic = this.originPic
       }
       if (this.knowledgeId) { // 修改知识库
         this.submitEdit(submitInfo)

@@ -23,6 +23,7 @@ export const addKnowledge = (params) => {
 // 修改知识库
 export const updateKnowledge = (params) => {
   return knowledgeBase.updateKnowledge(params).then(res => {
+    debugger
     return res || {}
   })
 }

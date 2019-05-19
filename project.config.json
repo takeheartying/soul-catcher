@@ -14,6 +14,9 @@
 	"compileType": "miniprogram",
 	"appid": "wx0788e9d49335944b",
 	"projectname": "心灵捕手-n次方",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
 	"condition": {
 		"search": {
 			"current": -1,

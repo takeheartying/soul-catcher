@@ -4,19 +4,17 @@ const cloud = require('wx-server-sdk')
 cloud.init({
   env: 'soul-catcher-env-2f8134'
 })
-
 // 图片上传
 const uploadFile = async (event) => {
-  let promise = await cloud.uploadFile({
-    cloudPath: event.cloudPath, // 云存储图片名字
-    fileContent: event.filePath // 要上传文件的内容 Buffer 或 fs.ReadStream
-  }).then(res => {
-    console.log('upload云函数----上传----结果：    ', res)
-    return res
-  }).cath(err => {
-    return err
-  })
-  return promise
+  try {
+    return await cloud.uploadFile({
+      cloudPath: event.cloudPath,
+      // fileContent: new Buffer(event.file, 'base64')
+      fileContent: Buffer.from(event.file, 'base64')
+    })
+  } catch (e) {
+    return e
+  }
 }
 // 图片删除
 const deleteFile = async (event) => {

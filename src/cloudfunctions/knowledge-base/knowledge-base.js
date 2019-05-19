@@ -60,32 +60,41 @@ const getKnowledgeDetailById = async (event) => {
 }
 // 知识库修改：[先上传图片再修改数据库]
 const updateKnowledge = async (event) => {
-  let promise = {}
-  if (event.uploadParams) {
-    promise = await cloud.callFunction({
-      name: 'upload',
-      data: Object.assign({$url: 'upload/add'}, event)
-    }).then(res => {
-      console.log('上传图片结果-----', res)
-      if (res && res.result) {
-        return res.result.fileID
-      }
-    }).then(fileID => {
-      console.log('fileID:', fileID)
-      if (fileID) {
-        event.picUrl = fileID
-        db.collection(dbName).doc(event._id).update({
-          data: event
-        }).then(res => {
-          return res
-        }).catch(err => {
-          return err
-        })
-      }
-    }).catch(err => {
-      return err
-    })
+  if (event.tagType) {
+    switch (event.tagType) {
+      case '1':
+        event.tagTypeDesc = '爱情脱单'
+        break
+      case '2':
+        event.tagTypeDesc = '智商情商'
+        break
+      case '3':
+        event.tagTypeDesc = '趣味性格'
+        break
+      case '4':
+        event.tagTypeDesc = '心理综合'
+        break
+      default: break
+    }
   }
+  let promise = await db.collection(dbName).doc(event._id).update({
+    data: {
+      content: event.content,
+      desc: event.desc,
+      picUrl: event.picUrl,
+      tagType: event.tagType,
+      title: event.title,
+      tagTypeDesc: event.tagTypeDesc
+    }
+  }).then(res => {
+    console.log('提交知识库修改成功！')
+    if (res && res.result) {
+      // 删除旧的图片：
+    }
+    return res
+  }).catch(err => {
+    return err
+  })
   return promise
 }
 module.exports = {
