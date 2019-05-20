@@ -23,6 +23,7 @@
       </div>
       <div class="zan-btns">
         <button class="zan-btn submit-btn" formType="submit">提交</button>
+        <button class="zan-btn submit-btn" @click="loginOut()">退登</button>
       </div>
     </form>
   </section>
@@ -109,12 +110,12 @@ export default {
           },
           {
             name: '3',
-            value: '心理综合',
+            value: '趣味性格',
             checked: false
           },
           {
             name: '4',
-            value: '智商情商',
+            value: '心理综合',
             checked: false
           }
         ]
@@ -178,6 +179,26 @@ export default {
     },
     checkboxChange (e) {
       this.tagList = e.target.value
+    },
+    loginOut () { // 退出登录
+      let that = this
+      wx.showModal({
+        content: '确定提交？',
+        showCancel: true, // 是否显示取消按钮
+        cancelColor: 'skyblue', // 取消文字的颜色
+        confirmColor: 'skyblue', // 确定文字的颜色
+        success: async res => {
+          if (res.cancel) {
+            // 点击取消,默认隐藏弹框
+          } else {
+            // 点击确定
+            that.$app.globalData.userType = ''
+            that.$app.globalData.loginState = 'noLogin'
+            that.$app.globalData.userInfo = {}
+            wx.reLaunch({url: `/pages/home/main`})
+          }
+        }
+      })
     },
     formSubmit (e) {
       let submitInfo = {}

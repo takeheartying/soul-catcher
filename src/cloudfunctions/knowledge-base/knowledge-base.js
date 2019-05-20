@@ -110,10 +110,10 @@ const addKnowledge = async (event) => {
     let result = {
       message: '提交中！'
     }
-    if (res && res.data && res.data.length) {
+    if (res && res.data) {
       await db.collection(dbName).add({
         data: {
-          author: res.data[0],
+          author: res.data,
           createTime: new Date(),
           content: event.content,
           desc: event.desc,
