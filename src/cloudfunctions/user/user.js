@@ -11,7 +11,6 @@ cloud.init({
 
 const dbName = 'user'
 const db = cloud.database()
-const wxContext = cloud.getWXContext()
 const updateUserInfo = async (event) => {
   if (!event.userId) {
     return {
@@ -39,7 +38,7 @@ const updateUserInfo = async (event) => {
       return res
     } else {
       event.updateTime = new Date()
-      event.opId = wxContext.OPENID
+      event.openId = event.userInfo.openId
       // 用户是家长： ----- 确定孩子是否注册过小程序：
       if (event.relationPhone && event.userType === '3') { // userType = 3 家长添加一个孩子的号码
         await db.collection(dbName).where({
@@ -74,7 +73,7 @@ const updateUserInfo = async (event) => {
             nickName: event.nickName,
             avatarUrl: event.avatarUrl,
             userType: event.userType,
-            opId: wxContext.OPENID
+            openId: event.userInfo.openId
           },
           code: '0',
           flag: '0',
@@ -139,10 +138,10 @@ const register = async (event) => {
       message: '未选择用户角色！'
     }
   }
-  // 查询用户是否已经注册：本来应该根据opId判断---为了操作多用户，这里默认统一微信用户可以多角色，判断方法： opId+userType+userName
+  // 查询用户是否已经注册：本来应该根据openId判断---为了操作多用户，这里默认统一微信用户可以多角色，判断方法： openId+userType+userName
   let promise = await db.collection(dbName).where({
     userType: event.userType,
-    opId: wxContext.OPENID,
+    openId: event.userInfo.openId,
     userName: event.userName
   }).get().then(res => { // 判断是否已注册
     if (res && res.data && res.data.length) {
@@ -159,7 +158,7 @@ const register = async (event) => {
       return res
     } else {
       event.updateTime = new Date()
-      event.opId = wxContext.OPENID
+      event.openId = event.userInfo.openId
       // 用户是家长： ----- 确定孩子是否注册过小程序：
       if (event.relationPhone && event.userType === '3') { // userType = 3 家长添加一个孩子的号码
         await db.collection(dbName).where({
@@ -192,7 +191,7 @@ const register = async (event) => {
             nickName: event.nickName,
             avatarUrl: event.avatarUrl,
             userType: event.userType,
-            opId: wxContext.OPENID
+            openId: event.userInfo.openId
           },
           code: '0',
           flag: '0',
@@ -216,7 +215,7 @@ const register = async (event) => {
 }
 const login = async (event) => {
   let promise = await db.collection(dbName).where({
-    opId: wxContext.OPENID,
+    openId: event.userInfo.openId,
     userName: event.userName,
     password: event.password
   }).get().then(_res => {
@@ -236,7 +235,7 @@ const login = async (event) => {
             nickName: _res.data[0].nickName,
             avatarUrl: _res.data[0].avatarUrl,
             userType: _res.data[0].userType,
-            opId: wxContext.OPENID
+            openId: event.userInfo.openId
           },
           code: '0',
           flag: '0',
@@ -255,16 +254,25 @@ const login = async (event) => {
   return promise
 }
 const initLogin = (event) => { // 小程序端调用云函数时已经默认带上了可信的用户登录态（openid）了
-  if (wxContext.OPENID) {
+  console.log('event.userInfo', event.userInfo)
+  let openId = event.userInfo.openId
+  if (openId) {
     return {
       code: '0',
       flag: '0',
       message: '已经临时登录了',
       data: {
-        opId: wxContext.OPENID,
+        openId: event.userInfo.openId,
         avatarUrl: event.avatarUrl || '',
         nickName: event.nickName || ''
       }
+    }
+  } else {
+    return {
+      code: '-1',
+      flag: '-1',
+      message: '无openId',
+      loginState: 'noLogin'
     }
   }
 }

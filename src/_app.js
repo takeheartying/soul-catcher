@@ -11,7 +11,7 @@ let appConfig = {
     userInfo: {
       userId: '',
       userType: '',
-      opId: '',
+      openId: '',
       avatar: ''
     },
     loginState: 'noLogin', // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功 , 'temporaryLogin' 临时登录
@@ -86,12 +86,12 @@ let appConfig = {
       if (res && res.data) {
         let wyres = res.data
         this.globalData.loginInfo = {
-          opId: wyres.opId || ''
+          openId: wyres.openId || ''
         }
         this.globalData.userInfo = {
           nickName: wyres.nickName,
           avatarUrl: wyres.avatarUrl,
-          opId: wyres.opId || ''
+          openId: wyres.openId || ''
         }
         this.globalData.loginState = 'temporaryLogin'
         this.globalData.userType = this.globalData.userInfo.userType
@@ -122,13 +122,13 @@ let appConfig = {
     //     this.globalData.loginInfo = {
     //       secret: data.secret || '',
     //       loginToken: data.loginToken || '',
-    //       opId: data.opId || '',
+    //       openId: data.openId || '',
     //       userId: data.userId || '',
     //       state: ~~data.state // false是临时账号,必须要账号绑定;true是正式账号,正常业务逻辑
     //     }
     //     this.globalData.userInfo = {
     //       userId: data.userId || '',
-    //       opId: data.opId || '',
+    //       openId: data.openId || '',
     //       userType: data.userType || '',
     //       avatar: re.rawData.avatar
     //     }

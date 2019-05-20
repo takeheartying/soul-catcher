@@ -20,12 +20,11 @@ const user = require('./user.js')
     pageNo: 1
   }
 */
-const wxContext = cloud.getWXContext()
 exports.main = (event, context) => {
   console.log('event', event)
   const app = new TcbRouter({ event })
   app.router('user/update', async (ctx, next) => {
-    if (!wxContext.OPENID) {
+    if (!event.userInfo.openId) {
       return {
         code: '0',
         flag: '-1',
@@ -37,7 +36,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/register', async (ctx, next) => {
-    if (!wxContext.OPENID) {
+    if (!event.userInfo.openId) {
       return {
         code: '0',
         flag: '-1',
@@ -49,7 +48,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/login', async (ctx, next) => {
-    if (!wxContext.OPENID) {
+    if (!event.userInfo.openId) {
       return {
         code: '0',
         flag: '-1',
@@ -61,7 +60,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/detail', async (ctx, next) => {
-    if (!wxContext.OPENID) {
+    if (!event.userInfo.openId) {
       return {
         code: '0',
         flag: '-1',

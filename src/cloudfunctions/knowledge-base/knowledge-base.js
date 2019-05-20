@@ -102,27 +102,40 @@ const updateKnowledge = async (event) => {
   })
   return promise
 }
-// 知识库修改：[先上传图片再修改数据库]
+// 知识库添加：[先上传图片再修改数据库]
 const addKnowledge = async (event) => {
   event = filterTagType(event)
-  let promise = await db.collection(dbName).add({
-    data: {
-      // author: {
-      // },
-      createTime: new Date(),
-      content: event.content,
-      desc: event.desc,
-      picUrl: event.picUrl,
-      tagType: event.tagType,
-      title: event.title,
-      tagTypeDesc: event.tagTypeDesc,
-      commentNum: 0
+  // 获取作者信息：
+  let promise = await db.collection('user').doc(event.userId).get().then(async res => {
+    let result = {
+      message: '提交中！'
     }
-  }).then(res => {
-    console.log('新增知识库成功！')
-    return res
-  }).catch(err => {
-    return err
+    if (res && res.data && res.data.length) {
+      await db.collection(dbName).add({
+        data: {
+          author: res.data[0],
+          createTime: new Date(),
+          content: event.content,
+          desc: event.desc,
+          picUrl: event.picUrl,
+          tagType: event.tagType,
+          title: event.title,
+          tagTypeDesc: event.tagTypeDesc,
+          commentNum: 0
+        }
+      }).then(res => {
+        result = res
+        console.log('新增知识库成功！')
+        return res
+      })
+    } else {
+      result = {
+        message: '添加失败！',
+        code: '-1',
+        flag: '-1'
+      }
+    }
+    return result
   })
   return promise
 }

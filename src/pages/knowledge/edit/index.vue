@@ -208,6 +208,7 @@ export default {
       })
     },
     async submitAdd (submitInfo) {
+      submitInfo.userId = this.$app.globalData.userInfo.userId
       let that = this
       wx.showModal({
         content: '确定添加？',

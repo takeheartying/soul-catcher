@@ -241,7 +241,7 @@ export default {
             name: res.data.name,
             userName: res.data.userName,
             avatarUrl: res.data.avatarUrl,
-            opId: res.data.opId,
+            openId: res.data.openId,
             userType: res.data.userType
           }
           this.$app.globalData.userType = res.data.userType
@@ -267,7 +267,7 @@ export default {
             name: res.data.name,
             userName: res.data.userName,
             avatarUrl: res.data.avatarUrl,
-            opId: res.data.opId,
+            openId: res.data.openId,
             userType: res.data.userType
           }
           this.$toast('修改成功！')

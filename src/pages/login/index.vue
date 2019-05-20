@@ -92,7 +92,7 @@ export default {
             userName: res.data.userName,
             name: res.data.name,
             avatarUrl: res.data.avatarUrl,
-            opId: res.data.opId,
+            openId: res.data.openId,
             userType: res.data.userType
           }
           this.$app.globalData.userType = res.data.userType

@@ -2,7 +2,7 @@ import wxRequest from '../wxRequest.js'
 import myRequest from '../myRequest.js'
 // 知识库： 文章
 import user from '../controller/user.js'
-// 初始登录--获取opId
+// 初始登录--获取openId
 export const initLogin = (params) => {
   return user.initLogin(params).then(res => {
     res = myRequest.checkRequest(res)
