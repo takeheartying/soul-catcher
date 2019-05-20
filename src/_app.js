@@ -1,5 +1,5 @@
 import config from './config'
-
+import api from '@/api'
 let toResolve
 let ready
 
@@ -8,8 +8,13 @@ let code
 let appConfig = {
   globalData: {
     userType: '', // 0 管理员 1 学生 2 专家 3 家长 [默认为'']
-    userInfo: null,
-    loginState: 'noLogin', // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功
+    userInfo: {
+      userId: '',
+      userType: '',
+      opId: '',
+      avatar: ''
+    },
+    loginState: 'noLogin', // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功 , 'temporaryLogin' 临时登录
     loginInfo: {
       secret: '',
       loginToken: '',
@@ -19,10 +24,8 @@ let appConfig = {
     },
     gatewayServer: config.gatewayServer
   },
+  // initData: 登录或注册需要初始传参
   loginInit (callback) { // 获取登录信息
-    // mock数据：默认没有登录
-    this.globalData.loginState = 'noLogin'
-
     if (typeof callback !== 'function') {
       return console.error('callback 参数必须是 function')
     }
@@ -35,7 +38,7 @@ let appConfig = {
     ready = new Promise((resolve, reject) => {
       toResolve = resolve
       wx.$p.login().then(res => res.code)
-        .then(authCode => { // 获取code
+        .then(authCode => { // 获取 临时登录凭证 code -- 只能使用一次
           code = authCode
         })
         .then(() => wx.$p.getSetting())
@@ -66,77 +69,31 @@ let appConfig = {
     })
     return ready
   },
-  loginfail () { // 登录失败
-    let that = this
-    wx.showModal({
-      title: '登录失败',
-      content: '登录失败，请检查您的网络',
-      success: function (res) {
-        if (res.confirm) {
-          // console.log('用户点击确定')
-          // mock数据：
-          let wyres = {
-            success: true,
-            hasError: false,
-            data: {
-              secret: '',
-              loginToken: '',
-              userId: '5cdbb0131e1bbf04de1a035e',
-              state: '1',
-              userType: '2'
-            }
-          }
-          if (wyres.data && wyres.hasError === false) {
-            let data = wyres.data
-            that.globalData.loginInfo = {
-              secret: data.secret || '',
-              loginToken: data.loginToken || '',
-              userId: data.userId || '',
-              state: ~~data.state // false是临时账号,必须要账号绑定;true是正式账号,正常业务逻辑
-            }
-            that.globalData.loginState = 'done'
-            that.globalData.userInfo = {
-              userId: data.userId,
-              userType: data.userType
-            }
-            that.globalData.userType = that.globalData.userInfo.userType
-            toResolve()
-          }
-          // mock结束
-        }
-      }
-    })
-    this.globalData.loginState = 'fail'
-  },
-  wyLogin (re) { // 登录---添加新用户
-    wx.$p.request({
-      url: this.globalData.gatewayServer + '/json/white/miniprogrom/login',
-      header: {
-        'appid': 'soul-catcher'
-      },
-      data: {
-        code,
-        rawData: re.rawData,
-        signature: re.signature, // 使用sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
-        encryptedData: re.encryptedData, // 包括敏感数据在内的完整用户信息的加密数据
-        iv: re.iv, // 加密算法的初始向量
-        plat: 'mircowx',
-        cloudID: re.cloudID // 敏感数据对应的云 ID，开通云开发的小程序才会返回
-      }
-    }).then(wyres => {
-      if (wyres.data && wyres.hasError === false) {
-        let data = wyres.data
+  // re: 获取到的用户信息  '在  noLogin' 未登录情况， 'fail'登陆失败(用户拒绝)下进行系统登录
+  async wyLogin (re) { // 登录--临时登录【入参-无用户名密码】或正常登录
+    // 临时登录：
+    await api.user.initLogin({
+      code,
+      // rawData: re.rawData,
+      nickName: re.userInfo.nickName,
+      avatarUrl: re.userInfo.avatarUrl,
+      signature: re.signature, // 使用sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
+      encryptedData: re.encryptedData, // 包括敏感数据在内的完整用户信息的加密数据
+      iv: re.iv, // 加密算法的初始向量
+      plat: 'mircowx',
+      cloudID: re.cloudID // 敏感数据对应的云ID，开通云开发的小程序才会返回
+    }).then(res => {
+      if (res && res.data) {
+        let wyres = res.data
         this.globalData.loginInfo = {
-          secret: data.secret || '',
-          loginToken: data.loginToken || '',
-          userId: data.userId || '',
-          state: ~~data.state // false是临时账号,必须要账号绑定;true是正式账号,正常业务逻辑
+          opId: wyres.opId || ''
         }
         this.globalData.userInfo = {
-          userId: data.userId,
-          userType: data.userType
+          nickName: wyres.nickName,
+          avatarUrl: wyres.avatarUrl,
+          opId: wyres.opId || ''
         }
-        this.globalData.loginState = 'done'
+        this.globalData.loginState = 'temporaryLogin'
         this.globalData.userType = this.globalData.userInfo.userType
         toResolve()
       } else {
@@ -145,6 +102,57 @@ let appConfig = {
     }).catch((err) => {
       console.log(err)
     })
+    // wx.$p.request({
+    //   url: this.globalData.gatewayServer + '/json/white/miniprogrom/login',
+    //   header: {
+    //     'appid': 'soul-catcher'
+    //   },
+    //   data: {
+    //     code,
+    //     rawData: re.rawData,
+    //     signature: re.signature, // 使用sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
+    //     encryptedData: re.encryptedData, // 包括敏感数据在内的完整用户信息的加密数据
+    //     iv: re.iv, // 加密算法的初始向量
+    //     plat: 'mircowx',
+    //     cloudID: re.cloudID // 敏感数据对应的云 ID，开通云开发的小程序才会返回
+    //   }
+    // }).then(wyres => {
+    //   if (wyres.data && wyres.hasError === false) {
+    //     let data = wyres.data
+    //     this.globalData.loginInfo = {
+    //       secret: data.secret || '',
+    //       loginToken: data.loginToken || '',
+    //       opId: data.opId || '',
+    //       userId: data.userId || '',
+    //       state: ~~data.state // false是临时账号,必须要账号绑定;true是正式账号,正常业务逻辑
+    //     }
+    //     this.globalData.userInfo = {
+    //       userId: data.userId || '',
+    //       opId: data.opId || '',
+    //       userType: data.userType || '',
+    //       avatar: re.rawData.avatar
+    //     }
+    //     this.globalData.loginState = 'done'
+    //     this.globalData.userType = this.globalData.userInfo.userType
+    //     toResolve()
+    //   } else {
+    //     this.loginfail()
+    //   }
+    // }).catch((err) => {
+    //   console.log(err)
+    // })
+  },
+  loginFail () { // 登录失败
+    wx.showModal({
+      title: '登录失败',
+      content: '登录失败，请检查您的网络',
+      success: function (res) {
+        if (res.confirm) {
+          // console.log('用户点击确定')
+        }
+      }
+    })
+    this.globalData.loginState = 'fail'
   }
 }
 

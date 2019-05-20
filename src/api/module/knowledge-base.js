@@ -1,4 +1,4 @@
-// 知识库： 文章 视频
+// 知识库： 文章
 import knowledgeBase from '../controller/knowledge-base'
 
 // 获取知识库列表

@@ -9,7 +9,8 @@
 
         <zan-field v-bind="Object.assign({}, handleFunctions, base.academicTitle)" :value="userInfo.academicTitle" v-if="userType === '2'" :focus="curComponentId === base.academicTitle.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.phone)"  :value="userInfo.phone" v-if="userType !== '0'" :focus="curComponentId === base.phone.componentId"/>
-        <zan-field v-bind="Object.assign({}, handleFunctions, base.relationPhone)"  :value="userInfo.relationPhone" v-if="userType === '1' || userType === '3'" :focus="curComponentId === base.relationPhone.componentId"/>
+        <!-- 亲属只能由家长来添加： -->
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.relationPhone)"  :value="userInfo.relationPhone" v-if="userType === '3'" :focus="curComponentId === base.relationPhone.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.organization)" :value="userInfo.organization" v-if="userType === '1' || userType === '2'" :focus="curComponentId === base.organization.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.detail)" :value="userInfo.detail" v-if="userType === '2'" :focus="curComponentId === base.detail.componentId"/>
         <div class="good-at" v-if="userType === '2'">擅长领域：</div>
@@ -128,7 +129,7 @@ export default {
     }
   },
   onLoad (options) {
-    if (options.userType) { // 未登录---用户注册，url传参
+    if (options.userType) { // 未登录---用户注册，选择角色后--url传参
       this.userType = options.userType
     } else { // 已登录
       this.userType = this.$app.globalData.userType || ''
@@ -139,26 +140,23 @@ export default {
   methods: {
     // 登录检测：
     async getUserInfo () {
-      await api.common.getUserInfo({
-        userType: this.userType,
+      await api.user.getUserInfo({
         userId: this.$app.globalData.userInfo.userId
       }).then(res => {
-        this.userInfo = res || {}
+        this.userInfo = res.data || {}
+      }).then(res => {
+        // 初始处理tagList:
+        if (this.userInfo && this.userInfo.tagList) {
+          this.userInfo.tagList.forEach((tag) => {
+            if (typeof tag === 'string') {
+              let tagIndex = Number(tag) - 1
+              this.base.tagList[tagIndex].checked = true
+            }
+          })
+        }
       }).catch(err => {
         console.log(err)
       })
-      // mock数据：
-      this.userInfo = {
-        userType: '1',
-        avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1293892983,611103898&fm=27&gp=0.jpg',
-        nickName: '驾辕的位置',
-        phone: '15868157426',
-        name: '梁晓莹',
-        relationPhone: '15869702839',
-        academicTitle: '心理老师',
-        organization: '浙江科技学院',
-        detail: '发健康的萨拉飞机父级的雷克萨福建省家乐福科技打法是否三答困了就睡考虑发动机开始罗芬接待室里开发及两地分居阿拉水电费垃圾堆里撒发快递'
-      }
     },
     initData () {
       this.base.relationPhone.title = this.userType === '3' ? '孩子电话：' : '家长电话：'
@@ -198,8 +196,7 @@ export default {
           userName: e.target.value.userName,
           password: e.target.value.password,
           organization: e.target.value.organization,
-          phone: e.target.value.phone,
-          relationPhone: e.target.value.relationPhone
+          phone: e.target.value.phone
         }
       }
       if (this.userType === '2') {
@@ -224,6 +221,9 @@ export default {
           }
         }
       }
+      if (this.$app.globalData.userInfo && this.$app.globalData.userInfo.avatarUrl) {
+        submitInfo.avatarUrl = this.$app.globalData.userInfo.avatarUrl
+      }
       if (this.userInfo && this.userInfo._id) {
         this.updateUser(submitInfo)
       } else {
@@ -231,11 +231,26 @@ export default {
       }
     },
     async addUser (submitInfo) {
-      await api.my.register(submitInfo).then(res => {
-        if (res) {
+      submitInfo.userType = this.userType
+      await api.user.register(submitInfo).then(res => {
+        if (res && res.data && res.data.userId) {
+          // 设置全局数据：
+          this.$app.globalData.loginState = 'done'
+          this.$app.globalData.userInfo = {
+            userId: res.data.userId,
+            name: res.data.name,
+            userName: res.data.userName,
+            avatarUrl: res.data.avatarUrl,
+            opId: res.data.opId,
+            userType: res.data.userType
+          }
+          this.$app.globalData.userType = res.data.userType
+
           this.$toast('注册成功！')
           // 前往个人中心主页：
           wx.reLaunch({url: `/pages/my/personal-center/main`})
+        } else {
+          this.$toast(res.message || '注册失败！')
         }
       }).catch(err => {
         console.log(err)
@@ -243,7 +258,7 @@ export default {
       })
     },
     async updateUser (submitInfo) {
-      await api.my.updateUserInfo(submitInfo).then(res => {
+      await api.user.updateUserInfo(submitInfo).then(res => {
         if (res) {
           this.$toast('修改成功！')
           // 前往个人中心主页：

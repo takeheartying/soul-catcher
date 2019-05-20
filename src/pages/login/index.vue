@@ -24,16 +24,13 @@
       <button @click="confirmClick('0')" class="choose-btn">我是管理员</button>
       <button @click="returnBack()" class="choose-btn return-btn">返回登录</button>
     </div>
+    <!-- 登录授权：     -->
+    <g-auth ref="auth"></g-auth>
   </section>
 </template>
 <script>
 import api from '@/api'
 export default {
-  mounted () {
-    wx.setNavigationBarTitle({
-      title: '用户登录'
-    })
-  },
   data () {
     return {
       userName: '',
@@ -81,10 +78,45 @@ export default {
         return false
       }
       // 登录api:
-      await api.common.login(res => {
+      await api.user.login({
+        userName: this.userName,
+        password: this.password,
+        userType: this.$app.globalData.userInfo.userType,
+        avatarUrl: this.$app.globalData.userInfo.avatarUrl
+      }).then(res => {
+        if (res && res.data) {
+          // 设置全局数据：
+          this.$app.globalData.loginState = 'done'
+          this.$app.globalData.userInfo = {
+            userId: res.data.userId,
+            userName: res.data.userName,
+            name: res.data.name,
+            avatarUrl: res.data.avatarUrl,
+            opId: res.data.opId,
+            userType: res.data.userType
+          }
+          this.$app.globalData.userType = res.data.userType
 
+          this.$toast('登录成功！')
+          // 前往个人中心主页：
+          wx.reLaunch({url: `/pages/my/personal-center/main`})
+        } else {
+          this.$toast(res.message || '登录失败')
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$toast('系统错误！')
       })
     }
+  },
+  mounted () {
+    wx.setNavigationBarTitle({
+      title: '用户登录'
+    })
+    // 判断是否登录：
+    this.$refs.auth.run(false).then(() => {
+      console.log(this.$app.global.loginState)
+    })
   }
 }
 </script>

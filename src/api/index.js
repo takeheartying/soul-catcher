@@ -5,6 +5,7 @@ import * as consult from './module/consult'
 import * as comment from './module/comment'
 import * as score from './module/score'
 import * as my from './module/my'
+import * as user from './module/user'
 import upload from './module/upload'
 export default {
   common,
@@ -14,5 +15,6 @@ export default {
   comment,
   score,
   my,
-  upload
+  upload,
+  user
 }

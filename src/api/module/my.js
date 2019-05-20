@@ -1,11 +1,5 @@
 import wxRequest from '../wxRequest.js'
 
-// 提交个人信息：
-export const submitUserInfo = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
-    return res || {}
-  })
-}
 // 获取关注列表
 export const getFollowList = (params) => {
   return wxRequest.post('/common/miniprogram/login.json', params).then(res => {

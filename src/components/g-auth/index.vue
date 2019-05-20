@@ -31,8 +31,10 @@ export default {
           this.authModal = true
         }).then(() => {
           resolveFn = resolve
-          if (!needMobile || this.$app.globalData.loginInfo.state === 1) {
-            this.done()
+          if (!needMobile) {
+            if (this.$app.globalData.loginInfo.loginState === '0') {
+              this.done()
+            }
           } else {
             this.showConfirm = true // 获取微信手机号弹窗
             wx.$p.login().then(res => {

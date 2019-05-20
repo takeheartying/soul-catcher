@@ -3,7 +3,7 @@
     <div class="inner-content" v-if="userType">
       <navigator class="user-info" url="/pages/my/detail/main" v-if="userType">
         <div class="avatar">
-          <image class="avatar-pic" :src="userInfo.avatar"></image>
+          <image class="avatar-pic" :src="userInfo.avatarUrl"></image>
         </div>
         <div class="middle-info">
           <p class="nickname">{{userInfo.nickName}}</p>
@@ -64,7 +64,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" :url="'/pages/knowledge/list/main?expertId=' + userInfo.id" v-if="userType === '2'">
+        <navigator class="function-item" :url="'/pages/knowledge/list/main?expertId=' + userInfo._id" v-if="userType === '2'">
           <div class="left-part">
             <i class="iconfont icon-zhishiku"></i>
           </div>
@@ -73,7 +73,7 @@
             <i class="iconfont icon-fanhui-copy"></i>
           </div>
         </navigator>
-        <navigator class="function-item" :url="'/pages/student/detail/main?id=' + userInfo.studentId" v-if="userType === '3'">
+        <navigator class="function-item" :url="'/pages/student/detail/main?id=' + userInfo.relationship._id" v-if="userType === '3' && userInfo.relationship">
           <div class="left-part">
             <i class="iconfont icon-haizi1"></i>
           </div>
@@ -107,9 +107,8 @@
       </navigator>
     </div>
     <tab-bar :userType="userType" v-if="userType" :curUrl="'/pages/my/personal-center/main'"></tab-bar>
-    <!-- 登录授权：     -->
-    <div class="go-to-choose-usertype" v-if="!userType && (loginState === 'done' || loginState === 'logining')"><button @click="goToChooseUserType()">选择角色</button></div>
-    <g-auth ref="auth"></g-auth>
+    <div class="go-to-choose-usertype" v-if="!userType && (loginState === 'fail' || loginState === 'logining')"><button @click="checkLogin()">登录</button></div>
+
   </section>
 </template>
 <script>
@@ -125,41 +124,34 @@ export default {
     }
   },
   onLoad (options) {
-    this.userType = this.$app.globalData.userType || ''
+    this.checkLogin()
   },
   methods: {
     async getUserInfo () {
-      await api.common.getUserInfo({
-        userType: this.userType || '1'
+      await api.user.getUserInfo({
+        userId: this.$app.globalData.userInfo.userId
       }).then(res => {
-        this.userInfo = res || {}
+        this.userInfo = res.data || {}
       }).catch(err => {
         console.log(err)
       })
-      // mock数据：
-      this.userInfo = {
-        id: '5cdbb0131e1bbf04de1a035e', // 用户id
-        avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1293892983,611103898&fm=27&gp=0.jpg',
-        nickName: '驾辕的位置',
-        studentId: '323434' // 用户是家长的时候
-      }
     },
-    goToChooseUserType () {
-      wx.navigateTo({url: '/pages/login/main'})
+    checkLogin () {
+      this.userType = this.$app.globalData.userType || ''
+      this.loginState = this.$app.globalData.loginState
+      if (this.loginState !== 'done' || !this.userType) { // 去登陆
+        wx.navigateTo({url: '/pages/login/main'})
+      } else { // 正常登录
+        if (this.userType) { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
+          this.getUserInfo()
+          if (this.userType !== '0') {
+            wx.hideTabBar() // 显示自定义tabTab
+          }
+        }
+      }
     }
   },
   mounted () {
-    this.$refs.auth.run(true).then(() => {
-      // 正常账号
-      this.userType = this.$app.globalData.userType || ''
-      this.loginState = this.$app.globalData.loginState // 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功
-      if (this.userType && this.userType !== '0') { // userType: '1', // 0 管理员 1 学生 2 专家 3 家长
-        wx.hideTabBar() // 显示自定义tabTab
-      } else {
-        // 选择角色页面：
-        // wx.navigateTo({url: '/pages/login/main'})
-      }
-    })
     wx.setNavigationBarTitle({
       title: '个人中心'
     })
@@ -167,7 +159,6 @@ export default {
       frontColor: '#ffffff',
       backgroundColor: '#63B8FF'
     })
-    this.getUserInfo()
   },
   components: {
     tabBar

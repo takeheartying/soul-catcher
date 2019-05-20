@@ -1,0 +1,15 @@
+{
+    "name": "user",
+    "version": "1.0.0",
+    "description": "用户的相关函数",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "takeheartYing",
+    "license": "ISC",
+    "dependencies": {
+      "wx-server-sdk": "latest",
+      "tcb-router": "latest"
+    }
+  }
