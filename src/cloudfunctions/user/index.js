@@ -24,6 +24,18 @@ const wxContext = cloud.getWXContext()
 exports.main = (event, context) => {
   console.log('event', event)
   const app = new TcbRouter({ event })
+  app.router('user/update', async (ctx, next) => {
+    if (!wxContext.OPENID) {
+      return {
+        code: '0',
+        flag: '-1',
+        message: '用户未授权登录小程序'
+      }
+    }
+    delete event.$url
+    let promise = await user.updateUserInfo(event)
+    ctx.body = promise
+  })
   app.router('user/register', async (ctx, next) => {
     if (!wxContext.OPENID) {
       return {

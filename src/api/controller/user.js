@@ -4,7 +4,26 @@ const getUserInfo = (params) => {
     name: 'user',
     data: Object.assign({$url: 'user/detail'}, params)
   }).then(res => {
-    if (res && res.errcode) {
+    if (res && res.errCode) {
+      return {
+        flag: '-1',
+        code: res.errCode,
+        message: res.errMsg || '系统错误'
+      }
+    }
+    if (res && res.result) {
+      return res.result
+    }
+  }).catch(err => {
+    return err
+  })
+}
+const updateUserInfo = (params) => {
+  return wx.cloud.callFunction({
+    name: 'user',
+    data: Object.assign({$url: 'user/update'}, params)
+  }).then(res => {
+    if (res && res.errCode) {
       return {
         flag: '-1',
         code: res.errCode,
@@ -55,6 +74,7 @@ const initLogin = (params) => { // 获取opId
   })
 }
 export default {
+  updateUserInfo,
   getUserInfo,
   register,
   login,

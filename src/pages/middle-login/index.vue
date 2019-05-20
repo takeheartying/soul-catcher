@@ -65,6 +65,7 @@ export default {
     .img-logo {
       width: 60px;
       height: 60px;
+      border-radius: 50%;
     }
   }
   .btn-wrap {

@@ -32,7 +32,8 @@ export const getUserInfo = (params) => {
 }
 // 修改个人信息：
 export const updateUserInfo = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return user.updateUserInfo(params).then(res => {
+    res = myRequest.checkRequest(res)
     return res || {}
   })
 }

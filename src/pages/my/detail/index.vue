@@ -10,7 +10,7 @@
         <zan-field v-bind="Object.assign({}, handleFunctions, base.academicTitle)" :value="userInfo.academicTitle" v-if="userType === '2'" :focus="curComponentId === base.academicTitle.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.phone)"  :value="userInfo.phone" v-if="userType !== '0'" :focus="curComponentId === base.phone.componentId"/>
         <!-- 亲属只能由家长来添加： -->
-        <zan-field v-bind="Object.assign({}, handleFunctions, base.relationPhone)"  :value="userInfo.relationPhone" v-if="userType === '3'" :focus="curComponentId === base.relationPhone.componentId"/>
+        <zan-field v-bind="Object.assign({}, handleFunctions, base.relationPhone)"  :value="userInfo.relationship && userInfo.relationship.phone" v-if="userType === '3'" :focus="curComponentId === base.relationPhone.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.organization)" :value="userInfo.organization" v-if="userType === '1' || userType === '2'" :focus="curComponentId === base.organization.componentId"/>
         <zan-field v-bind="Object.assign({}, handleFunctions, base.detail)" :value="userInfo.detail" v-if="userType === '2'" :focus="curComponentId === base.detail.componentId"/>
         <div class="good-at" v-if="userType === '2'">擅长领域：</div>
@@ -258,11 +258,23 @@ export default {
       })
     },
     async updateUser (submitInfo) {
+      submitInfo.userType = this.$app.globalData.userInfo.userType
+      submitInfo.userId = this.$app.globalData.userInfo.userId
       await api.user.updateUserInfo(submitInfo).then(res => {
-        if (res) {
+        if (res && res.data && res.data.userId) {
+          this.$app.globalData.userInfo = {
+            userId: res.data.userId,
+            name: res.data.name,
+            userName: res.data.userName,
+            avatarUrl: res.data.avatarUrl,
+            opId: res.data.opId,
+            userType: res.data.userType
+          }
           this.$toast('修改成功！')
           // 前往个人中心主页：
           wx.reLaunch({url: `/pages/my/personal-center/main`})
+        } else {
+          this.$toast(res.message || '提交失败！')
         }
       }).catch(err => {
         console.log(err)

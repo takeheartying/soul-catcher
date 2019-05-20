@@ -12,7 +12,90 @@ cloud.init({
 const dbName = 'user'
 const db = cloud.database()
 const wxContext = cloud.getWXContext()
+const updateUserInfo = async (event) => {
+  if (!event.userId) {
+    return {
+      code: '0',
+      flag: '-1',
+      message: '入参无用户id'
+    }
+  }
 
+  // 查询用户名是否已存在
+  let promise = await db.collection(dbName).where({
+    userName: event.userName
+  }).get().then(res => {
+    if (res && res.data && res.data.length && res.data[0]._id !== event.userId) {
+      return {
+        code: '0',
+        flag: '-1',
+        message: '用户名已存在！'
+      }
+    } else {
+      return res
+    }
+  }).then(async res => {
+    if (res && res.flag === '-1') {
+      return res
+    } else {
+      event.updateTime = new Date()
+      event.opId = wxContext.OPENID
+      // 用户是家长： ----- 确定孩子是否注册过小程序：
+      if (event.relationPhone && event.userType === '3') { // userType = 3 家长添加一个孩子的号码
+        await db.collection(dbName).where({
+          userType: '1',
+          phone: event.relationPhone
+        }).get().then(_res => {
+          if (_res && _res.data && _res.data.length) {
+            event.relationship = _res.data[0] // 学生已注册
+          } else {
+            res = {
+              code: '0',
+              flag: '-1',
+              message: '请确认该号码所属学生已注册系统'
+            }
+          }
+        })
+        delete event.relationPhone
+      }
+      // 修改用户：
+      let userId = event.userId
+      delete event.userId
+      await db.collection(dbName).doc(userId).set({
+        data: event
+      }).then(_res => {
+        console.log('修改用户成功！')
+        console.log(_res)
+        res = {
+          data: {
+            userId: _res._id,
+            name: event.name,
+            userName: event.userName,
+            nickName: event.nickName,
+            avatarUrl: event.avatarUrl,
+            userType: event.userType,
+            opId: wxContext.OPENID
+          },
+          code: '0',
+          flag: '0',
+          message: '修改用户成功'
+        }
+        return res
+      }).catch(_err => {
+        res = {
+          code: '0',
+          flag: '-1',
+          message: '修改失败！'
+        }
+        return _err
+      })
+      return res
+    }
+  }).catch(err => {
+    return err
+  })
+  return promise
+}
 // 查询用户信息：
 const getUserInfo = async (event) => {
   if (!event.userId) {
@@ -47,7 +130,7 @@ const getUserInfo = async (event) => {
   })
   return promise
 }
-// 用户修改：[先上传图片再修改数据库]
+// 用户修改：
 const register = async (event) => {
   if (!event.userType) {
     return {
@@ -75,7 +158,7 @@ const register = async (event) => {
     if (res && res.flag === '-1') {
       return res
     } else {
-      event.createTime = new Date()
+      event.updateTime = new Date()
       event.opId = wxContext.OPENID
       // 用户是家长： ----- 确定孩子是否注册过小程序：
       if (event.relationPhone && event.userType === '3') { // userType = 3 家长添加一个孩子的号码
@@ -89,7 +172,7 @@ const register = async (event) => {
             res = {
               code: '0',
               flag: '-1',
-              message: '请确认改号码所属学生已注册系统'
+              message: '请确认该号码所属学生已注册系统'
             }
           }
         })
@@ -187,6 +270,7 @@ const initLogin = (event) => { // 小程序端调用云函数时已经默认带�
 }
 
 module.exports = {
+  updateUserInfo,
   getUserInfo,
   register,
   login,
