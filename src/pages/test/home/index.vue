@@ -84,7 +84,7 @@ export default {
           title: '从积极心理学到幸福感',
           desc: '心境由心而设，态度可以决定我们的生活',
           tagType: '心理综合',
-          testNum: 111,
+          testorNum: 111,
           id: '111'
         },
         {
@@ -92,7 +92,7 @@ export default {
           title: '心理健康素养十条',
           desc: '今年的主题是“健康心理，快乐人生',
           tagType: '心理综合',
-          testNum: 3,
+          testorNum: 3,
           id: '111'
         },
         {
@@ -100,7 +100,7 @@ export default {
           title: '性格与情感',
           desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
           tagType: '趣味性格',
-          testNum: 904,
+          testorNum: 904,
           id: '39'
         },
         {
@@ -108,7 +108,7 @@ export default {
           title: '原来是爱情',
           desc: '感情不是兔子，守株是没用的',
           tagType: '爱情脱单',
-          testNum: 3004,
+          testorNum: 3004,
           id: '111'
         },
         {
@@ -116,7 +116,7 @@ export default {
           title: '决定你上限的，不是智商，而是自律',
           desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
           tagType: '智商情商',
-          testNum: 21,
+          testorNum: 21,
           id: '111'
         }
       ]

@@ -26,8 +26,9 @@ exports.main = (event, context) => {
   app.router('user/update', async (ctx, next) => {
     if (!event.userInfo.openId) {
       return {
-        code: '0',
+        code: '-1',
         flag: '-1',
+        loginState: 'noLogin',
         message: '用户未授权登录小程序'
       }
     }
@@ -38,8 +39,9 @@ exports.main = (event, context) => {
   app.router('user/register', async (ctx, next) => {
     if (!event.userInfo.openId) {
       return {
-        code: '0',
+        code: '-1',
         flag: '-1',
+        loginState: 'noLogin',
         message: '用户未授权登录小程序'
       }
     }
@@ -50,8 +52,9 @@ exports.main = (event, context) => {
   app.router('user/login', async (ctx, next) => {
     if (!event.userInfo.openId) {
       return {
-        code: '0',
+        code: '-1',
         flag: '-1',
+        loginState: 'noLogin',
         message: '用户未授权登录小程序'
       }
     }
@@ -62,8 +65,9 @@ exports.main = (event, context) => {
   app.router('user/detail', async (ctx, next) => {
     if (!event.userInfo.openId) {
       return {
-        code: '0',
+        code: '-1',
         flag: '-1',
+        loginState: 'noLogin',
         message: '用户未授权登录小程序'
       }
     }

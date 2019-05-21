@@ -1,11 +1,11 @@
 import moment from 'moment'
 import upload from './upload.js'
-const getKnowledgeList = (params) => {
+const getTestList = (params) => {
   return wx.cloud.callFunction({
     // 云函数名称
-    name: 'knowledge-base',
+    name: 'test',
     // 传给云函数的参数
-    data: Object.assign({$url: 'knowledge/list'}, params)
+    data: Object.assign({$url: 'test/list'}, params)
   }).then(res => {
     // 调用云函数的分页方法：
     if (res && res.result && res.result.data) {
@@ -17,10 +17,10 @@ const getKnowledgeList = (params) => {
     return err
   })
 }
-const getKnowledgeDetailById = (params) => {
+const getTestDetailById = (params) => {
   return wx.cloud.callFunction({
-    name: 'knowledge-base',
-    data: Object.assign({$url: 'knowledge/detail'}, params)
+    name: 'test',
+    data: Object.assign({$url: 'test/detail'}, params)
   }).then(res => {
     if (res && res.result && res.result.data) {
       if (res && res.result && res.result.data) {
@@ -32,7 +32,7 @@ const getKnowledgeDetailById = (params) => {
     return err
   })
 }
-const updateKnowledge = async (params) => {
+const updateTest = async (params) => {
   if (params.uploadParams && params.uploadParams.filePath) { // 有图片需要上传
     // 上传入参： filePath [图片临时路径]
     params.filePath = params.uploadParams.filePath
@@ -42,8 +42,8 @@ const updateKnowledge = async (params) => {
       if (params.fileID) {
         params.picUrl = params.fileID
         await wx.cloud.callFunction({
-          name: 'knowledge-base',
-          data: Object.assign({$url: 'knowledge/update'}, params)
+          name: 'test',
+          data: Object.assign({$url: 'test/update'}, params)
         }).then(res => {
           if (res && res.result && res.result.stats) {
             _res = Object.assign(res.result, {
@@ -71,10 +71,10 @@ const updateKnowledge = async (params) => {
     })
     return promise
   } else {
-    // 普通知识库修改：
+    // 普通测试修改[不含图片上传]：
     return wx.cloud.callFunction({
-      name: 'knowledge-base',
-      data: Object.assign({$url: 'knowledge/update'}, params)
+      name: 'test',
+      data: Object.assign({$url: 'test/update'}, params)
     }).then(res => {
       if (res && res.result && res.result.stats && res.result.stats) {
         return {
@@ -97,7 +97,7 @@ const updateKnowledge = async (params) => {
   }
 }
 
-const addKnowledge = async (params) => {
+const addTest = async (params) => {
   if (params.uploadParams && params.uploadParams.filePath) { // 有图片需要上传
     // 上传入参： filePath [图片临时路径]
     params.filePath = params.uploadParams.filePath
@@ -107,8 +107,8 @@ const addKnowledge = async (params) => {
       if (params.fileID) {
         params.picUrl = params.fileID
         await wx.cloud.callFunction({
-          name: 'knowledge-base',
-          data: Object.assign({$url: 'knowledge/add'}, params)
+          name: 'test',
+          data: Object.assign({$url: 'test/add'}, params)
         }).then(res => {
           if (res && res.result && res.result._id) {
             _res = Object.assign(res.result, {
@@ -144,8 +144,8 @@ const addKnowledge = async (params) => {
   }
 }
 export default {
-  getKnowledgeList,
-  getKnowledgeDetailById,
-  updateKnowledge,
-  addKnowledge
+  getTestList,
+  getTestDetailById,
+  updateTest,
+  addTest
 }

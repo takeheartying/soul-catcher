@@ -1,19 +1,18 @@
 // 腾讯的云函数路由：
 const TcbRouter = require('tcb-router')
-// 所有的知识库api:
-const knowledgeBase = require('./knowledge-base.js')
+// 所有的测试题api:
+const test = require('./test.js')
+
 // 按请求给云函数归类: 将相似的请求归类到同一个云函数处理
 /*
   入参：
   {
     tagType: '1'
-    knowledgeType: 'article',
     searchType: 'newTime', 或 'mostComment'
     pageSize: 3,
     pageNo: 1
   }
 */
-
 exports.main = (event, context) => {
   console.log('event', event)
   if (!event.userInfo.openId) {
@@ -25,21 +24,24 @@ exports.main = (event, context) => {
     }
   }
   const app = new TcbRouter({ event })
-  app.router('knowledge/list', async (ctx, next) => {
-    let promise = await knowledgeBase.getKnowledgeBaseList(event)
+  app.router('test/list', async (ctx, next) => {
+    delete event.$url
+    let promise = await test.getTestList(event)
     ctx.body = promise
   })
-  app.router('knowledge/detail', async (ctx, next) => {
-    let promise = await knowledgeBase.getKnowledgeDetailById(event)
+  app.router('test/detail', async (ctx, next) => {
+    delete event.$url
+    let promise = await test.getTestDetailById(event)
     ctx.body = promise
   })
-  app.router('knowledge/update', async (ctx, next) => {
-
-    let promise = await knowledgeBase.updateKnowledge(event)
+  app.router('test/update', async (ctx, next) => {
+    delete event.$url
+    let promise = await test.updateTest(event)
     ctx.body = promise
   })
-  app.router('knowledge/add', async (ctx, next) => {
-    let promise = await knowledgeBase.addKnowledge(event)
+  app.router('test/add', async (ctx, next) => {
+    delete event.$url
+    let promise = await test.addTest(event)
     ctx.body = promise
   })
   return app.serve()

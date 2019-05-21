@@ -1,8 +1,10 @@
 import wxRequest from '../wxRequest.js'
-
+import myRequest from '../myRequest.js'
+import test from '../controller/test.js'
 // 获取测试列表
 export const getTestList = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return test.getTestList(params).then(res => {
+    res = myRequest.checkRequest(res)
     return res || {}
   })
 }
@@ -26,7 +28,8 @@ export const submitTestResult = (params) => {
 }
 // 添加测试
 export const addTest = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return test.addTest(params).then(res => {
+    res = myRequest.checkRequest(res)
     return res || {}
   })
 }

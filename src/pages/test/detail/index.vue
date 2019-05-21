@@ -4,7 +4,7 @@
     <!-- 1.开始测试导引： -->
     <div class="page-test-detail--description" v-if="!hasStartTest && testInfo.id && !showResult">
       <div class="test-title">{{testInfo.title}}</div>
-      <div class="test-num">{{testInfo.testNum}}人测过</div>
+      <div class="test-num">{{testInfo.testorNum}}人测过</div>
       <image class="test-pic" mode="aspectFill" :src="testInfo.picUrl"></image>
       <ul class="test-info">
         <li class="test-info-item">
@@ -92,7 +92,7 @@ export default {
         detail: '围殴减肥的空间打发时间爱发科的结论是开饭啦司法解释口岸疯狂夺金萨福克精神科拉飞机拉萨九分裤大富科技按时付款了贷款酸辣粉东方健康路撒放开了的附件安联大厦积分卡斯加咖啡拉萨到付款荆防颗粒三加上端口分类考试了',
         tagType: 4, // 1爱情脱单 2智商情商 3趣味性格 4心理综合
         tagTypeDesc: '心理综合',
-        testNum: 111,
+        testorNum: 111,
         id: '111',
         examList: [ // 测试题目列表
           {

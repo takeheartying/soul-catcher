@@ -2,11 +2,11 @@
   <section class="page-test-add-or-edit">
     <g-loading :loading="loading"></g-loading>
     <g-noresult
-    v-if="!loading && testId && !testInfo.id"
-    :show="testId && !testInfo.id"
+    v-if="!loading && testId && !testInfo._id"
+    :show="testId && !testInfo._id"
     :message="'未能查到测试题~'">
     </g-noresult>
-    <form @submit="formSubmit" v-if="!loading && (!testId || testInfo.id)">
+    <form @submit="formSubmit" v-if="!loading && (!testId || testInfo._id)">
       <div class="zan-panel">
         <div class="upload-img-warp">
           <div class="upload-label">图片：</div>
@@ -76,9 +76,10 @@ export default {
   data () {
     return {
       noEdit: '', // '1': 不可编辑【测试被人测过之后不可编辑测试题】
+      file: {}, // 上传的临时文件
       loading: false,
+      originPic: '', // 原有图片，用于删除
       picUrl: '',
-      title: '',
       testId: '',
       testInfo: {
         picUrl: '',
@@ -87,8 +88,8 @@ export default {
         detail: '',
         tagType: '', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
         tagTypeDesc: '',
-        testNum: 0,
-        id: '',
+        testorNum: 0,
+        _id: '',
         examList: []
       },
       curComponentId: '',
@@ -152,28 +153,15 @@ export default {
     }
   },
   methods: {
-    async upload (file) { // 上传单张图片
-      const tempFiles = file.tempFiles
-      const path = tempFiles[0].path
-      const size = tempFiles[0].size
-      if (size > 2 * 1024 * 1024) {
-        this.$toast('请上传小于2M的图片')
-        return
-      }
-      this.$loading.show('正在上传')
-      await api.upload({
-        url: '/kanoupload/imageupload.json', // 上传的地址
-        path: path,
-        name: 'testPic'
-      }).then(res => {
-        if (res) {
-          console.log('上传成功！')
+    upload (res) { // 上传单张图片
+      let uploadParams = {}
+      if (res && res.tempFilePaths) {
+        const filePath = res.tempFilePaths[0]
+        uploadParams = {
+          filePath
         }
-      }).catch(err => {
-        console.log(err)
-        this.$toast('上传失败！')
-      })
-      this.$loading.hide()
+      }
+      return uploadParams
     },
     chooseImage () { // 图片上传
       let that = this
@@ -182,94 +170,98 @@ export default {
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
         success (res) {
+          // 存储临时路径 -- 提交之后再上传图片：
+          const size = res.tempFiles[0].size
+          if (size > 2 * 1024 * 1024) {
+            that.$toast('请上传小于2M的图片')
+            return false
+          }
           that.picUrl = res.tempFilePaths[0]
-          // 上传图片：
-          that.upload(res)
+          that.file = res
         }
       })
     },
     async getTestById () {
       this.loading = true
       await api.test.getTestDetailInfoById({
-        id: this.testId
+        _id: this.testId
       }).then(res => {
-        this.testInfo = res
+        if (res && res.data) {
+          this.testInfo = res.data || {}
+          this.originPic = this.testInfo.picUrl || ''
+        }
       }).catch(err => {
         console.log(err)
       })
       // mock数据：
-      let res = {
-        picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
-        title: '从积极心理学到幸福感',
-        desc: '心境由心而设，态度可以决定我们的生活',
-        detail: '围殴减肥的空间打发时间爱发科的结论是开饭啦司法解释口岸疯狂夺金萨福克精神科拉飞机拉萨九分裤大富科技按时付款了贷款酸辣粉东方健康路撒放开了的附件安联大厦积分卡斯加咖啡拉萨到付款荆防颗粒三加上端口分类考试了',
-        tagType: '4', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
-        tagTypeDesc: '心理综合',
-        testNum: 111,
-        id: '111',
-        examList: [ // 测试题目列表
-          {
-            questionTitle: '你曾经想要成为小说家或者词作者吗？',
-            questionId: '22333',
-            options: [
-              {
-                content: '想过',
-                score: 7 // 心理健康积分
-              },
-              {
-                content: '从没想过',
-                score: 8
-              }
-            ]
-          },
-          {
-            questionTitle: '学生时代，在文艺汇演时，你基本都是主角？',
-            questionId: '33323',
-            options: [
-              {
-                content: '是的',
-                score: 7 // 心理健康积分
-              },
-              {
-                content: '没有，我一般低调',
-                score: 8
-              }
-            ]
-          },
-          {
-            questionTitle: '你一次都没有被异性追过？',
-            questionId: '654756',
-            options: [
-              {
-                content: '是的',
-                score: 7 // 心理健康积分
-              },
-              {
-                content: '当然不是',
-                score: 8
-              }
-            ]
-          },
-          {
-            questionTitle: '舞会前，你会积极调查即将出席的异性情况？',
-            questionId: '454354',
-            options: [
-              {
-                content: '是的',
-                score: 7 // 心理健康积分
-              },
-              {
-                content: '不会的呀呀呀呀呀呀呀呀呀晕晕晕晕晕晕晕呀呀呀呀呀呀晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕嘤嘤嘤嘤嘤嘤嘤',
-                score: 9.0
-              }
-            ]
-          }
-        ]
-      }
-      this.testInfo = res
-      this.setData()
+      // let res = {
+      //   picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
+      //   title: '从积极心理学到幸福感',
+      //   desc: '心境由心而设，态度可以决定我们的生活',
+      //   detail: '围殴减肥的空间打发时间爱发科的结论是开饭啦司法解释口岸疯狂夺金萨福克精神科拉飞机拉萨九分裤大富科技按时付款了贷款酸辣粉东方健康路撒放开了的附件安联大厦积分卡斯加咖啡拉萨到付款荆防颗粒三加上端口分类考试了',
+      //   tagType: '4', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
+      //   tagTypeDesc: '心理综合',
+      //   testorNum: 111,
+      //   _id: '111',
+      //   examList: [ // 测试题目列表
+      //     {
+      //       questionTitle: '你曾经想要成为小说家或者词作者吗？',
+      //       options: [
+      //         {
+      //           content: '想过',
+      //           score: 7 // 心理健康积分
+      //         },
+      //         {
+      //           content: '从没想过',
+      //           score: 8
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       questionTitle: '学生时代，在文艺汇演时，你基本都是主角？',
+      //       options: [
+      //         {
+      //           content: '是的',
+      //           score: 7 // 心理健康积分
+      //         },
+      //         {
+      //           content: '没有，我一般低调',
+      //           score: 8
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       questionTitle: '你一次都没有被异性追过？',
+      //       options: [
+      //         {
+      //           content: '是的',
+      //           score: 7 // 心理健康积分
+      //         },
+      //         {
+      //           content: '当然不是',
+      //           score: 8
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       questionTitle: '舞会前，你会积极调查即将出席的异性情况？',
+      //       options: [
+      //         {
+      //           content: '是的',
+      //           score: 7 // 心理健康积分
+      //         },
+      //         {
+      //           content: '不会的呀呀呀呀呀呀呀呀呀晕晕晕晕晕晕晕呀呀呀呀呀呀晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕晕嘤嘤嘤嘤嘤嘤嘤',
+      //           score: 9.0
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // }
+      // this.testInfo = res
 
       this.loading = false
+      this.setData()
     },
     setData () {
       // 数据绑定：
@@ -290,8 +282,8 @@ export default {
         detail: '',
         tagType: '', // 1爱情脱单 2智商情商 3趣味性格 4心理综合
         tagTypeDesc: '',
-        testNum: 0,
-        id: '',
+        testorNum: 0,
+        _id: '',
         examList: []
       }
     },
@@ -373,6 +365,7 @@ export default {
       this.tagType = e.target.value
     },
     async submitEdit (submitInfo) {
+      let that = this
       wx.showModal({
         content: '确定提交？',
         showCancel: true, // 是否显示取消按钮
@@ -382,20 +375,27 @@ export default {
           if (res.cancel) {
             // 点击取消,默认隐藏弹框
           } else {
-            // 点击确定
+            // 点击确定 -- 上传图片并存储
             await api.test.updateTest(submitInfo).then(res => {
-              if (res) {
-                this.$toast('提交成功！')
+              if (res && res.code === '0') {
+                if (res.picUrl) { // 更改了图片
+                  that.originPic = res.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
+                }
+                that.$toast(res.message || '提交成功！')
+                return false
               }
-            }).catch(err => {
-              console.log(err)
-              this.$toast('系统错误！')
+              if (res && res.code === '-1') {
+                that.$toast(res.message || '提交失败！')
+                return false
+              }
             })
           }
         }
       })
     },
     async submitAdd (submitInfo) {
+      submitInfo.userId = this.$app.globalData.userInfo.userId
       let that = this
       wx.showModal({
         content: '确定添加？',
@@ -406,27 +406,36 @@ export default {
           if (res.cancel) {
             // 点击取消,默认隐藏弹框
           } else {
-            // 点击确定
+            // 点击确定 -- 上传图片并存储
             await api.test.addTest(submitInfo).then(res => {
-              if (res) {
-                that.$toast('提交成功！')
+              if (res && res.code === '0' && res._id) {
+                if (res.picUrl) {
+                  that.originPic = res.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
+                }
+                that.testInfo._id = res._id
+                that.testId = res._id
+                that.$toast(res.message || '添加成功！')
+                return false
               }
-            }).catch(err => {
-              console.log(err)
-              that.$toast('系统错误！')
+              if (res && res.code === '-1') {
+                that.$toast(res.message || '添加失败！')
+                return false
+              }
             })
           }
         }
       })
     },
     formSubmit (event) {
+      let uploadParams = this.upload(this.file)
       let submitInfo = this.testInfo
       let BreakException = {}
       let cancelFlag = false
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
-          if ((key !== 'testNum' && (!element || !element.length))) { // 跳过testNum属性
+          if ((key !== 'testorNum' && (!element || !element.length))) { // 跳过testorNum属性
             this.$toast('信息不可为空！')
             cancelFlag = true
             return false
@@ -471,6 +480,15 @@ export default {
       }
       if (cancelFlag) {
         return false
+      }
+      if (this.testId) {
+        submitInfo._id = this.testId
+      }
+      if (uploadParams) {
+        submitInfo.uploadParams = uploadParams
+      }
+      if (this.originPic) {
+        submitInfo.originPic = this.originPic
       }
       if (this.testId) { // 修改测试
         this.submitEdit(submitInfo)

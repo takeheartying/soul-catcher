@@ -62,7 +62,7 @@ export default {
         title: '从积极心理学到幸福感',
         desc: '心境由心而设，态度可以决定我们的生活',
         tagType: '心理综合',
-        testNum: 111,
+        testorNum: 111,
         id: '111',
         testScore: 8.0,
         createTime: '2019-03-01 10:20',

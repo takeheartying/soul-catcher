@@ -105,6 +105,8 @@ export default {
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
     this.knowledgeId = options.id
+    // 初始数据置空：
+    this.initData()
     if (this.knowledgeId) { // 编辑知识库
       this.getKnowledgeById()
     }
@@ -152,9 +154,9 @@ export default {
       })
 
       this.loading = false
-      this.initData()
+      this.setData()
     },
-    initData () {
+    setData () {
       if (this.knowledgeInfo && this.knowledgeInfo.tagType) { // 初始设置radio的值
         let index = Number(this.knowledgeInfo.tagType) - 1
         if (this.base.tagList[index]) {
@@ -163,6 +165,11 @@ export default {
         }
       }
       this.picUrl = this.knowledgeInfo.picUrl || '' // 初始设置picUrl
+    },
+    initData () { // 初始置空
+      this.knowledgeInfo = {
+        _id: ''
+      }
     },
     handleZanFieldChange (e) {
       const { componentId, target } = e
