@@ -20,14 +20,22 @@ const checkRequest = function (res) {
     }, 1000)
     return res.message || ''
   } else {
+    if (res.errCode === -501002) {
+      res.message = '云端响应超时'
+    }
     setTimeout(() => {
       wx.showToast({
-        title: res.message,
+        title: res.errMsg || res.message,
         icon: 'none',
         duration: 2000
       })
     }, 50)
-    return res.message || ''
+    return {
+      message: res.errMsg || res.message,
+      flag: '-1',
+      code: '-1',
+      errCode: res.errCode || '-1'
+    }
   }
 }
 export default {

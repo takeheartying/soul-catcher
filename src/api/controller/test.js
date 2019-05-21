@@ -10,11 +10,28 @@ const getTestList = (params) => {
     // 调用云函数的分页方法：
     if (res && res.result && res.result.data) {
       if (res && res.result && res.result.data) {
-        return res.result
+        return {
+          flag: '0',
+          code: '0',
+          message: '查询成功！',
+          data: res.result
+        }
+      }
+    } else {
+      return {
+        flag: '-1',
+        code: '-1',
+        errCode: res.result.errCode,
+        message: res.result.errMsg || '未搜索到测试题列表！'
       }
     }
   }).catch(err => {
-    return err
+    console.log(err)
+    return {
+      message: '系统错误',
+      code: '-1',
+      flag: '-1'
+    }
   })
 }
 const getTestDetailById = (params) => {
@@ -37,7 +54,7 @@ const updateTest = async (params) => {
     // 上传入参： filePath [图片临时路径]
     params.filePath = params.uploadParams.filePath
     let promise = await upload.uploadFile(params).then(async (params) => {
-      console.log(params.message)
+      console.log('params.message:', params.message)
       let _res = {}
       if (params.fileID) {
         params.picUrl = params.fileID

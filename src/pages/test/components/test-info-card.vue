@@ -3,7 +3,7 @@
     <div class="middle-content">
       <p class="title">{{testInfo.title}}</p>
       <p class="desc">{{testInfo.desc}}</p>
-      <p class="line3"><span class="type">{{testInfo.tagType}}</span> <span class="testnum">{{testInfo.testorNum}}人已测</span></p>
+      <p class="line3"><span class="type">{{testInfo.tagTypeDesc}}</span> <span class="testnum">{{testInfo.testorNum}}人已测</span></p>
     </div>
     <image :src="testInfo.picUrl" class="right-img"  mode="aspectFill"/>
   </navigator>
