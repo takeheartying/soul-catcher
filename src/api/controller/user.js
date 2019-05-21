@@ -66,12 +66,10 @@ const initLogin = (params) => { // 获取openId
     name: 'user',
     data: Object.assign({$url: 'user/initLogin'}, params)
   }).then(res => {
-    debugger
     if (res && res.result) {
       return res.result
     }
   }).catch(err => {
-    debugger
     return err
   })
 }

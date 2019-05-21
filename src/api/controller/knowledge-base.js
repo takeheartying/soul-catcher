@@ -110,7 +110,6 @@ const addKnowledge = async (params) => {
           name: 'knowledge-base',
           data: Object.assign({$url: 'knowledge/add'}, params)
         }).then(res => {
-          debugger
           if (res && res.result && res.result._id) {
             _res = Object.assign(res.result, {
               picUrl: params.picUrl,

@@ -102,45 +102,6 @@ let appConfig = {
     }).catch((err) => {
       console.log(err)
     })
-    // wx.$p.request({
-    //   url: this.globalData.gatewayServer + '/json/white/miniprogrom/login',
-    //   header: {
-    //     'appid': 'soul-catcher'
-    //   },
-    //   data: {
-    //     code,
-    //     rawData: re.rawData,
-    //     signature: re.signature, // 使用sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
-    //     encryptedData: re.encryptedData, // 包括敏感数据在内的完整用户信息的加密数据
-    //     iv: re.iv, // 加密算法的初始向量
-    //     plat: 'mircowx',
-    //     cloudID: re.cloudID // 敏感数据对应的云 ID，开通云开发的小程序才会返回
-    //   }
-    // }).then(wyres => {
-    //   if (wyres.data && wyres.hasError === false) {
-    //     let data = wyres.data
-    //     this.globalData.loginInfo = {
-    //       secret: data.secret || '',
-    //       loginToken: data.loginToken || '',
-    //       openId: data.openId || '',
-    //       userId: data.userId || '',
-    //       state: ~~data.state // false是临时账号,必须要账号绑定;true是正式账号,正常业务逻辑
-    //     }
-    //     this.globalData.userInfo = {
-    //       userId: data.userId || '',
-    //       openId: data.openId || '',
-    //       userType: data.userType || '',
-    //       avatar: re.rawData.avatar
-    //     }
-    //     this.globalData.loginState = 'done'
-    //     this.globalData.userType = this.globalData.userInfo.userType
-    //     toResolve()
-    //   } else {
-    //     this.loginfail()
-    //   }
-    // }).catch((err) => {
-    //   console.log(err)
-    // })
   },
   loginFail () { // 登录失败
     wx.showModal({
