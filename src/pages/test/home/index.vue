@@ -41,7 +41,7 @@
       </ul>
       <g-loading :loading="loading"></g-loading>
       <!-- 测试推荐： -->
-      <ul class="recommend-list" v-if="testList.length">
+      <ul class="recommend-list" v-if="testList && testList.length">
         <div class="list-container-top-title">
           <p class="list-container-title">推荐测试</p>
           <navigator url="/pages/test/list/main"><span class="list-container-show-more">查看更多></span></navigator>
@@ -71,55 +71,20 @@ export default {
     async getRecommendTestList () {
       this.loading = true
       await api.test.getTestList({
-        limit: 5
+        pageSize: 5,
+        pageNo: 1,
+        searchType: 'mostComment'
       }).then(res => {
-        this.testList = res || {}
+        if (res && res.data && res.data.data) {
+          this.testList = res.data.data
+        } else if (res && res.code === '-1') {
+          this.$toast(res.message || res.errMsg || '系统错误！')
+        }
       }).catch(err => {
         console.log(err)
+        this.$toast(err.errMsg || '系统错误！')
       })
-      // mock数据：
-      this.testList = [
-        {
-          picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
-          title: '从积极心理学到幸福感',
-          desc: '心境由心而设，态度可以决定我们的生活',
-          tagType: '心理综合',
-          testorNum: 111,
-          id: '111'
-        },
-        {
-          picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
-          title: '心理健康素养十条',
-          desc: '今年的主题是“健康心理，快乐人生',
-          tagType: '心理综合',
-          testorNum: 3,
-          id: '111'
-        },
-        {
-          picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
-          title: '性格与情感',
-          desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
-          tagType: '趣味性格',
-          testorNum: 904,
-          id: '39'
-        },
-        {
-          picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
-          title: '原来是爱情',
-          desc: '感情不是兔子，守株是没用的',
-          tagType: '爱情脱单',
-          testorNum: 3004,
-          id: '111'
-        },
-        {
-          picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
-          title: '决定你上限的，不是智商，而是自律',
-          desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
-          tagType: '智商情商',
-          testorNum: 21,
-          id: '111'
-        }
-      ]
+
       this.loading = false
     }
   },

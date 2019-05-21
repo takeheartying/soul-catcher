@@ -49,7 +49,8 @@ export default {
   onLoad (options) {
     Object.assign(this.$data, this.$options.data())
     this.userType = this.$app.globalData.userType || ''
-    switch (options.tagType) { // 测试类型
+    this.tagType = options.tagType
+    switch (this.tagType) { // 测试类型
       case '1':
         this.tagTypeDesc = '爱情脱单'
         break
@@ -80,6 +81,7 @@ export default {
       this.loading = true
       this.finished = false
       await api.test.getTestList({
+        tagType: this.tagType || '',
         pageSize: 10,
         pageNo: this.pageNo,
         studentId: this.studentId || ''

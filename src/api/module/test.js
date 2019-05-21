@@ -10,7 +10,8 @@ export const getTestList = (params) => {
 }
 // 获取测试详情
 export const getTestDetailInfoById = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return test.getTestDetailById(params).then(res => {
+    res = myRequest.checkRequest(res)
     return res || {}
   })
 }

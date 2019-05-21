@@ -199,6 +199,8 @@ export default {
         if (res && res.data) {
           this.testInfo = res.data || {}
           this.originPic = this.testInfo.picUrl || ''
+        } else {
+          this.$toast(res.message || '系统出错')
         }
       }).catch(err => {
         console.log(err)
@@ -320,11 +322,10 @@ export default {
           } else {
             // 点击确定 -- 上传图片并存储
             await api.test.updateTest(submitInfo).then(res => {
-              if (res && res.code === '0' && res.data) {
-                debugger
-                if (res.data.picUrl) { // 更改了图片
-                  that.originPic = res.data.picUrl // 存储原来的图片后用于删除
-                  that.picUrl = res.data.picUrl // 替换临时图片url 为 服务器的图片url
+              if (res && res.code === '0') {
+                if (res.picUrl) { // 更改了图片
+                  that.originPic = res.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
                 }
                 that.$toast(res.message || '修改成功！')
                 return false
@@ -382,7 +383,7 @@ export default {
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
-          if ((key !== 'picUrl' && key !== 'testorNum' && key !== 'tagTypeDesc' && key !== 'uploadParams' && key !== '_id' && (!element || !element.length))) { // 跳过testorNum 和 tagTypeDesc等属性
+          if ((key !== 'author' && key !== 'picUrl' && key !== 'testorNum' && key !== 'tagTypeDesc' && key !== 'uploadParams' && key !== '_id' && (!element || !element.length))) { // 跳过testorNum 和 tagTypeDesc等属性
             this.$toast('信息不可为空！')
             cancelFlag = true
             return false

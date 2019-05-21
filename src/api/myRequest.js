@@ -23,6 +23,9 @@ const checkRequest = function (res) {
     if (res.errCode === -501002) {
       res.message = '云端响应超时'
     }
+    if (res.errCode === -501001) {
+      res.message = '云端系统错误'
+    }
     setTimeout(() => {
       wx.showToast({
         title: res.errMsg || res.message,

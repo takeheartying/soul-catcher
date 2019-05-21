@@ -89,8 +89,8 @@ const updateTest = async (event) => {
     }
   }).then(res => {
     console.log('提交测试题修改成功！')
-    if (res && res.result) {
-      res.result.picUrl = event.picUrl // 返回给前端
+    if (res && res.stats) {
+      res.picUrl = event.picUrl // 返回给前端
     }
     return res
   }).catch(err => {

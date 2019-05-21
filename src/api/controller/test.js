@@ -39,10 +39,16 @@ const getTestDetailById = (params) => {
     name: 'test',
     data: Object.assign({$url: 'test/detail'}, params)
   }).then(res => {
+    debugger
     if (res && res.result && res.result.data) {
       if (res && res.result && res.result.data) {
         res.result.data.createTime = moment(res.result.data.createTime).format('YYYY-MM-DD')
-        return res.result
+        return {
+          code: '0',
+          flag: '0',
+          data: res.result.data,
+          message: res.result.message || '查询成功'
+        }
       }
     }
   }).catch(err => {
@@ -80,8 +86,10 @@ const updateTest = async (params) => {
         }).catch(err => {
           console.log('提交失败！', err)
           _res = {
-            message: '系统出错！',
-            code: '-1'
+            message: err.errMsg || '系统出错！',
+            code: '-1',
+            errCode: err.errCode,
+            flag: '-1'
           }
           return err
         })
@@ -98,19 +106,23 @@ const updateTest = async (params) => {
       if (res && res.result && res.result.stats && res.result.stats) {
         return {
           message: '提交成功',
-          code: '0'
+          code: '0',
+          flag: '0'
         }
       } else {
         return {
           message: '提交失败！',
-          code: '-1'
+          code: '-1',
+          flag: '-1'
         }
       }
     }).catch(err => {
       console.log(err)
       return {
-        message: '系统出错！',
-        code: '-1'
+        message: err.errMsg || '系统出错！',
+        code: '-1',
+        flag: '-1',
+        errCode: err.errCode
       }
     })
   }
