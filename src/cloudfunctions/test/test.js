@@ -38,19 +38,14 @@ const getTestList = async (event) => {
       order: 'desc'
     }
   }
-  if (event.searchType === 'mostComment') { // 按照评论数最多
+  if (event.searchType === 'mostComment') { // 按照测试人数最多
     orderBy = {
-      fieldName: 'commentNum',
+      fieldName: 'testorNum',
       order: 'desc'
     }
   }
   if (event.tagType) { // 按照标签类型
     filter.tagType = event.tagType
-  }
-  if (event.expertId) {
-    filter.author = {
-      _id: event.expertId
-    }
   }
   let promise = await cloud.callFunction({
     name: 'paginator',
@@ -84,12 +79,13 @@ const updateTest = async (event) => {
   event = filterTagType(event)
   let promise = await db.collection(dbName).doc(event._id).update({
     data: {
-      content: event.content,
+      detail: event.content,
       desc: event.desc,
       picUrl: event.picUrl,
       tagType: event.tagType,
       title: event.title,
-      tagTypeDesc: event.tagTypeDesc
+      tagTypeDesc: event.tagTypeDesc,
+      examList: event.examList
     }
   }).then(res => {
     console.log('提交测试题修改成功！')

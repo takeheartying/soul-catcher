@@ -17,6 +17,12 @@ const uploadFile = async (event) => {
 }
 // 单个图片删除
 const deleteFile = async (event) => {
+  if (event.originPic) {
+    return {
+      message: '没有旧图片',
+      code: '-1'
+    }
+  }
   try {
     return await cloud.deleteFile({
       fileList: [event.originPic] // 云文件 ID 字符串数组
@@ -25,6 +31,7 @@ const deleteFile = async (event) => {
       return res
     })
   } catch (e) {
+    console.log(e)
     return e
   }
 }

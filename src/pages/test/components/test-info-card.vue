@@ -1,5 +1,5 @@
 <template>
-  <navigator class="test-info-card" v-if="testInfo" :url="url">
+  <navigator class="test-info-card" v-if="testInfo && testInfo._id" :url="url">
     <div class="middle-content">
       <p class="title">{{testInfo.title}}</p>
       <p class="desc">{{testInfo.desc}}</p>
@@ -35,13 +35,13 @@ export default {
   methods: {
     getUrl () {
       if (this.showType === 'result') {
-        this.url = `/pages/test/result/main?id=${this.testInfo.id}&studentId=${this.studentId}` // 根据testId 和 userId 查询 对应的测试题结果 详情信息
+        this.url = `/pages/test/result/main?id=${this.testInfo._id}&studentId=${this.studentId}` // 根据testId 和 userId 查询 对应的测试题结果 详情信息
       } else if (this.userType === '0') {
         let noEdit = (this.testInfo.testorNum > 0) ? '1' : '0'
         // 测试已经被人测试过，则不可编辑测试题：
-        this.url = `/pages/test/edit/main?id=${this.testInfo.id}&noEdit=${noEdit}` // 管理员根据testId 编辑测试题 【去编辑】
+        this.url = `/pages/test/edit/main?id=${this.testInfo._id}&noEdit=${noEdit}` // 管理员根据testId 编辑测试题 【去编辑】
       } else {
-        this.url = `/pages/test/detail/main?id=${this.testInfo.id}` // 根据testId 查询测试题 详情信息【去测试】
+        this.url = `/pages/test/detail/main?id=${this.testInfo._id}` // 根据testId 查询测试题 详情信息【去测试】
       }
     }
   },

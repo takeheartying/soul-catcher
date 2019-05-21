@@ -13,9 +13,15 @@ const test = require('./test.js')
     pageNo: 1
   }
 */
+const cloud = require('wx-server-sdk')
+
+// 初始化 cloud
+cloud.init({
+  env: 'soul-catcher-env-2f8134'
+})
 exports.main = (event, context) => {
   console.log('event', event)
-  if (!event.userInfo.openId) {
+  if (!(event.userInfo && event.userInfo.openId) && !cloud.getWXContext().OPENID) {
     return {
       code: '-1',
       flag: '-1',

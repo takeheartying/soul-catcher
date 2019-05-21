@@ -75,6 +75,7 @@ export default {
   },
   data () {
     return {
+      title: '',
       noEdit: '', // '1': 不可编辑【测试被人测过之后不可编辑测试题】
       file: {}, // 上传的临时文件
       loading: false,
@@ -148,6 +149,7 @@ export default {
     this.noEdit = options.noEdit === '1' // 当测试被人测过之后，就不可编辑了
     // 初始数据置空：
     this.initData()
+    this.title = this.testId ? '编辑测试题' : '添加测试题'
     if (this.testId) { // 编辑测试
       this.getTestById()
     }
@@ -176,7 +178,7 @@ export default {
             that.$toast('请上传小于2M的图片')
             return false
           }
-          that.picUrl = res.tempFilePaths[0]
+          that.testInfo.picUrl = that.picUrl = res.tempFilePaths[0]
           that.file = res
         }
       })
@@ -290,7 +292,6 @@ export default {
     addQuestion () { // 添加测试题
       this.testInfo.examList = this.testInfo.examList.concat({
         questionTitle: '',
-        questionId: '',
         options: [
           {
             content: '',
@@ -362,7 +363,7 @@ export default {
       this.curComponentId = ''
     },
     radioChange (e) {
-      this.tagType = e.target.value
+      this.testInfo.tagType = this.tagType = e.target.value
     },
     async submitEdit (submitInfo) {
       let that = this
@@ -377,10 +378,10 @@ export default {
           } else {
             // 点击确定 -- 上传图片并存储
             await api.test.updateTest(submitInfo).then(res => {
-              if (res && res.code === '0') {
-                if (res.picUrl) { // 更改了图片
-                  that.originPic = res.picUrl // 存储原来的图片后用于删除
-                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
+              if (res && res.code === '0' && res.data) {
+                if (res.data.picUrl) { // 更改了图片
+                  that.originPic = res.data.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.data.picUrl // 替换临时图片url 为 服务器的图片url
                 }
                 that.$toast(res.message || '提交成功！')
                 return false
@@ -395,6 +396,9 @@ export default {
       })
     },
     async submitAdd (submitInfo) {
+      if (!submitInfo.uploadParams.filePath) {
+        this.$toast('请上传图片！')
+      }
       submitInfo.userId = this.$app.globalData.userInfo.userId
       let that = this
       wx.showModal({
@@ -408,13 +412,13 @@ export default {
           } else {
             // 点击确定 -- 上传图片并存储
             await api.test.addTest(submitInfo).then(res => {
-              if (res && res.code === '0' && res._id) {
-                if (res.picUrl) {
-                  that.originPic = res.picUrl // 存储原来的图片后用于删除
-                  that.picUrl = res.picUrl // 替换临时图片url 为 服务器的图片url
+              if (res && res.code === '0' && res.data && res.data._id) {
+                if (res.data.picUrl) {
+                  that.originPic = res.data.picUrl // 存储原来的图片后用于删除
+                  that.picUrl = res.data.picUrl // 替换临时图片url 为 服务器的图片url
                 }
-                that.testInfo._id = res._id
-                that.testId = res._id
+                that.testInfo._id = res.data._id
+                that.testId = res.data._id
                 that.$toast(res.message || '添加成功！')
                 return false
               }
@@ -435,7 +439,7 @@ export default {
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
-          if ((key !== 'testorNum' && (!element || !element.length))) { // 跳过testorNum属性
+          if ((key !== 'testorNum' && key !== 'tagTypeDesc' && key !== 'uploadParams' && key !== '_id' && (!element || !element.length))) { // 跳过testorNum 和 tagTypeDesc等属性
             this.$toast('信息不可为空！')
             cancelFlag = true
             return false
@@ -499,7 +503,7 @@ export default {
   },
   mounted () {
     wx.setNavigationBarTitle({
-      title: this.title
+      title: this.title || '测试详情'
     })
   }
 }

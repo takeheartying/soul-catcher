@@ -46,16 +46,18 @@ const updateTest = async (params) => {
           data: Object.assign({$url: 'test/update'}, params)
         }).then(res => {
           if (res && res.result && res.result.stats) {
-            _res = Object.assign(res.result, {
-              picUrl: params.picUrl,
+            _res = {
               message: '提交成功！',
-              code: '0'
-            })
+              code: '0',
+              flag: '0',
+              data: Object.assign(res.result, {picUrl: params.picUrl})
+            }
             return res.result
           } else {
             _res = {
               message: '提交失败！',
-              code: '-1'
+              code: '-1',
+              flag: '-1'
             }
           }
         }).catch(err => {
@@ -110,24 +112,27 @@ const addTest = async (params) => {
           name: 'test',
           data: Object.assign({$url: 'test/add'}, params)
         }).then(res => {
-          if (res && res.result && res.result._id) {
-            _res = Object.assign(res.result, {
-              picUrl: params.picUrl,
+          if (res && res.result) { // result={_id: 'xxx'}
+            _res = {
               message: '添加成功！',
-              code: '0'
-            })
+              code: '0',
+              flag: '0',
+              data: Object.assign(res.result, {picUrl: params.picUrl})
+            }
             return res.result
           } else {
             _res = {
               message: '添加失败！',
-              code: '-1'
+              code: '-1',
+              flag: '-1'
             }
           }
         }).catch(err => {
           console.log('添加失败！', err)
           _res = {
             message: '系统出错！',
-            code: '-1'
+            code: '-1',
+            flag: '-1'
           }
           return err
         })
