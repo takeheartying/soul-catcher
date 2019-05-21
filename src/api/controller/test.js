@@ -151,6 +151,7 @@ const addTest = async (params) => {
             code: '-1',
             flag: '-1'
           }
+          debugger
           return err
         })
       }

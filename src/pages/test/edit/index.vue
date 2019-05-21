@@ -143,6 +143,14 @@ export default {
       userType: '' // 0 管理员 1 学生 2 专家 3 家长
     }
   },
+  watch: {
+    testId () {
+      this.title = this.testId ? '编辑测试题' : '添加测试题'
+      wx.setNavigationBarTitle({
+        title: this.title || '测试详情'
+      })
+    }
+  },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
     this.testId = options.id
@@ -313,15 +321,16 @@ export default {
             // 点击确定 -- 上传图片并存储
             await api.test.updateTest(submitInfo).then(res => {
               if (res && res.code === '0' && res.data) {
+                debugger
                 if (res.data.picUrl) { // 更改了图片
                   that.originPic = res.data.picUrl // 存储原来的图片后用于删除
                   that.picUrl = res.data.picUrl // 替换临时图片url 为 服务器的图片url
                 }
-                that.$toast(res.message || '提交成功！')
+                that.$toast(res.message || '修改成功！')
                 return false
               }
               if (res && res.code === '-1') {
-                that.$toast(res.message || '提交失败！')
+                that.$toast(res.message || '修改失败！')
                 return false
               }
             })
@@ -373,7 +382,7 @@ export default {
       for (const key in submitInfo) {
         if (submitInfo.hasOwnProperty(key)) {
           const element = submitInfo[key]
-          if ((key !== 'testorNum' && key !== 'tagTypeDesc' && key !== 'uploadParams' && key !== '_id' && (!element || !element.length))) { // 跳过testorNum 和 tagTypeDesc等属性
+          if ((key !== 'picUrl' && key !== 'testorNum' && key !== 'tagTypeDesc' && key !== 'uploadParams' && key !== '_id' && (!element || !element.length))) { // 跳过testorNum 和 tagTypeDesc等属性
             this.$toast('信息不可为空！')
             cancelFlag = true
             return false

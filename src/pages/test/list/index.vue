@@ -42,7 +42,12 @@ export default {
     GLoading,
     TestInfoCard
   },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    Object.assign(this.$data, this.$options.data())
+  },
   onLoad (options) {
+    Object.assign(this.$data, this.$options.data())
     this.userType = this.$app.globalData.userType || ''
     switch (options.tagType) { // 测试类型
       case '1':
@@ -63,6 +68,11 @@ export default {
     }
     this.showType = options.showType || '' // 展示类型： 'result' 'test / 空'【默认】
     this.studentId = options.studentId || '' // 查询该学生的测试集
+    // 初始置空：
+    this.testList = []
+    this.finished = false
+    this.pageNo = 1
+    this.getTestList()
   },
   methods: {
     async getTestList () {
@@ -70,7 +80,7 @@ export default {
       this.loading = true
       this.finished = false
       await api.test.getTestList({
-        pageSize: 5,
+        pageSize: 10,
         pageNo: this.pageNo,
         studentId: this.studentId || ''
       }).then(res => {
@@ -79,8 +89,12 @@ export default {
           this.finished = res.data.finished
         } else if (res && res.code === '-1') {
           this.$toast(res.message || '系统错误！')
+          this.finished = true
+        } else {
+          this.finished = true
         }
       }).catch(err => {
+        this.finished = false
         console.log(err)
         this.$toast('系统错误！')
       })
@@ -101,7 +115,6 @@ export default {
     wx.setNavigationBarTitle({
       title: this.tagTypeDesc + '测试列表'
     })
-    this.getTestList()
   }
 
 }

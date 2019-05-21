@@ -35,7 +35,8 @@ export const addTest = (params) => {
 }
 // 修改测试
 export const updateTest = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return test.updateTest(params).then(res => {
+    res = myRequest.checkRequest(res)
     return res || {}
   })
 }
