@@ -3,7 +3,7 @@
     <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000">
       <block v-for="(item, index) in bannerList" :key="index">
           <swiper-item>
-              <image :src="item.imgUrl" class="slide-image"  mode="aspectFit"/>
+              <image :src="item.imgUrl" class="slide-image"  mode="widthFix"/>
           </swiper-item>
       </block>
     </swiper>
@@ -164,6 +164,9 @@ export default {
 <style lang="less">
 .page-homepage-knowledge-base {
   background: rgb(245, 236, 236);
+  .slide-image {
+    width: 100%;
+  }
   .classification-container {
     background: #fff;
     padding: 10px 12px;
