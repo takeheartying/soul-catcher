@@ -38,6 +38,13 @@ export default {
       showChooseUserType: false // 是否展示选择角色
     }
   },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    Object.assign(this.$data, this.$options.data())
+  },
+  onLoad () {
+    this.showChooseUserType = false
+  },
   methods: {
     // 注册--1.选择角色：
     async confirmClick (userType) { // 0 管理员 1 学生 2 专家 3 家长

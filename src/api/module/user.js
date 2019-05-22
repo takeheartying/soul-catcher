@@ -43,3 +43,10 @@ export const getRecordListByUserId = (params) => {
     return res || {}
   })
 }
+// 获取用户列表
+export const getUserList = (params) => {
+  return user.getUserList(params).then(res => {
+    res = myRequest.checkRequest(res)
+    return res || {}
+  })
+}

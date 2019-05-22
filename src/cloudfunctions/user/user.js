@@ -176,6 +176,9 @@ const register = async (event) => {
           }
         })
         delete event.relationPhone
+        if (event.userType === '2') { // 专家含有咨询者数 字段
+          event.consultorNum = 0
+        }
       }
       // 添加用户：
       await db.collection(dbName).add({
@@ -276,8 +279,51 @@ const initLogin = (event) => { // 小程序端调用云函数时已经默认带�
     }
   }
 }
-
+// 用户列表：
+const getUserList = async (event) => {
+  let filter = {}
+  let orderBy = {}
+  if (event.searchType === 'newTime') { // 按照时间顺序
+    orderBy = {
+      fieldName: 'createTime',
+      order: 'desc'
+    }
+  }
+  if (event.searchType === 'mostConsultor') { // 按照专家咨询人数最多 [人气专家]
+    orderBy = {
+      fieldName: 'consultorNum',
+      order: 'desc'
+    }
+    filter = {
+      userType: '2'
+    }
+  }
+  if (event.tagType) { // 按照专家擅长的 标签类型 【目前方案是先选出所有专家列表，再遍历返回】
+    filter = {
+      userType: '2'
+    }
+  }
+  let promise = await cloud.callFunction({
+    name: 'paginator',
+    data: {
+      dbName: 'user',
+      pageNo: event.pageNo,
+      pageSize: event.pageSize,
+      orderBy: orderBy,
+      filter: filter
+    }
+  }).then(res => {
+    console.log(res)
+    if (res && res.result) {
+      return res.result
+    }
+  }).catch(err => {
+    return err
+  })
+  return promise
+}
 module.exports = {
+  getUserList,
   updateUserInfo,
   getUserInfo,
   register,

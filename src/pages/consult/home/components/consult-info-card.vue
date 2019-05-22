@@ -1,17 +1,17 @@
 <template>
-  <navigator class="consult-home-info-card-navigator" v-if="consultInfo && consultInfo.name"  :url="'/pages/expert/detail/main?id=' + consultInfo.id">
+  <navigator class="consult-home-info-card-navigator" v-if="consultInfo && consultInfo.name"  :url="'/pages/expert/detail/main?id=' + consultInfo._id">
     <div class="consult-home-info-card" >
-      <image class="consult-home-info-card--image" :src="consultInfo.avatar" mode="aspectFill"></image>
+      <image class="consult-home-info-card--image" :src="consultInfo.avatarUrl" mode="aspectFill"></image>
       <p class="consult-home-info-card--name">{{consultInfo.name}}</p>
-      <div class="consult-home-info-card--number">
+      <div class="consult-home-info-card--number" v-if="consultInfo.consultorNum">
         咨询人数&nbsp;<span class="consult-home-info-card--consultor-num">{{consultInfo.consultorNum}}人</span>
         /&nbsp;
-        <span class="consult-home-info-card--score">{{consultInfo.AverageScore}}分</span>
+        <span class="consult-home-info-card--score">{{consultInfo.averageScore}}分</span>
       </div>
       <p class="consult-home-info-card--goodat">
         擅长: &nbsp;{{goodAt}}
       </p>
-      <p class="consult-home-info-card--academic-title">{{consultInfo.authorAcademicTitle}}</p>
+      <p class="consult-home-info-card--academic-title">{{consultInfo.academicTitle}}</p>
     </div>
   </navigator>
 </template>
@@ -30,9 +30,35 @@ export default {
       goodAt: '无'
     }
   },
+  methods: {
+    filterTagType (tagType) {
+      if (tagType) {
+        switch (tagType) {
+          case '1':
+            tagType = '爱情脱单'
+            break
+          case '2':
+            tagType = '智商情商'
+            break
+          case '3':
+            tagType = '趣味性格'
+            break
+          case '4':
+            tagType = '心理综合'
+            break
+          default: break
+        }
+      }
+      return tagType
+    }
+  },
   mounted () {
     if (this.consultInfo && this.consultInfo.tagList && this.consultInfo.tagList.length) {
-      this.goodAt = this.consultInfo.tagList.join('、').slice(0, this.consultInfo.tagList.join('、').length)
+      let goodAt = ''
+      this.consultInfo.tagList.forEach((tagType, index) => {
+        this.goodAt += (this.filterTagType(tagType) + '、')
+      })
+      this.goodAt = goodAt.slice(0, goodAt.length - 1)
     }
   }
 }

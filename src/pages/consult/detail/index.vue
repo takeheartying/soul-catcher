@@ -93,6 +93,10 @@ export default {
       userType: ''
     }
   },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    Object.assign(this.$data, this.$options.data())
+  },
   methods: {
     bindLoadData () {
       if (!this.finished) {
@@ -338,6 +342,7 @@ export default {
     }
   },
   onLoad (options) {
+    Object.assign(this.$data, this.$options.data())
     this.userType = this.$app.globalData.userType || ''
     this.consultId = options.id || ''
     this.loadList()

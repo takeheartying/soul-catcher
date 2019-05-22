@@ -62,6 +62,19 @@ exports.main = (event, context) => {
     let promise = await user.login(event)
     ctx.body = promise
   })
+  app.router('user/list', async (ctx, next) => {
+    if (!event.userInfo.openId) {
+      return {
+        code: '-1',
+        flag: '-1',
+        loginState: 'noLogin',
+        message: '用户未授权登录小程序'
+      }
+    }
+    delete event.$url
+    let promise = await user.getUserList(event)
+    ctx.body = promise
+  })
   app.router('user/detail', async (ctx, next) => {
     if (!event.userInfo.openId) {
       return {

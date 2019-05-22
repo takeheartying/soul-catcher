@@ -16,7 +16,7 @@
         <div class="good-at" v-if="userType === '2'">擅长领域：</div>
         <checkbox-group class="tag-list" @change="checkboxChange($event)" v-if="userType === '2'">
           <label class="tag-list-item" v-for="(item, index) in base.tagList" :key="index">
-            <checkbox class="checkbox" :value="item.name" :checked="item.checked" />
+            <checkbox class="checkbox" @click="clickCheckBox(item, index)" :value="item.name" :checked="item.checked" />
             <span class="checkbox-value">{{item.value}}</span>
           </label>
         </checkbox-group>
@@ -129,7 +129,13 @@ export default {
       userType: '' // 0 管理员 1 学生 2 专家 3 家长
     }
   },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    Object.assign(this.$data, this.$options.data())
+  },
   onLoad (options) {
+    Object.assign(this.$data, this.$options.data())
+    debugger
     if (options.userType) { // 未登录---用户注册，选择角色后--url传参
       this.userType = options.userType
     } else { // 已登录
@@ -176,6 +182,9 @@ export default {
     },
     handleZanFieldBlur (e) {
       this.curComponentId = ''
+    },
+    clickCheckBox (tag, tagIndex) {
+      this.base.tagList[tagIndex].checked = !this.base.tagList[tagIndex].checked
     },
     checkboxChange (e) {
       this.tagList = e.target.value

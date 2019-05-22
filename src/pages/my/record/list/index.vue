@@ -200,7 +200,12 @@ export default {
       wx.navigateTo({url: `/pages/my/record/detail/main?expertId=${record.expertId}&dateBegin=${record.dateBegin}`})
     }
   },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    Object.assign(this.$data, this.$options.data())
+  },
   onLoad (options) {
+    Object.assign(this.$data, this.$options.data())
     this.userType = this.$app.globalData.userType || ''
   },
   mounted () {

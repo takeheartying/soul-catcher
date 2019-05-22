@@ -62,12 +62,16 @@ export default {
     async getConsultList () {
       // 获取人气专家列表：
       this.loading = true
-      await api.consult.getConsultList({
+      await api.user.getUserList({
         pageSize: 5,
         pageNo: 1,
-        searchType: 'consultDesc' // 咨询降序
+        searchType: 'mostConsultor' // 咨询降序
       }).then(res => {
-        this.recConsultList = res || {}
+        if (res && res.data && res.data.data) {
+          this.recConsultList = res.data.data
+        } else if (res && res.code === '-1') {
+          this.$toast(res.message || res.errMsg || '系统错误！')
+        }
       }).catch(err => {
         console.log(err)
       })
@@ -82,32 +86,32 @@ export default {
         console.log(err)
       })
       // mock数据：
-      this.focusConsultList = this.recConsultList = [
+      this.focusConsultList = [
         {
-          id: '1111111',
+          _id: '1111111',
           name: '王灿灿',
-          avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-          authorAcademicTitle: '心理老师',
+          avatarUrl: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+          academicTitle: '心理老师',
           tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-          AverageScore: '9.0',
+          averageScore: '9.0',
           consultorNum: 20
         },
         {
-          id: '222222',
+          _id: '222222',
           name: '何方',
-          avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-          authorAcademicTitle: '心理老师',
+          avatarUrl: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
+          academicTitle: '心理老师',
           tagList: ['爱情脱单', '心理综合'],
-          AverageScore: '3.5',
+          averageScore: '3.5',
           consultorNum: 9000
         },
         {
-          id: '33333',
+          _id: '33333',
           name: '玩的翻译',
-          avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-          authorAcademicTitle: '心理老师',
+          avatarUrl: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
+          academicTitle: '心理老师',
           tagList: ['爱情脱单', '心理综合'],
-          AverageScore: '3.5',
+          averageScore: '3.5',
           consultorNum: 9
         }
       ]
