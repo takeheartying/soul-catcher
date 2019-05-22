@@ -125,29 +125,29 @@ export default {
 <style lang="less">
 @import '~@/styles/functions.less';
 .page-test-list {
-    height:100%;
-    background: #fff;
-    padding-bottom: 20px;
-    display: flex;
-    .page-test-list--scroll-view {
-      flex: 1;
-      /*隐藏滚动条*/
-      ::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-        color: transparent;
-      }
-      .page-test-list--add-wrap {
-        position: absolute;
-        bottom: 100px;
-        right: 40px;
-        .iconfont {
-          display: block;
-          font-size: 50px;
-          color: #63B8FF;
-          border-radius: 50%;
-        }
+  height:100%;
+  background: #fff;
+  padding-bottom: 20px;
+  display: flex;
+  .page-test-list--scroll-view {
+    flex: 1;
+    /*隐藏滚动条*/
+    ::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      color: transparent;
+    }
+    .page-test-list--add-wrap {
+      position: absolute;
+      bottom: 100px;
+      right: 40px;
+      .iconfont {
+        display: block;
+        font-size: 50px;
+        color: #63B8FF;
+        border-radius: 50%;
       }
     }
+  }
 }
 </style>

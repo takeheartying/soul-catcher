@@ -34,9 +34,9 @@ export default {
   methods: {
     getUrl () {
       if (this.showType === 'result') {
-        this.url = `/pages/test/result/main?id=${this.testInfo.id}&studentId=${this.studentId}` // 根据testId 和 userId 查询 对应的测试题结果 详情信息
+        this.url = `/pages/test/result/main?id=${this.testInfo._id}&studentId=${this.studentId}` // 根据testId 和 userId 查询 对应的测试题结果 详情信息
       } else {
-        this.url = `/pages/test/detail/main?id=${this.testInfo.id}` // 根据testId 查询测试题 详情信息
+        this.url = `/pages/test/detail/main?id=${this.testInfo._id}` // 根据testId 查询测试题 详情信息
       }
     }
   },

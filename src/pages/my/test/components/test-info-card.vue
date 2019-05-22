@@ -1,9 +1,10 @@
 <template>
-  <navigator class="test-info-card" v-if="testInfo" :url="'/pages/test/result/main?id=' + testInfo.id" >
+  <!-- 我的测试是查测试结果列表： -->
+  <navigator class="test-info-card" v-if="testInfo && testResultId" :url="'/pages/test/result/main?id=' + testResultId" >
     <div class="middle-content">
       <p class="title">{{testInfo.title}}</p>
       <p class="desc">{{testInfo.desc}}</p>
-      <p class="line3"><span class="type">{{testInfo.tagType}}</span> <span class="testnum">{{testInfo.testorNum}}人已测</span></p>
+      <p class="line3"><span class="type">{{testInfo.tagTypeDesc}}</span> <span class="testnum">{{testInfo.testorNum}}人已测</span></p>
     </div>
     <image :src="testInfo.picUrl" class="right-img"  mode="aspectFill"/>
   </navigator>
@@ -16,6 +17,10 @@ export default {
       default () {
         return {}
       }
+    },
+    testResultId: {
+      type: String,
+      required: true
     }
   }
 }

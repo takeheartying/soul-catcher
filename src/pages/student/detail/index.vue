@@ -363,71 +363,75 @@ export default {
     async getTestList () {
       this.loading = true
       this.testFinished = false
-      await api.test.getTestList({
-        pageSize: 5,
+      await api.test.getTestResultList({
+        pageSize: 10,
         pageNo: this.testPageNo,
-        studentId: this.studentId || ''
+        userId: this.studentId || this.$app.globalData.userInfo.userId
       }).then(res => {
-        this.testList = this.testList.concat(res.items)
-        this.testFinished = (res.pageCount && this.testPageNo >= res.pageCount)
-        this.testResultNum = res.totalCount || 0
-        this.testPageNo++
+        if (res && res.data && res.data.data) {
+          this.testList = this.testList.concat(res.data.data)
+          this.testFinished = res.data.finished
+          this.testResultNum = res.totalCount || 0
+          this.testPageNo++
+        } else if (res && res.code === '-1') {
+          this.$toast(res.message || '系统错误！')
+          this.testFinished = true
+        } else {
+          this.testFinished = true
+        }
       }).catch(err => {
+        this.testFinished = true
         console.log(err)
       })
       // mock数据：
-      let res = {
-        pageSize: 5,
-        pageNo: 1,
-        pageCount: 3,
-        totalCount: 15,
-        items: [
-          {
-            picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
-            title: '从积极心理学到幸福感',
-            desc: '心境由心而设，态度可以决定我们的生活',
-            tagType: '心理综合',
-            testorNum: 111,
-            id: '111'
-          },
-          {
-            picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
-            title: '心理健康素养十条',
-            desc: '今年的主题是“健康心理，快乐人生',
-            tagType: '心理综合',
-            testorNum: 3,
-            id: '111'
-          },
-          {
-            picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
-            title: '性格与情感',
-            desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
-            tagType: '趣味性格',
-            testorNum: 904,
-            id: '39'
-          },
-          {
-            picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
-            title: '原来是爱情',
-            desc: '感情不是兔子，守株是没用的',
-            tagType: '爱情脱单',
-            testorNum: 3004,
-            id: '111'
-          },
-          {
-            picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
-            title: '决定你上限的，不是智商，而是自律',
-            desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
-            tagType: '智商情商',
-            testorNum: 21,
-            id: '111'
-          }
-        ]
-      }
-      this.testList = this.testList.concat(res.items)
-      this.testFinished = (res.pageCount && this.testPageNo >= res.pageCount)
-      this.testResultNum = res.totalCount || 0
-      this.testPageNo++
+      // let res = {
+      //   pageSize: 5,
+      //   pageNo: 1,
+      //   pageCount: 3,
+      //   totalCount: 15,
+      //   items: [
+      //     {
+      //       picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
+      //       title: '从积极心理学到幸福感',
+      //       desc: '心境由心而设，态度可以决定我们的生活',
+      //       tagType: '心理综合',
+      //       testorNum: 111,
+      //       id: '111'
+      //     },
+      //     {
+      //       picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
+      //       title: '心理健康素养十条',
+      //       desc: '今年的主题是“健康心理，快乐人生',
+      //       tagType: '心理综合',
+      //       testorNum: 3,
+      //       id: '111'
+      //     },
+      //     {
+      //       picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
+      //       title: '性格与情感',
+      //       desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
+      //       tagType: '趣味性格',
+      //       testorNum: 904,
+      //       id: '39'
+      //     },
+      //     {
+      //       picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
+      //       title: '原来是爱情',
+      //       desc: '感情不是兔子，守株是没用的',
+      //       tagType: '爱情脱单',
+      //       testorNum: 3004,
+      //       id: '111'
+      //     },
+      //     {
+      //       picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
+      //       title: '决定你上限的，不是智商，而是自律',
+      //       desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
+      //       tagType: '智商情商',
+      //       testorNum: 21,
+      //       id: '111'
+      //     }
+      //   ]
+      // }
 
       this.loading = false
     },

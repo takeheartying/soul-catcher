@@ -6,6 +6,7 @@ cloud.init({
 })
 const dbName = 'test-result'
 const db = cloud.database()
+const _ = db.command
 
 const filterTagType = function (event) {
   if (event.tagType) {
@@ -68,7 +69,7 @@ const getTestResultDetailById = async (event) => {
   })
   return promise
 }
-// 测试题结果添加：[先上传图片再修改数据库]
+// 测试题结果添加：
 const addTestResult = async (event) => {
   // 1.获取测试者信息：
   let promise = await db.collection('user').doc(event.userId).get().then(res => {
@@ -116,13 +117,15 @@ const addTestResult = async (event) => {
           createTime: new Date(),
           resultScore: event.resultScore,
           examList: event.examList,
-          test: res.test
+          test: res.test,
+          testId: res.test._id,
+          userId: res.user._id
         }
       }).then(_res => {
         if (_res && _res._id) {
           res = {
-            code: '0',
-            flag: '0',
+            user: res.user,
+            test: res.test,
             data: {
               resultScore: event.resultScore,
               avatarUrl: res.user.avatarUrl,
@@ -141,6 +144,50 @@ const addTestResult = async (event) => {
       }).catch(err => {
         res = err
       })
+    }
+    return res
+  }).then(async res => {
+    // 4.修改test数据库的测试人数 testorNum
+    if (res && res.data) {
+      // 曾经判断是否曾经测试过：
+      let everTestNumRes = await db.collection('test-result').where({
+        testId: res.test._id,
+        userId: res.user._id
+      }).count()
+      let everTestNum = everTestNumRes.total
+      if (everTestNum === 1) { // 只是现在测试了一次
+        await db.collection('test').doc(res.test._id).update({
+          data: {
+            testorNum: _.inc(1)
+          }
+        }).then(_res => {
+          if (_res && _res.stats) {
+            res = {
+              code: '0',
+              flag: '0',
+              data: res.data,
+              message: '新增测试成功且人数已修改'
+            }
+          } else {
+            res = {
+              code: '-1',
+              flag: '-1',
+              data: res.data,
+              message: '新增测试成功且人数已修改'
+            }
+          }
+        }).catch(err => {
+          console.log(err)
+          res = Object.assign(err, res)
+        })
+      } else {
+        res = {
+          code: '0',
+          flag: '0',
+          data: res.data,
+          message: '新增测试成功'
+        }
+      }
     }
     return res
   })

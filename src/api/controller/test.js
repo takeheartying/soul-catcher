@@ -197,7 +197,63 @@ const submitTestResult = async (params) => {
     return err
   })
 }
+const getTestResultList = (params) => {
+  return wx.cloud.callFunction({
+    // 云函数名称
+    name: 'test-result',
+    // 传给云函数的参数
+    data: Object.assign({$url: 'test-result/list'}, params)
+  }).then(res => {
+    // 调用云函数的分页方法：
+    if (res && res.result && res.result.data) {
+      if (res && res.result && res.result.data) {
+        return {
+          flag: '0',
+          code: '0',
+          message: '查询成功！',
+          data: res.result
+        }
+      }
+    } else {
+      return {
+        flag: '-1',
+        code: '-1',
+        errCode: res.result.errCode,
+        message: res.result.errMsg || '未搜索到测试题列表！'
+      }
+    }
+  }).catch(err => {
+    console.log(err)
+    return {
+      message: '系统错误',
+      code: '-1',
+      flag: '-1'
+    }
+  })
+}
+const getTestResultDetailById = (params) => {
+  return wx.cloud.callFunction({
+    name: 'test-result',
+    data: Object.assign({$url: 'test-result/detail'}, params)
+  }).then(res => {
+    if (res && res.result && res.result.data) {
+      if (res && res.result && res.result.data) {
+        res.result.data.createTime = moment(res.result.data.createTime).format('YYYY-MM-DD')
+        return {
+          code: '0',
+          flag: '0',
+          data: res.result.data,
+          message: res.result.message || '查询成功'
+        }
+      }
+    }
+  }).catch(err => {
+    return err
+  })
+}
 export default {
+  getTestResultDetailById,
+  getTestResultList,
   submitTestResult,
   getTestList,
   getTestDetailById,
