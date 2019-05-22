@@ -3,7 +3,7 @@
     <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="1000">
       <block v-for="(item, index) in bannerList" :key="index">
           <swiper-item>
-              <image :src="item.imgUrl" class="slide-image"  mode="aspectFill"/>
+              <image :src="item.imgUrl" class="slide-image"  mode="aspectFit"/>
           </swiper-item>
       </block>
     </swiper>
