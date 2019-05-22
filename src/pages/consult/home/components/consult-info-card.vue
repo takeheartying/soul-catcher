@@ -56,9 +56,9 @@ export default {
     if (this.consultInfo && this.consultInfo.tagList && this.consultInfo.tagList.length) {
       let goodAt = ''
       this.consultInfo.tagList.forEach((tagType, index) => {
-        this.goodAt += (this.filterTagType(tagType) + '、')
+        goodAt += (this.filterTagType(tagType) + '、')
       })
-      this.goodAt = goodAt.slice(0, goodAt.length - 1)
+      this.goodAt = goodAt.slice(0, goodAt.length - 1) || '无'
     }
   }
 }

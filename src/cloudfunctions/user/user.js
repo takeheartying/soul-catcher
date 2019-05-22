@@ -38,7 +38,15 @@ const updateUserInfo = async (event) => {
       return res
     } else {
       event.updateTime = new Date()
-      event.openId = event.userInfo.openId
+      event.openId = event.userInfo && event.userInfo.openId
+      if (!event.openId) {
+        return {
+          code: '-1',
+          flag: '-1',
+          loginState: 'noLogin',
+          message: '没有openId'
+        }
+      }
       // 用户是家长： ----- 确定孩子是否注册过小程序：
       if (event.relationPhone && event.userType === '3') { // userType = 3 家长添加一个孩子的号码
         await db.collection(dbName).where({
@@ -158,7 +166,7 @@ const register = async (event) => {
       return res
     } else {
       event.updateTime = new Date()
-      event.openId = event.userInfo.openId
+      event.openId = (event.userInfo && event.userInfo.openId) || cloud.getWXContext().OPENID
       // 用户是家长： ----- 确定孩子是否注册过小程序：
       if (event.relationPhone && event.userType === '3') { // userType = 3 家长添加一个孩子的号码
         await db.collection(dbName).where({
@@ -179,6 +187,7 @@ const register = async (event) => {
         if (event.userType === '2') { // 专家含有咨询者数 字段
           event.consultorNum = 0
         }
+        console.log('这是专家的consultorNum = ', event.consultorNum)
       }
       // 添加用户：
       await db.collection(dbName).add({
@@ -258,7 +267,7 @@ const login = async (event) => {
 }
 const initLogin = (event) => { // 小程序端调用云函数时已经默认带上了可信的用户登录态（openid）了
   console.log('event.userInfo', event.userInfo)
-  let openId = event.userInfo.openId
+  let openId = event.userInfo && event.userInfo.openId
   if (openId) {
     return {
       code: '0',

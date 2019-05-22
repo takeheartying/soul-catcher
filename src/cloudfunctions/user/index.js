@@ -24,7 +24,7 @@ exports.main = (event, context) => {
   console.log('event', event)
   const app = new TcbRouter({ event })
   app.router('user/update', async (ctx, next) => {
-    if (!event.userInfo.openId) {
+    if (!(event.userInfo && event.userInfo.openId) && !cloud.getWXContext().OPENID) {
       return {
         code: '-1',
         flag: '-1',
@@ -37,7 +37,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/register', async (ctx, next) => {
-    if (!event.userInfo.openId) {
+    if (!(event.userInfo && event.userInfo.openId) && !cloud.getWXContext().OPENID) {
       return {
         code: '-1',
         flag: '-1',
@@ -50,7 +50,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/login', async (ctx, next) => {
-    if (!event.userInfo.openId) {
+    if (!(event.userInfo && event.userInfo.openId) && !cloud.getWXContext().OPENID) {
       return {
         code: '-1',
         flag: '-1',
@@ -63,7 +63,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/list', async (ctx, next) => {
-    if (!event.userInfo.openId) {
+    if (!(event.userInfo && event.userInfo.openId) && !cloud.getWXContext().OPENID) {
       return {
         code: '-1',
         flag: '-1',
@@ -76,7 +76,7 @@ exports.main = (event, context) => {
     ctx.body = promise
   })
   app.router('user/detail', async (ctx, next) => {
-    if (!event.userInfo.openId) {
+    if (!(event.userInfo && event.userInfo.openId) && !cloud.getWXContext().OPENID) {
       return {
         code: '-1',
         flag: '-1',
