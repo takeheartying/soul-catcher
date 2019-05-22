@@ -306,47 +306,47 @@ export default {
         totalCount: 15,
         items: [
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
             nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
             name: '',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
+            goodAt: '爱情脱单、趣味性格、心理综合',
+            createTime: '2019-03-21',
             score: 3.0,
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
             nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
             name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
+            goodAt: '爱情脱单、智商情商、心理综合',
+            createTime: '2019-03-20',
             score: 3.0,
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
             nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
+            name: '恒丰',
+            goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
+            createTime: '2019-05-20',
             score: 3.0,
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
             nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
             name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
+            goodAt: '智商情商、趣味性格、心理综合',
+            createTime: '2019-05-21',
             score: 3.0,
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3914550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
             nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
             name: '王大锤',
-            goodAt: '开始大量、开始大量、开始大量、开始大量',
-            createTime: '2019-03-39',
+            goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
+            createTime: '2019-05-10',
             score: 0,
             id: '23343243'
           }
@@ -407,15 +407,15 @@ export default {
       //       id: '111'
       //     },
       //     {
-      //       picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
+      //       picUrl: 'http://img2.imgtn.bdimg.com/it/u=2620384659,4031296781&fm=26&gp=0.jpg',
       //       title: '性格与情感',
       //       desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
       //       tagType: '趣味性格',
       //       testorNum: 904,
-      //       id: '39'
+      //       id: '20'
       //     },
       //     {
-      //       picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
+      //       picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1302036544,1637883161&fm=26&gp=0.jpg',
       //       title: '原来是爱情',
       //       desc: '感情不是兔子，守株是没用的',
       //       tagType: '爱情脱单',
@@ -622,7 +622,7 @@ export default {
         }
       }
       .student-info-middle {
-        height: 39px;
+        height: 20px;
         border-bottom: 10px solid rgb(240, 240, 240);
         border-top: 2px solid #eee;
         display: flex;

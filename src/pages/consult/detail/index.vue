@@ -151,27 +151,27 @@ export default {
           },
           chatList: [ // 按照时间，从近到远排序
             {
-              content: '2019-01-07 内容11111111111',
+              content: '心情抑郁',
               chatId: '4354353525',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '2',
-              name: '打火机的',
+              name: '王一一',
               nickName: '将豆腐块'
             },
             {
-              content: '2019-01-06 内容2222222222222222',
+              content: '如何舒缓？',
               chatId: '476589890',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '3',
-              name: '订单订单付所付',
+              name: '王一一',
               nickName: '将豆腐块'
             },
             {
-              content: '2019-01-05 内容333333333333333333',
+              content: '积极找老师沟通',
               chatId: '2222222222222222222',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
@@ -181,7 +181,7 @@ export default {
               nickName: '将豆腐块'
             },
             {
-              content: '2019-01-04 内容444444444444444444444',
+              content: '我会改善的',
               chatId: '100000000034545',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
@@ -191,7 +191,7 @@ export default {
               nickName: '将豆腐块'
             },
             {
-              content: '2019-01-03 内容5555555555',
+              content: '状况不太好啊你',
               chatId: '4577657',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
@@ -201,23 +201,23 @@ export default {
               nickName: '将豆腐块'
             },
             {
-              content: '2019-01-02 内容666666666666666666666666666',
+              content: '我会注意的',
               chatId: '0968698769',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '3',
-              name: '考虑对方就爱上风口浪尖',
+              name: '王芬',
               nickName: '将豆腐块'
             },
             {
-              content: '2019-01-01 内容777777777777777',
+              content: '好的',
               chatId: '343qtrwe',
               userId: '33333',
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '2',
-              name: '爪机党',
+              name: '赵倩',
               nickName: '将豆腐块'
             }
           ],
