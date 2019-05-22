@@ -138,28 +138,28 @@ export default {
         expertId: '3333',
         expertName: '家的看法',
         expertNickName: '家的看法迪士尼开发商',
-        averageScore: 9.0,
+        averageScore: 5.0,
         dateBegin: '',
         interval: '六个月内',
         items: [
           {
-            createTime: '2019-10-19',
+            createTime: '2019-03-19',
             score: 7.0
           },
           {
-            createTime: '2019-10-19',
+            createTime: '2019-03-20',
             score: 4.9
           },
           {
-            createTime: '2019-10-19',
+            createTime: '2019-04-19',
             score: 9.0
           },
           {
-            createTime: '2019-10-19',
+            createTime: '2019-05-01',
             score: 1.6
           },
           {
-            createTime: '2019-10-19',
+            createTime: '2019-05-17',
             score: 3.0
           }
         ]

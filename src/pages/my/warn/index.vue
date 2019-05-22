@@ -4,7 +4,7 @@
     <scroll-view  class="page-my-warn--scroll-view"  scroll-y @scrolltolower="bindDownLoad" lower-threshold="100">
       <ul class="page-my-warn--list" v-if="warnList && warnList.length">
         <navigator class="page-my-warn--item" v-for="(warn, index) in warnList" :key="index" :url="'/pages/score/detail/main?id=' + warn.id + '&scoreType=student'">
-          <image class="page-my-warn--item-left-part" :src="warn.avatar || defaultPic" mode="aspectFill"></image>
+          <image class="page-my-warn--item-left-part" :src="defaultPic" mode="aspectFill"></image>
           <div class="page-my-warn--item-middle-part">
             <p class="warn-nickname">{{warn.name || warn.nickName}}</p>
             <p class="warn-goodat">擅长：{{warn.goodAt}}</p>
@@ -64,7 +64,7 @@ export default {
             name: '陈天源',
             goodAt: '爱情脱单、智商情商、心理综合',
             createTime: '2019-03-12',
-            score: 3.0,
+            score: 4.0,
             id: '23343243'
           },
           {
@@ -100,7 +100,7 @@ export default {
             name: '何方辉',
             goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
             createTime: '2019-05-20',
-            score: 0,
+            score: 2.0,
             id: '23343243'
           },
           {
@@ -109,7 +109,7 @@ export default {
             name: '王静',
             goodAt: '爱情脱单、智商情商、趣味性格',
             createTime: '2019-05-12',
-            score: 3.0,
+            score: 1.0,
             id: '23343243'
           },
           {
@@ -118,7 +118,7 @@ export default {
             name: '岑方',
             goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
             createTime: '2019-03-10',
-            score: 3.0,
+            score: 2.0,
             id: '23343243'
           },
           {
@@ -127,7 +127,7 @@ export default {
             name: '洪福',
             goodAt: '爱情脱单、趣味性格、心理综合',
             createTime: '2019-03-10',
-            score: 3.0,
+            score: 2.0,
             id: '23343243'
           },
           {
