@@ -196,6 +196,7 @@ export default {
             that.$app.globalData.loginState = 'noLogin'
             that.$app.globalData.userInfo = {}
             wx.reLaunch({url: `/pages/home/main`})
+            wx.showTabBar()
           }
         }
       })
