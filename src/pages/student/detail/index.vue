@@ -307,8 +307,8 @@ export default {
         items: [
           {
             avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '',
+            nickName: '何方',
+            name: '何方',
             goodAt: '爱情脱单、趣味性格、心理综合',
             createTime: '2019-03-21',
             score: 3.0,
@@ -316,7 +316,7 @@ export default {
           },
           {
             avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            nickName: '王大锤',
             name: '王大锤',
             goodAt: '爱情脱单、智商情商、心理综合',
             createTime: '2019-03-20',
@@ -325,7 +325,7 @@ export default {
           },
           {
             avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
+            nickName: '恒丰',
             name: '恒丰',
             goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
             createTime: '2019-05-20',
@@ -334,8 +334,8 @@ export default {
           },
           {
             avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
+            nickName: '邵佳一',
+            name: '邵佳一',
             goodAt: '智商情商、趣味性格、心理综合',
             createTime: '2019-05-21',
             score: 3.0,
@@ -343,8 +343,8 @@ export default {
           },
           {
             avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
-            nickName: '对我的积分地方的萨芬的阿道夫大师傅大师傅',
-            name: '王大锤',
+            nickName: '王家骥',
+            name: '王家骥',
             goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
             createTime: '2019-05-10',
             score: 0,

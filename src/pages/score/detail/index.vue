@@ -54,15 +54,15 @@ export default {
           userType: '2',
           score: 3.0,
           name: '王一舟',
-          nickName: '京东方卡拉夫',
-          reason: '艰苦奋斗举案说法据了解撒风口浪尖斯科拉飞机考虑是否进度款类似飞机阿卡丽房价快速拉加福禄寿的开始放假的老师姐夫'
+          nickName: '王一舟',
+          reason: '你最近睡眠不好，伴有一定抑郁倾向，需要及时和学生、家长沟通，早点治疗'
         },
         {
           createTime: '2019-10-10 10:00',
           userType: '3',
           score: 9.0,
           name: '成家长',
-          nickName: '健康萨芬的放大看反馈'
+          nickName: '成家长'
         }
       ]
     }

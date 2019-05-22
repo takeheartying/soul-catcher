@@ -63,7 +63,7 @@ export default {
       // mock数据：
       this.scoreInfo = {
         score: 3.0,
-        reason: '艰苦奋斗举案说法据了解撒风口浪尖斯科拉飞机考虑是否进度款类似飞机阿卡丽房价快速拉加福禄寿的开始放假的老师姐夫'
+        reason: '你的心理素质太低，不爱倾诉，情绪低落，叛逆而敏感，需要进行相关心理干预'
       }
     },
     async formSubmit (e) {

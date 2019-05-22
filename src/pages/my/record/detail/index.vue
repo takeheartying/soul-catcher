@@ -136,8 +136,8 @@ export default {
       // mock数据：
       let res = {
         expertId: '3333',
-        expertName: '家的看法',
-        expertNickName: '家的看法迪士尼开发商',
+        expertName: '王枫',
+        expertNickName: '王枫',
         averageScore: 5.0,
         dateBegin: '',
         interval: '六个月内',
