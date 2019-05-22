@@ -307,6 +307,9 @@ const getUserList = async (event) => {
       userType: '2'
     }
   }
+  if (event.userType) { // 要查询的用户类型
+    filter.userType = event.userType
+  }
   if (event.tagType) { // 按照专家擅长的 标签类型 【目前方案是先选出所有专家列表，再遍历返回】
     filter = {
       userType: '2'

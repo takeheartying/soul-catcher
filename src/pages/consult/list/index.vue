@@ -42,136 +42,145 @@ export default {
     Object.assign(this.$data, this.$options.data())
     this.userType = options.userType || '1'
     this.tagType = options.tagType || ''
+    this.getConsultList()
   },
   methods: {
     async getConsultList () {
       // 获取咨询专家列表：
       this.loading = true
       this.finished = false
-      await api.consult.getConsultList({
-        userType: this.userType || '1',
-        pageSize: 5,
-        pageNo: 1,
-        tagType: this.type,
-        searchType: 'consultDesc' // 咨询降序
-      }).then(res => {
-        this.consultList = res || {}
-      }).catch(err => {
-        console.log(err)
-      })
-      // mock数据：
-      let res = {
+      await api.user.getUserList({
+        userType: '2',
         pageSize: 10,
         pageNo: 1,
-        pageCount: 3,
-        items: [
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '222222',
-            name: '何方',
-            nickName: 'djasfkdjfhkasfj电风扇你就看看',
-            avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '心理综合'],
-            AverageScore: '3.5',
-            isConsulting: true, // 是否今天已经建立了咨询室
-            consultId: '33333'
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '1111111',
-            name: '王灿灿',
-            nickName: '大会上开发',
-            avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-            AverageScore: '9.0',
-            isConsulting: false
-          },
-          {
-            id: '222222',
-            name: '何方',
-            nickName: 'djasfkdjfhkasfj电风扇你就看看',
-            avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
-            authorAcademicTitle: '心理老师',
-            tagList: ['爱情脱单', '心理综合'],
-            AverageScore: '3.5',
-            isConsulting: true, // 是否今天已经建立了咨询室
-            consultId: '33333'
-          }
-        ]
-      }
+        // searchType: 'mostConsultor', // 咨询降序
+        tagType: this.tagType
+      }).then(res => {
+        if (res && res.data && res.data.data) {
+          this.consultList = this.consultList.concat(res.data.data)
+          this.finished = res.data.finished
+        } else if (res && res.code === '-1') {
+          this.$toast(res.message || '系统错误！')
+          this.finished = true
+        } else {
+          this.$toast(res.message || '系统错误！')
+          this.finished = true
+        }
+      }).catch(err => {
+        console.log(err)
+        this.finished = true
+      })
+      // mock数据：
+      // let res = {
+      //   pageSize: 10,
+      //   pageNo: 1,
+      //   pageCount: 3,
+      //   items: [
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '222222',
+      //       name: '何方',
+      //       nickName: 'djasfkdjfhkasfj电风扇你就看看',
+      //       avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '心理综合'],
+      //       averageScore: '3.5',
+      //       isConsulting: true, // 是否今天已经建立了咨询室
+      //       consultId: '33333'
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '1111111',
+      //       name: '王灿灿',
+      //       nickName: '大会上开发',
+      //       avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //       averageScore: '9.0',
+      //       isConsulting: false
+      //     },
+      //     {
+      //       id: '222222',
+      //       name: '何方',
+      //       nickName: 'djasfkdjfhkasfj电风扇你就看看',
+      //       avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
+      //       academicTitle: '心理老师',
+      //       tagList: ['爱情脱单', '心理综合'],
+      //       averageScore: '3.5',
+      //       isConsulting: true, // 是否今天已经建立了咨询室
+      //       consultId: '33333'
+      //     }
+      //   ]
+      // }
       this.loading = false
-      this.consultList = this.consultList.concat(res.items)
-      this.finished = (res.pageCount && this.pageNo >= res.pageCount)
     },
     bindDownLoad () { // 上拉加载
       if (!this.finished) {
@@ -184,7 +193,6 @@ export default {
     wx.setNavigationBarTitle({
       title: '咨询列表'
     })
-    this.getConsultList()
   }
 
 }
@@ -193,10 +201,11 @@ export default {
 <style lang="less">
   @import '~@/styles/functions.less';
   .page-consult-list {
-    height:100%;
+    // height:100%;
     background: #fff;
     padding-bottom: 20px;
     display: flex;
+    flex-direction: column;
     .page-consult-list--scroll-view {
       flex: 1;
       /*隐藏滚动条*/

@@ -80,18 +80,16 @@ const getUserList = (params) => {
     // 传给云函数的参数
     data: Object.assign({$url: 'user/list'}, params)
   }).then(res => {
-    debugger
     // 调用云函数的分页方法：
     if (res && res.result && res.result.data) {
       if (res && res.result && res.result.data) {
         let _result = res.result
-        if (_result.data.data && params.tagType) { // 按照类型筛选专家
+        if (_result.data && params.tagType) { // 按照类型筛选专家
           let newArr = _result.data.filter(user => {
             if (user.tagList.indexOf(params.tagType) > -1) {
               return user
             }
           })
-          debugger
           res.result.data = newArr
         }
         return {

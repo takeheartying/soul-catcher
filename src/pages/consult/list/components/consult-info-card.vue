@@ -1,11 +1,11 @@
 <template>
-  <navigator class="consult-info-card" v-if="consultInfo" :url="'/pages/expert/detail/main?id=' + consultInfo.id" >
-    <image mode="aspectFit" :src="consultInfo.avatar" class="left-part"></image>
+  <navigator class="consult-info-card" v-if="consultInfo" :url="'/pages/expert/detail/main?id=' + consultInfo._id" >
+    <image mode="aspectFit" :src="consultInfo.avatarUrl" class="left-part"></image>
     <div class="middle-part">
-      <p class="line1">{{consultInfo.name || consultInfo.nickName}} <span>{{consultInfo.authorAcademicTitle}}</span></p>
-      <p class="line2">评分：&nbsp;{{consultInfo.AverageScore ? consultInfo.AverageScore : '暂无'}}</p>
-      <p class="line4" v-if="consultInfo.tagList">
-        <span class="tag" v-for="(tag, index) in consultInfo.tagList" :key="index">{{tag}}</span>
+      <p class="line1">{{consultInfo.name || consultInfo.nickName}} <span>{{consultInfo.academicTitle}}</span></p>
+      <p class="line2" v-if="consultInfo.averageScore">评分：&nbsp;{{consultInfo.averageScore ? consultInfo.averageScore : '暂无'}}</p>
+      <p class="line4" v-if="tagDescList">
+        <span class="tag" v-for="(tag, index) in tagDescList" :key="index">{{tag}}</span>
       </p>
     </div>
     <!-- 专家不可以咨询其他专家,但可以查看咨询主页 -->
@@ -19,7 +19,8 @@ import api from '@/api'
 export default {
   data () {
     return {
-      userType: ''
+      userType: '',
+      tagDescList: []
     }
   },
   props: {
@@ -50,10 +51,41 @@ export default {
         consultInfo.consultId = this.initConsult(consultInfo)
       }
       wx.navigateTo({url: `/pages/consult/detail/main?id=${consultInfo.consultId}`})
+    },
+    setTagDescList () {
+      if (this.consultInfo && this.consultInfo.tagList) {
+        this.consultInfo.tagList.forEach(tagType => {
+          let tagTypeDesc = this.filterTagType(tagType)
+          this.tagDescList.push(tagTypeDesc)
+        })
+      }
+    },
+    filterTagType (tagType) {
+      if (tagType) {
+        switch (tagType) {
+          case '1':
+            tagType = '爱情脱单'
+            break
+          case '2':
+            tagType = '智商情商'
+            break
+          case '3':
+            tagType = '趣味性格'
+            break
+          case '4':
+            tagType = '心理综合'
+            break
+          default: break
+        }
+      }
+      return tagType
     }
   },
   onLoad (options) {
     this.userType = this.$app.globalData.userType || ''
+  },
+  mounted () {
+    this.setTagDescList()
   }
 }
 </script>
