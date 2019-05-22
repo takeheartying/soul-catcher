@@ -107,7 +107,7 @@
       </navigator>
     </div>
     <tab-bar :userType="userType" v-if="userType" :curUrl="'/pages/my/personal-center/main'"></tab-bar>
-    <div class="go-to-choose-usertype" v-if="!userType && (loginState === 'fail' || loginState === 'logining')"><button @click="checkLogin()">登录</button></div>
+    <div class="go-to-choose-usertype" v-if="!userType"><button @click="checkLogin()">登录</button></div>
 
   </section>
 </template>
@@ -122,6 +122,10 @@ export default {
       userInfo: {},
       userType: '' // 0 管理员 1 学生 2 专家 3 家长
     }
+  },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    Object.assign(this.$data, this.$options.data())
   },
   onLoad (options) {
     this.checkLogin()
