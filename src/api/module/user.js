@@ -50,3 +50,17 @@ export const getUserList = (params) => {
     return res || {}
   })
 }
+// 获取专家信息【专家主页的信息】
+export const getExpertInfo = (params) => {
+  return user.getExpertInfo(params).then(res => {
+    res = myRequest.checkRequest(res)
+    return res || {}
+  })
+}
+// 关注与取消关注
+export const concernUser = (params) => {
+  return user.concernUser(params).then(res => {
+    res = myRequest.checkRequest(res)
+    return res || {}
+  })
+}

@@ -135,7 +135,6 @@ export default {
   },
   onLoad (options) {
     Object.assign(this.$data, this.$options.data())
-    debugger
     if (options.userType) { // 未登录---用户注册，选择角色后--url传参
       this.userType = options.userType
     } else { // 已登录

@@ -334,6 +334,7 @@ const getUserList = async (event) => {
   })
   return promise
 }
+
 module.exports = {
   getUserList,
   updateUserInfo,

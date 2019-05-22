@@ -2,7 +2,7 @@
 // flag: 0 业务正常   -1   业务不正常
 // loginState: 'noLogin' 未登录， 'logining' 登陆中， 'fail'登陆失败(用户拒绝)， 'done' 登陆成功 , 'temporaryLogin' 临时登录
 const checkRequest = function (res) {
-  debugger
+  // debugger
   if (!res) {
     return '无数据'
   }

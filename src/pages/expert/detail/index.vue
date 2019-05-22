@@ -1,9 +1,9 @@
 <template>
-  <div class="page-expert-detail" :style="expertInfo.id ? '' : 'height:100%;'">
+  <div class="page-expert-detail" :style="expertInfo._id ? '' : 'height:100%;'">
     <!-- 专家主页详情 -->
-    <div class="page-expert-detail--container" v-if="expertInfo && expertInfo.id">
+    <div class="page-expert-detail--container" v-if="expertInfo && expertInfo._id">
       <div class="expert-info-top">
-        <image class="expert-info-top-avatar" mode="aspectFill" :src="expertInfo.avatar"></image>
+        <image class="expert-info-top-avatar" mode="aspectFill" :src="expertInfo.avatarUrl"></image>
         <div class="expert-info-top-name">{{expertInfo.name || expertInfo.nickName}}</div>
         <div class="expert-info-top-academic-title">{{expertInfo.academicTitle}}</div>
       </div>
@@ -14,11 +14,11 @@
       <div class="tab-home" v-if="curTab === 'home'">
         <div class="expert-info-bottom">
           <ul class="expert-info-bottom-statistic">
-            <li class="expert-info-bottom-statistic-item">
+            <li class="expert-info-bottom-statistic-item" v-if="expertInfo.consultorNum">
               <div class="item-num">{{expertInfo.consultorNum}}</div>
               <div class="item-unit">人咨询</div>
             </li>
-            <span class="expert-info-bottom-statistic-item-split"></span>
+            <span class="expert-info-bottom-statistic-item-split" v-if="expertInfo.consultorNum"></span>
             <li class="expert-info-bottom-statistic-item">
               <div class="item-num">{{expertInfo.averageScore}}</div>
               <div class="item-unit">评价分</div>
@@ -37,12 +37,12 @@
           <ul class="expert-info-bottom-info">
             <li class="expert-info-bottom-info-item">
               <div class="item-title">详细介绍：</div>
-              <div class="item-content">{{expertInfo.desc}}</div>
+              <div class="item-content">{{expertInfo.detail}}</div>
             </li>
             <li class="expert-info-bottom-info-item">
               <div class="item-title">擅长领域：</div>
               <div class="item-content">
-                <span v-for="(tag, index) in expertInfo.tagList" :key="index">{{tag}}</span>
+                <span v-for="(tag, index) in tagDescList" :key="index">{{tag}}</span>
               </div>
             </li>
             <li class="expert-info-bottom-info-item">
@@ -72,8 +72,8 @@
       </div>
     </div>
     <g-noresult
-    v-if="!expertInfo.id"
-    :show="!expertInfo.id"
+    v-if="!expertInfo._id"
+    :show="!expertInfo._id"
     :message="'没有该专家信息哦~'">
     </g-noresult>
   </div>
@@ -89,12 +89,42 @@ export default {
   },
   data () {
     return {
+      expertId: '',
       expertInfo: {},
       curTab: 'home', // 当前tab 'home' 或 'knowledge'
-      userType: ''
+      userType: '',
+      tagDescList: []
     }
   },
   methods: {
+    setTagDescList () {
+      if (this.expertInfo && this.expertInfo.tagList) {
+        this.expertInfo.tagList.forEach(tagType => {
+          let tagTypeDesc = this.filterTagType(tagType)
+          this.tagDescList.push(tagTypeDesc)
+        })
+      }
+    },
+    filterTagType (tagType) {
+      if (tagType) {
+        switch (tagType) {
+          case '1':
+            tagType = '爱情脱单'
+            break
+          case '2':
+            tagType = '智商情商'
+            break
+          case '3':
+            tagType = '趣味性格'
+            break
+          case '4':
+            tagType = '心理综合'
+            break
+          default: break
+        }
+      }
+      return tagType
+    },
     clickCallPhone (phone) { // 拨打电话
       if (phone) {
         wx.makePhoneCall({
@@ -149,88 +179,95 @@ export default {
       }
     },
     async concernChange () { // 关注与取消关注
-      await api.my.concernUser({
-        concernedId: this.expertInfo.id, // 被关注者id
+      await api.user.concernUser({
+        fanId: this.$app.globalData.userInfo.userId,
+        beConcernedUserId: this.expertInfo._id, // 被关注者id
         hasConcern: !this.expertInfo.hasConcern
       }).then((res) => {
-        if (res) {
-          console.log(res.message || '')
-          this.expertInfo.hasConcern = !this.expertInfo.hasConcern
+        if (res && res.code === '0') {
+          console.log(res.message || '成功！')
         }
+        this.expertInfo.hasConcern = !this.expertInfo.hasConcern
       }).catch(err => {
         console.log(err || '系统出错')
       })
       // mock数据：
-      this.expertInfo.hasConcern = !this.expertInfo.hasConcern
+      // this.expertInfo.hasConcern = !this.expertInfo.hasConcern
     },
     switchTab (tab) {
       this.curTab = tab || 'home'
     },
     async getExpertInfo () {
-      await api.common.getUserInfo({
-        id: this.expertId,
+      await api.user.getExpertInfo({
+        userId: this.expertId,
+        fanId: this.$app.globalData.userInfo.userId,
         userType: '2'
       }).then(res => {
-        this.expertInfo = res || {}
+        if (res && res.data) {
+          this.expertInfo = res.data || {}
+        } else {
+          this.$toast(res.message || res.errMsg || '系统错误')
+        }
       }).catch(err => {
         console.log(err)
       })
       // mock数据：
-      this.expertInfo = {
-        id: '1111111',
-        name: '王灿灿',
-        nickName: '大会上开发',
-        avatar: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
-        academicTitle: '心理老师',
-        tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
-        averageScore: 9.0,
-        isConsulting: false,
-        consultId: '',
-        desc: 'kfdjsakfjkdjsafklj附近肯德基案发福建斯科拉放假快乐撒九分裤电费卡开飞机拉师傅就看到了撒父级士大夫附件啊时空裂缝京东数科拉风加快速度拉法基第三方进口量撒酒疯考虑到精神科拉飞机考虑到就说了的顺丰快递费啦', // 详细介绍
-        organization: '浙江科技学院',
-        hasConcern: true, // 是否关注了
-        phone: '15868157426',
-        consultorNum: 39, // 咨询者
-        fanNum: 20, // 粉丝数量
-        knowledgeNum: 20, // 知识库数目
-        knowledgeList: [
-          {
-            picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
-            title: '从积极心理学到幸福感',
-            desc: '心境由心而设，态度可以决定我们的生活',
-            tagType: '心理综合',
-            id: '111'
-          },
-          {
-            picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
-            title: '心理健康素养十条',
-            desc: '今年的主题是“健康心理，快乐人生',
-            tagType: '心理综合',
-            id: '111'
-          },
-          {
-            picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
-            title: '性格与情感',
-            desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
-            tagType: '趣味性格',
-            id: '111'
-          },
-          {
-            picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
-            title: '原来是爱情',
-            desc: '感情不是兔子，守株是没用的',
-            tagType: '爱情脱单',
-            id: '111'
-          },
-          {
-            picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
-            title: '决定你上限的，不是智商，而是自律',
-            desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
-            tagType: '智商情商',
-            id: '111'
-          }
-        ]
-      }
+      // this.expertInfo = {
+      //   _id: '1111111',
+      //   name: '王灿灿',
+      //   nickName: '大会上开发',
+      //   avatarUrl: 'http://img2.imgtn.bdimg.com/it/u=1191849501,1904057087&fm=11&gp=0.jpg',
+      //   academicTitle: '心理老师',
+      //   tagList: ['爱情脱单', '智商情商', '趣味性格', '心理综合'],
+      //   averageScore: 9.0,
+      //   isConsulting: false,
+      //   consultId: '',
+      //   desc: 'kfdjsakfjkdjsafklj附近肯德基案发福建斯科拉放假快乐撒九分裤电费卡开飞机拉师傅就看到了撒父级士大夫附件啊时空裂缝京东数科拉风加快速度拉法基第三方进口量撒酒疯考虑到精神科拉飞机考虑到就说了的顺丰快递费啦', // 详细介绍
+      //   organization: '浙江科技学院',
+      //   hasConcern: true, // 是否关注了
+      //   phone: '15868157426',
+      //   consultorNum: 39, // 咨询者
+      //   fanNum: 20, // 粉丝数量
+      //   knowledgeNum: 20, // 知识库数目
+      //   knowledgeList: [
+      //     {
+      //       picUrl: 'http://img3.imgtn.bdimg.com/it/u=2870322368,453611869&fm=26&gp=0.jpg',
+      //       title: '从积极心理学到幸福感',
+      //       desc: '心境由心而设，态度可以决定我们的生活',
+      //       tagType: '心理综合',
+      //       _id: '111'
+      //     },
+      //     {
+      //       picUrl: 'http://img5.imgtn.bdimg.com/it/u=2011373020,3359872499&fm=26&gp=0.jpg',
+      //       title: '心理健康素养十条',
+      //       desc: '今年的主题是“健康心理，快乐人生',
+      //       tagType: '心理综合',
+      //       _id: '111'
+      //     },
+      //     {
+      //       picUrl: 'http://img2.imgtn.bdimg.com/it/u=2639384659,4031296781&fm=26&gp=0.jpg',
+      //       title: '性格与情感',
+      //       desc: '人的性格不同是因为人的思维方式不同。一个人思维方式的形成，有来自诸多方面的影响。',
+      //       tagType: '趣味性格',
+      //       _id: '111'
+      //     },
+      //     {
+      //       picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1303936544,1637883161&fm=26&gp=0.jpg',
+      //       title: '原来是爱情',
+      //       desc: '感情不是兔子，守株是没用的',
+      //       tagType: '爱情脱单',
+      //       _id: '111'
+      //     },
+      //     {
+      //       picUrl: 'http://img4.imgtn.bdimg.com/it/u=1019369127,2450633653&fm=26&gp=0.jpg',
+      //       title: '决定你上限的，不是智商，而是自律',
+      //       desc: '人生如苦旅，有时候决定我们上限的，不是智商，而是自律。',
+      //       tagType: '智商情商',
+      //       _id: '111'
+      //     }
+      //   ]
+      // }
+      this.setTagDescList()
     }
   },
   onUnload () {
@@ -240,6 +277,7 @@ export default {
   onLoad (options) {
     Object.assign(this.$data, this.$options.data())
     this.userType = this.$app.globalData.userType || ''
+    this.expertId = options.id || ''
     this.getExpertInfo()
   },
   mounted () {
