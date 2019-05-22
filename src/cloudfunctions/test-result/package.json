@@ -1,0 +1,15 @@
+{
+    "name": "test-result",
+    "version": "1.0.0",
+    "description": "测试结果的操作",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "takeheartYing",
+    "license": "ISC",
+    "dependencies": {
+      "wx-server-sdk": "latest",
+      "tcb-router": "latest"
+    }
+  }

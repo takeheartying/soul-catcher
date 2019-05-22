@@ -23,7 +23,8 @@ export const getTestResultListById = (params) => {
 }
 // 提交测试结果
 export const submitTestResult = (params) => {
-  return wxRequest.post('/common/miniprogram/login.json', params).then(res => {
+  return test.submitTestResult(params).then(res => {
+    res = myRequest.checkRequest(res)
     return res || {}
   })
 }

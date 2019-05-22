@@ -30,9 +30,11 @@
           <li class="page-test-detail--examination-item" v-if="index === curIndex">
             <div class="page-test-detail--examination-item-title">{{index + 1}}、{{question.questionTitle}}</div>
             <div class="page-test-detail--examination-item-options">
-              <radio-group class="page-test-detail--examination-item-option" v-for="(option, optionIndex) in question.options" :key="optionIndex">
-                <radio @click="clickRadio(question, index, option, optionIndex)" class="radio" color="#63B8FF" :name="question.id" :checked="option.isChecked"></radio>
-                <p class="content">{{option.content}}</p>
+              <radio-group class=""  @change="radioChange($event, question, index)" >
+                <label class="page-test-detail--examination-item-option"  v-for="(option, optionIndex) in question.options" :key="optionIndex">
+                  <radio class="radio" color="#63B8FF" :name="optionIndex" :value="optionIndex" :checked="question.answerIndex && Number(question.answerIndex) === optionIndex"></radio>
+                  <p class="content">{{option.content}}</p>
+                </label>
               </radio-group>
             </div>
             <div class="page-test-detail--examination-item-btns">
@@ -48,14 +50,14 @@
     </div>
     <!-- 3.展示结果： -->
     <div class="page-test-detail--result" v-if="showResult">
-      <image class="page-test-detail--result-avatar" mode="aspectFill" :src="resultInfo.avatar"></image>
+      <image class="page-test-detail--result-avatar" mode="aspectFill" :src="resultInfo.avatarUrl"></image>
       <div class="page-test-detail--result-score">
         <p class="title">你的心理状况</p>
-        <p class="score">{{resultInfo.score}}分</p>
+        <p class="score">{{resultInfo.resultScore}}分</p>
       </div>
-      <div class="page-test-detail--result-tip" v-if="resultInfo.score < 4">当前心理状况不佳，建议向相关专家咨询哦~</div>
-      <div class="page-test-detail--result-tip" v-if="resultInfo.score >= 4 && resultInfo.score < 8">当前心理状况良好，按需咨询哦~</div>
-      <div class="page-test-detail--result-tip" v-if="resultInfo.score >= 8">当前心理状况不错，继续保持哦~</div>
+      <div class="page-test-detail--result-tip" v-if="resultInfo.resultScore < 40">当前心理状况不佳，建议向相关专家咨询哦~</div>
+      <div class="page-test-detail--result-tip" v-if="resultInfo.resultScore >= 40 && resultInfo.resultScore < 80">当前心理状况良好，按需咨询哦~</div>
+      <div class="page-test-detail--result-tip" v-if="resultInfo.resultScore >= 80">当前心理状况不错，继续保持哦~</div>
     </div>
   </div>
 </template>
@@ -92,42 +94,63 @@ export default {
     startTest () { // 开始测试
       this.hasStartTest = true
     },
-    clickRadio (question, questionIndex, option, optionIndex) { // 选择radio，进入下一题
-      // 除了更改当前选择，其他全部置否：
-      this.testInfo.examList[this.curIndex].options.forEach((option, index) => {
-        if (index === optionIndex) {
-          option.isChecked = true
-        } else {
-          option.isChecked = false
-        }
-      })
+    radioChange (e, question, index) { // answerIndex 是指单个question选择的optionIndex
+      if (e.target.value) {
+        this.testInfo.examList[this.curIndex].answerIndex = e.target.value
+      }
       if (this.curIndex + 1 < this.testInfo.examList.length) {
         this.curIndex++
       }
-      // 下一题也已经全部置空
     },
     clickLastQuestion () { // 点击上一题
       // 这一题的选择清空：
-      this.testInfo.examList[this.curIndex].options.forEach(option => {
-        option.isChecked = false
-      })
-      // 上一题的选择清空：
+      this.testInfo.examList[this.curIndex].answerIndex = ''
       this.curIndex--
-      this.testInfo.examList[this.curIndex].options.forEach(option => {
-        option.isChecked = false
-      })
+      // 上一题的选择清空：
+      this.testInfo.examList[this.curIndex].answerIndex = ''
     },
     async submitExam () {
+      let BreakException = {}
+      let cancelFlag = false
+      // 计算分数，上传：
+      let resultScore = 0 // 总分
+      let resultExamList = []
+      let questionLen = this.testInfo.examList.length // 题目数
+      try {
+        this.testInfo.examList.forEach(question => {
+          if (!question.answerIndex) {
+            this.$toast('所有选择不可为空！')
+            throw BreakException
+          } else {
+            let questionScore = Number(question.options[question.answerIndex].score)
+            resultExamList.push({
+              questionTitle: question.questionTitle,
+              answer: question.options[question.answerIndex].content,
+              score: questionScore
+            })
+            resultScore += (questionScore / 10) * (100 / questionLen) // 每道题得分： 选择得分占比 * 该题分数总占比
+          }
+        })
+      } catch (e) {
+        if (e === BreakException) {
+          cancelFlag = true
+        }
+      }
+      if (cancelFlag) {
+        return false
+      }
       await api.test.submitTestResult({
-        id: this.testInfo._id,
-        examList: this.testInfo.examList,
-        userId: this.$app.globalData.userInfo.userId
+        testId: this.testInfo._id,
+        examList: resultExamList,
+        userId: this.$app.globalData.userInfo.userId,
+        resultScore: resultScore
       }).then(res => {
-        if (res) {
+        if (res && res.data) {
           this.$toast('提交成功！')
           // 展示结果：
           this.showResult = true
-          this.resultInfo = res
+          this.resultInfo = res.data
+          this.resultInfo.resultScore = Number(this.resultInfo.resultScore)
         } else {
           this.$toast('提交失败！')
         }
@@ -135,12 +158,6 @@ export default {
         console.log(err)
         this.$toast('提交失败！')
       })
-      // mock数据：
-      this.showResult = true
-      this.resultInfo = {
-        score: 9.0,
-        avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg'
-      }
     }
   },
   onLoad (options) {

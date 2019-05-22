@@ -39,7 +39,6 @@ const getTestDetailById = (params) => {
     name: 'test',
     data: Object.assign({$url: 'test/detail'}, params)
   }).then(res => {
-    debugger
     if (res && res.result && res.result.data) {
       if (res && res.result && res.result.data) {
         res.result.data.createTime = moment(res.result.data.createTime).format('YYYY-MM-DD')
@@ -163,7 +162,6 @@ const addTest = async (params) => {
             code: '-1',
             flag: '-1'
           }
-          debugger
           return err
         })
       }
@@ -178,7 +176,29 @@ const addTest = async (params) => {
     }
   }
 }
+const submitTestResult = async (params) => {
+  return wx.cloud.callFunction({
+    name: 'test-result',
+    data: Object.assign({$url: 'test-result/add'}, params)
+  }).then(res => {
+    if (res && res.result && res.result.data) {
+      if (res && res.result && res.result.data) {
+        return {
+          code: '0',
+          flag: '0',
+          data: res.result.data,
+          message: res.result.message || '提交成功'
+        }
+      }
+    } else {
+      return res.result
+    }
+  }).catch(err => {
+    return err
+  })
+}
 export default {
+  submitTestResult,
   getTestList,
   getTestDetailById,
   updateTest,
