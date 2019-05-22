@@ -70,11 +70,11 @@ export default {
         fail: e => {
           syncConfig && wx.hideLoading()
           changeState(state)
-          wx.showToast({
-            title: '网络出错',
-            icon: 'none',
-            duration: 2000
-          })
+          // wx.showToast({
+          //   title: '网络出错',
+          //   icon: 'none',
+          //   duration: 2000
+          // })
           reject(e || '网络出错')
         }
       })
