@@ -157,7 +157,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '2',
-              name: '王一一',
+              name: '陈一一',
               nickName: '将豆腐块'
             },
             {
@@ -167,7 +167,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '3',
-              name: '王一一',
+              name: '梁一一',
               nickName: '将豆腐块'
             },
             {
@@ -177,7 +177,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '1',
-              name: '王昭君',
+              name: '陈一一',
               nickName: '将豆腐块'
             },
             {
@@ -187,7 +187,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '3',
-              name: '家长名字',
+              name: '梁一一',
               nickName: '将豆腐块'
             },
             {
@@ -197,7 +197,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '1',
-              name: '王昭君',
+              name: '陈一一',
               nickName: '将豆腐块'
             },
             {
@@ -207,7 +207,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '3',
-              name: '王芬',
+              name: '梁一一',
               nickName: '将豆腐块'
             },
             {
@@ -217,7 +217,7 @@ export default {
               createTime: '2019-04-22 23:00:29',
               avatar: 'http://img0.imgtn.bdimg.com/it/u=1542008560,3630016374&fm=11&gp=0.jpg',
               userType: '2',
-              name: '赵倩',
+              name: '陈一一',
               nickName: '将豆腐块'
             }
           ],
