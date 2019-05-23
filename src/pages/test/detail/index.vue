@@ -80,10 +80,11 @@ export default {
     async getTestInfo () {
       if (!this.testId) return false
       await api.test.getTestDetailInfoById({
-        id: this.testId
+        _id: this.testId
       }).then(res => {
         if (res && res.data) {
           this.testInfo = res.data || {}
+          debugger
         } else {
           this.$toast(res.message || '系统出错')
         }
@@ -160,12 +161,20 @@ export default {
       })
     }
   },
+  onUnload () {
+    // 解决页面返回后，数据没重置的问题
+    // Object.assign(this.$data, this.$options.data())
+  },
   onLoad (options) {
+    this.testInfo = {
+      id: ''
+    }
     wx.setNavigationBarColor({
       frontColor: '#ffffff',
       backgroundColor: '#63B8FF'
     })
     this.testId = options.id || ''
+    debugger
     this.getTestInfo()
   },
   onShareAppMessage (res) {
