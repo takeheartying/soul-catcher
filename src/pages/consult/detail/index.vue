@@ -1,7 +1,7 @@
 <template>
   <div class="page-consult-detail">
     <!-- 咨询详情页： -->
-    <!-- consultStatus: ''    初始邀请中 0    待同意 1    已同意 2    已关闭 3 -->
+    <!-- consultStatus: ''    [初始邀请中 0    待同意 1    已同意 2    已关闭 3] 现在改为 【 2 进行中    3 已关闭 】 -->
     <div class="page-consult-detail--status-container">
       <div class="page-consult-detail--status" v-if="consultInfo.consultStatusDesc">状态：{{consultInfo.consultStatusDesc}}</div>
       <div class="page-consult-detail--btns" v-if="consultInfo.consultStatus !== 3">
@@ -9,8 +9,8 @@
         <button class="page-consult-detail--btn" v-if="userType === '2'"  @click="editScore()">学生状况评分</button>
 
         <button class="page-consult-detail--btn" v-if="consultInfo.consultStatus !== 3"  @click="closeConsult()">关闭咨询室</button>
-        <button class="page-consult-detail--btn" v-if="userType !== '3' && consultInfo.userList && consultInfo.userList.parent && !consultInfo.userList.parent.isInvited" @click="inviteUser('parent')">邀请家长</button>
-        <button class="page-consult-detail--btn" v-if="userType !== '1' && consultInfo.userList && consultInfo.userList.student && !consultInfo.userList.student.isInvited"  @click="inviteUser('student')">邀请学生</button>
+        <!-- <button class="page-consult-detail--btn" v-if="userType !== '3' && consultInfo.userList && consultInfo.userList.parent && !consultInfo.userList.parent.isInvited" @click="inviteUser('parent')">邀请家长</button>
+        <button class="page-consult-detail--btn" v-if="userType !== '1' && consultInfo.userList && consultInfo.userList.student && !consultInfo.userList.student.isInvited"  @click="inviteUser('student')">邀请学生</button> -->
       </div>
     </div>
     <scroll-view  class="page-consult-detail--scroll-view" :scroll-into-view="scrollToView" @scrolltoupper="bindLoadData()"  scroll-y v-if="consultInfo.id" :upper-threshold="50">

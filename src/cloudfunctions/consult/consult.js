@@ -97,47 +97,88 @@ const updateConsult = async (event) => {
 }
 // 咨询添加：
 const addConsult = async (event) => {
-  event = filterTagType(event)
-  // 获取作者信息：
-  let promise = await db.collection('user').doc(event.userId).get().then(async res => {
-    let result = {
-      message: '提交中！'
-    }
-    if (res && res.data) {
-      if (res.data.userType !== '0') {
-        return {
-          code: '-1',
-          flag: '-1',
-          message: '只能管理员有权限添加咨询！'
-        }
+  // 获取三个id：
+  // 若parentId入参，查询studentId,
+  // 若studentId入参，查询parentId
+  if (event.studentId) {
+    await db.collection('user').where({ // 只有家长目前有relationShipId
+      relationShipId: event.studentId
+    }).get().then(res => {
+      if (res && res.data && res.data.length) {
+        event.parentId = res.data[0]._id
+      } else {
+        event.parentId = ''
       }
+    })
+  } else if (event.parentId) {
+    event.studentId = await db.collection('user').doc(event.parentId).relationShipId || ''
+  }
+  // 查询是否已经有了正在进行的咨询：
+  let promise = await db.collection(dbName).where({
+    parentId: event.parentId,
+    studentId: event.studentId,
+    expertId: event.expertId,
+    consultStatus: 2
+  }).get().then(res => {
+    if (res && res.data && res.data.length) {
+      return {
+        _id: res.data._id,
+        message: '已经存在咨询了！'
+      }
+    } else {
+      return res
+    }
+  }).then(async res => {
+    if (res && res._id) {
+      return res
+    } else {
+      let result
       await db.collection(dbName).add({
         data: {
-          author: res.data,
           createTime: new Date(),
-          detail: event.detail,
-          desc: event.desc,
-          picUrl: event.picUrl,
-          tagType: event.tagType,
-          title: event.title,
-          tagTypeDesc: event.tagTypeDesc,
-          examList: event.examList,
-          consultorNum: 0 // 咨询者人数
+          parentId: event.parentId,
+          studentId: event.studentId,
+          expertId: event.expertId,
+          consultStatus: 2,
+          consultStatusDesc: '进行中'
         }
       }).then(res => {
         result = res
-        console.log('新增咨询题成功！')
-        return res
+        if (res && res._id) {
+          setTimeout(() => { // 十分钟之后状态变化为 已关闭3
+            db.collection(dbName).where({
+              _id: res._id
+            }).update({
+              data: {
+                consultStatus: 3,
+                consultStatusDesc: '已关闭'
+              }
+            }).then(_res => {
+              if (_res && _res.stats && _res.stats.updated) {
+                console.log('已关闭id=')
+              } else {
+                console.log('未关闭咨询室')
+              }
+            })
+          }, 10 * 60 * 1000)
+          result = {
+            code: '0',
+            flag: '0',
+            message: '添加成功!',
+            _id: res._id
+          }
+        } else {
+          result = {
+            code: '-1',
+            flag: '-1',
+            message: '添加失败！'
+          }
+        }
       })
-    } else {
-      result = {
-        message: '添加失败！',
-        code: '-1',
-        flag: '-1'
-      }
+      return result
     }
-    return result
   })
+
   return promise
 }
 module.exports = {

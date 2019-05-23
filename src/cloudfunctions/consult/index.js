@@ -23,22 +23,22 @@ exports.main = (event, context) => {
   const app = new TcbRouter({ event })
   app.router('consult/list', async (ctx, next) => {
     delete event.$url
-    let promise = await consult.getTestList(event)
+    let promise = await consult.getConsultList(event)
     ctx.body = promise
   })
   app.router('consult/detail', async (ctx, next) => {
     delete event.$url
-    let promise = await consult.getTestDetailById(event)
+    let promise = await consult.getConsultDetailById(event)
     ctx.body = promise
   })
   app.router('consult/update', async (ctx, next) => {
     delete event.$url
-    let promise = await consult.updateTest(event)
+    let promise = await consult.updateConsult(event)
     ctx.body = promise
   })
   app.router('consult/add', async (ctx, next) => {
     delete event.$url
-    let promise = await consult.addTest(event)
+    let promise = await consult.addConsult(event)
     ctx.body = promise
   })
   return app.serve()

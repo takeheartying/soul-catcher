@@ -84,7 +84,7 @@ export default {
       }).then(res => {
         if (res && res.data) {
           this.testInfo = res.data || {}
-          debugger
+          // debugger
         } else {
           this.$toast(res.message || '系统出错')
         }
@@ -174,7 +174,7 @@ export default {
       backgroundColor: '#63B8FF'
     })
     this.testId = options.id || ''
-    debugger
+    // debugger
     this.getTestInfo()
   },
   onShareAppMessage (res) {

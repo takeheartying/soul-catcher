@@ -182,6 +182,9 @@ export default {
       this.loading = false
     },
     initData () { // 初始清空数据 + 更改filter显示栏
+      if (!this.tagType) {
+        this.firstGetData = false // 为了初始点击某一个tab的时候可以加载数据
+      }
       this.knowledgeList = []
       this.finished = false
       this.pageNo = 1

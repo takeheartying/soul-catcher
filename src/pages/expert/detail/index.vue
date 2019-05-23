@@ -143,6 +143,7 @@ export default {
       }
     },
     async initConsult (consultInfo) { // 新建咨询室
+      let that = this
       await wx.showModal({
         content: '确定要咨询专家？',
         showCancel: true, // 是否显示取消按钮
@@ -154,18 +155,31 @@ export default {
           } else {
             // 点击确定
             let consultId = ''
+
+            let parentId = ''
+            let studentId = ''
+            if (that.userType === '1') {
+              studentId = that.$app.globalData.userInfo.userId
+            }
+            if (that.userType === '3') {
+              parentId = that.$app.globalData.userInfo.userId
+            }
             await api.consult.addConsult({
-              expertId: consultInfo.id
+              parentId: parentId,
+              studentId: studentId,
+              expertId: consultInfo._id
             }).then(res => {
-              consultId = res.consultId
+              consultId = res._id
             }).catch(err => {
               console.log(err)
             })
             // mock数据：
-            consultId = '3444444'
+            // consultId = '3444444'
 
             if (consultId) {
               wx.navigateTo({url: `/pages/consult/detail/main?id=${consultId}`})
+            } else {
+              that.$toast('系统错误')
             }
           }
         }

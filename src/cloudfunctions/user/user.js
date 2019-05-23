@@ -175,6 +175,7 @@ const register = async (event) => {
         }).get().then(_res => {
           if (_res && _res.data && _res.data.length) {
             event.relationship = _res.data[0] // 学生已注册
+            event.relationShipId = _res.data[0]._id
           } else {
             res = {
               code: '0',
