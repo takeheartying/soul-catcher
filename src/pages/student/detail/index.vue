@@ -306,7 +306,7 @@ export default {
         totalCount: 15,
         items: [
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI3rcibcglghVF3xNmkjsSHPEddC9609MaXz88gc7fYhuUGEiaQJpD5dPZLEUuDOZWenekVIOynGMTw/132',
             nickName: '何方',
             name: '何方',
             goodAt: '爱情脱单、趣味性格、心理综合',
@@ -315,7 +315,7 @@ export default {
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI3rcibcglghVF3xNmkjsSHPEddC9609MaXz88gc7fYhuUGEiaQJpD5dPZLEUuDOZWenekVIOynGMTw/132',
             nickName: '王大锤',
             name: '王大锤',
             goodAt: '爱情脱单、智商情商、心理综合',
@@ -324,7 +324,7 @@ export default {
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI3rcibcglghVF3xNmkjsSHPEddC9609MaXz88gc7fYhuUGEiaQJpD5dPZLEUuDOZWenekVIOynGMTw/132',
             nickName: '恒丰',
             name: '恒丰',
             goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
@@ -333,7 +333,7 @@ export default {
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI3rcibcglghVF3xNmkjsSHPEddC9609MaXz88gc7fYhuUGEiaQJpD5dPZLEUuDOZWenekVIOynGMTw/132',
             nickName: '邵佳一',
             name: '邵佳一',
             goodAt: '智商情商、趣味性格、心理综合',
@@ -342,7 +342,7 @@ export default {
             id: '23343243'
           },
           {
-            avatar: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2014550423,2613559085&fm=26&gp=0.jpg',
+            avatar: 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI3rcibcglghVF3xNmkjsSHPEddC9609MaXz88gc7fYhuUGEiaQJpD5dPZLEUuDOZWenekVIOynGMTw/132',
             nickName: '王家骥',
             name: '王家骥',
             goodAt: '爱情脱单、智商情商、趣味性格、心理综合',
@@ -622,7 +622,7 @@ export default {
         }
       }
       .student-info-middle {
-        height: 20px;
+        height: 40px;
         border-bottom: 10px solid rgb(240, 240, 240);
         border-top: 2px solid #eee;
         display: flex;

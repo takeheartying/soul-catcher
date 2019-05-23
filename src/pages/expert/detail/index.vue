@@ -71,6 +71,7 @@
         <div class="expert-info-footer-item phone"  v-if="userType != '2' && expertInfo.phone" @click="clickCallPhone(expertInfo.phone)">电话咨询</div>
       </div>
     </div>
+    <g-loading :loading="loading"></g-loading>
     <g-noresult
     v-if="!expertInfo._id"
     :show="!expertInfo._id"
@@ -82,9 +83,11 @@
 import knowledgeArticleCard from '../../home/components/knowledge-article-card.vue'
 import GNoresult from '@/components/g-noresult/index.vue'
 import api from '@/api'
+import GLoading from '@/components/g-loading/index.vue'
 export default {
   components: {
     GNoresult,
+    GLoading,
     knowledgeArticleCard
   },
   data () {
@@ -198,6 +201,7 @@ export default {
       this.curTab = tab || 'home'
     },
     async getExpertInfo () {
+      this.loading = true
       await api.user.getExpertInfo({
         userId: this.expertId,
         fanId: this.$app.globalData.userInfo.userId,
@@ -267,6 +271,7 @@ export default {
       //     }
       //   ]
       // }
+      this.loading = false
       this.setTagDescList()
     }
   },
